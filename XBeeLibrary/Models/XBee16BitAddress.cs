@@ -18,7 +18,7 @@ namespace Kveer.XBeeApi.Models
 	/// Each device has its own 16-bit address which is unique in the network. It is automatically assigned when the radio joins the network for ZigBee and ZNet 2.5, and manually configured in 802.15.4 radios.
 	/// </summary>
 	/// <remarks>DigiMesh and Point-to-Multipoint protocols don't support 16-bit addressing.</remarks>
-	public sealed class XBee16BitAddress
+	public sealed class XBee16BitAddress:IEquatable<XBee16BitAddress>
 	{
 		/// <summary>
 		/// 16-bit address reserved for the coordinator (value: 0000).
@@ -141,12 +141,14 @@ namespace Kveer.XBeeApi.Models
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is XBee16BitAddress))
-				return false;
+			var other = obj as XBee16BitAddress;
 
-			XBee16BitAddress addr = (XBee16BitAddress)obj;
-
-			return Enumerable.SequenceEqual(addr.Value, Value);
+			return other != null && Equals(other);
+		}
+		
+		public bool Equals(XBee16BitAddress other)
+		{
+			return other != null && Enumerable.SequenceEqual(other.Value, Value);
 		}
 
 		public override int GetHashCode()

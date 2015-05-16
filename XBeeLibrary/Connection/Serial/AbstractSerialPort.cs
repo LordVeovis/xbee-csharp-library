@@ -8,11 +8,10 @@ using System.Threading;
 namespace Kveer.XBeeApi.Connection.Serial
 {
 	/// <summary>
-	/// Abstract class that provides common functionality to work with serial ports.
+	/// Class that provides common functionality to work with serial ports.
 	/// </summary>
-	public abstract class AbstractSerialPort : IConnectionInterface
+	public class MySerialPort : IConnectionInterface
 	{
-
 		// Constants.
 		/**
 		 * Default receive timeout: {@value} seconds.
@@ -56,7 +55,7 @@ namespace Kveer.XBeeApi.Connection.Serial
 
 		protected SerialPortParameters parameters;
 
-		private ILog logger;
+		private ILog _logger;
 
 		/**
 		 * Class constructor. Instantiates a new {@code AbstractSerialPort} object
@@ -73,7 +72,7 @@ namespace Kveer.XBeeApi.Connection.Serial
 		 * @see #AbstractSerialPort(String, SerialPortParameters, int)
 		 * @see SerialPortParameters
 		 */
-		protected AbstractSerialPort(String port, SerialPortParameters parameters)
+		public MySerialPort(String port, SerialPortParameters parameters)
 			: this(port, parameters, DEFAULT_PORT_TIMEOUT)
 		{
 		}
@@ -97,7 +96,7 @@ namespace Kveer.XBeeApi.Connection.Serial
 		 * @see #AbstractSerialPort(String, SerialPortParameters)
 		 * @see #AbstractSerialPort(String, SerialPortParameters, int)
 		 */
-		protected AbstractSerialPort(String port, int baudRate)
+		public MySerialPort(String port, int baudRate)
 			: this(port, new SerialPortParameters(baudRate, DEFAULT_DATA_BITS, DEFAULT_STOP_BITS, DEFAULT_PARITY, DEFAULT_FLOW_CONTROL), DEFAULT_PORT_TIMEOUT)
 		{
 		}
@@ -122,7 +121,7 @@ namespace Kveer.XBeeApi.Connection.Serial
 		 * @see #AbstractSerialPort(String, SerialPortParameters)
 		 * @see #AbstractSerialPort(String, SerialPortParameters, int)
 		 */
-		protected AbstractSerialPort(String port, int baudRate, int receiveTimeout)
+		public MySerialPort(String port, int baudRate, int receiveTimeout)
 			: this(port, new SerialPortParameters(baudRate, DEFAULT_DATA_BITS, DEFAULT_STOP_BITS, DEFAULT_PARITY, DEFAULT_FLOW_CONTROL), receiveTimeout)
 		{
 		}
@@ -144,7 +143,7 @@ namespace Kveer.XBeeApi.Connection.Serial
 		 * @see #AbstractSerialPort(String, SerialPortParameters)
 		 * @see SerialPortParameters
 		 */
-		protected AbstractSerialPort(String port, SerialPortParameters parameters, int receiveTimeout)
+		public MySerialPort(String port, SerialPortParameters parameters, int receiveTimeout)
 		{
 			Contract.Requires<ArgumentNullException>(port != null, "Serial port cannot be null");
 			Contract.Requires<ArgumentNullException>(parameters != null, "SerialPortParameters cannot be null");
@@ -154,96 +153,31 @@ namespace Kveer.XBeeApi.Connection.Serial
 			this.baudRate = parameters.BaudRate;
 			this.receiveTimeout = receiveTimeout;
 			this.parameters = parameters;
-			this.logger = LogManager.GetLogger<AbstractSerialPort>();
+			this._logger = LogManager.GetLogger<MySerialPort>();
+
+			SerialPort = new SerialPort(port, baudRate);
+			SerialPort.DataBits = parameters.DataBits;
+			SerialPort.StopBits = parameters.StopBits;
+			SerialPort.Parity = parameters.Parity;
+
+			SerialPort.Handshake = parameters.FlowControl;
+
+			SerialPort.ReadTimeout = receiveTimeout;
+			SerialPort.DataReceived += SerialPort_DataReceived;
 		}
 
-		public bool IsOpen
+		void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
 		{
-			get
+			try
 			{
-				return SerialPort != null && SerialPort.IsOpen;
+				if (SerialPort.BytesToRead > 0)
+				{
+					Monitor.Pulse(this);
+				}
 			}
-		}
-
-
-		/**
-		 * Sets the state of the DTR.
-		 * 
-		 * @param state {@code true} to set the line status high, {@code false} to 
-		 *              set it low.
-		 * 
-		 * @see #isCD()
-		 * @see #isCTS()
-		 * @see #isDSR()
-		 * @see #setRTS(bool)
-		 */
-		public abstract void SetDTR(bool state);
-
-		/**
-		 * Sets the state of the RTS line.
-		 * 
-		 * @param state {@code true} to set the line status high, {@code false} to 
-		 *              set it low.
-		 * 
-		 * @see #isCD()
-		 * @see #isCTS()
-		 * @see #isDSR()
-		 * @see #setDTR(bool)
-		 */
-		public abstract void SetRTS(bool state);
-
-		/**
-		 * Returns the state of the CTS line.
-		 * 
-		 * @return {@code true} if the line is high, {@code false} otherwise.
-		 * 
-		 * @see #isCD()
-		 * @see #isDSR()
-		 * @see #setDTR(bool)
-		 * @see #setRTS(bool)
-		 */
-		public abstract bool IsCTS { get; }
-
-		/**
-		 * Returns the state of the DSR line.
-		 * 
-		 * @return {@code true} if the line is high, {@code false} otherwise.
-		 * 
-		 * @see #isCD()
-		 * @see #isCTS()
-		 * @see #setDTR(bool)
-		 * @see #setRTS(bool)
-		 */
-		public abstract bool IsDSR { get; }
-
-		/**
-		 * Returns the state of the CD line.
-		 * 
-		 * @return {@code true} if the line is high, {@code false} otherwise.
-		 * 
-		 * @see #isCTS()
-		 * @see #isDSR()
-		 * @see #setDTR(bool)
-		 * @see #setRTS(bool)
-		 */
-		public abstract bool IsCD { get; }
-
-		/**
-		 * Returns whether or not the port's flow control is configured in 
-		 * hardware mode.
-		 *  
-		 * @return {@code true} if the flow control is hardware, {@code false} 
-		 *         otherwise.
-		 * 
-		 * @see #getPortParameters()
-		 * @see #setPortParameters(SerialPortParameters)
-		 * @see #setPortParameters(int, int, int, int, int)
-		 */
-		public bool IsHardwareFlowControl
-		{
-			get
+			catch (Exception ex)
 			{
-				return parameters.FlowControl == Handshake.RequestToSend;
+				_logger.Error(ex.Message, ex);
 			}
 		}
 
@@ -293,160 +227,11 @@ namespace Kveer.XBeeApi.Connection.Serial
 
 			baudRate = parameters.BaudRate;
 			this.parameters = parameters;
-			if (IsOpen)
+			if (SerialPort.IsOpen)
 			{
-				Close();
-				Open();
+				SerialPort.Close();
+				SerialPort.Open();
 			}
-		}
-
-		/**
-		 * Enables or disables the break line.
-		 * 
-		 * @param enabled {@code true} to enable the Break line, {@code false} to 
-		 *                disable it.
-		 * 
-		 * @see #sendBreak(int)
-		 */
-		public abstract void SetBreak(bool enabled);
-
-		/**
-		 * Sends a break signal to the serial port with the given duration
-		 * (in milliseconds).
-		 * 
-		 * @param duration Duration of the break signal in milliseconds.
-		 * 
-		 * @see #setBreak(bool)
-		 */
-		public abstract void SendBreak(int duration);
-
-		/// <summary>
-		/// Gets or sets the read timeout of the serial port (in milliseconds).
-		/// </summary>
-		public abstract int ReadTimeout { get; set; }
-
-		/**
-		 * Purges the serial port removing all the data from the input stream.
-		 * 
-		 * @see #flush()
-		 */
-		public void Purge()
-		{
-			if (SerialPort != null)
-			{
-				try
-				{
-					SerialPort.DiscardInBuffer();
-				}
-				catch (IOException e)
-				{
-					logger.Error(e.Message, e);
-				}
-			}
-		}
-
-		/**
-		 * Flushes the available data of the output stream.
-		 * 
-		 * @see #purge()
-		 */
-		public void Flush()
-		{
-			if (GetOutputStream() != null)
-			{
-				try
-				{
-					GetOutputStream().Flush();
-				}
-				catch (IOException e)
-				{
-					logger.Error(e.Message, e);
-				}
-			}
-		}
-
-		public void WriteData(byte[] data) /*throws IOException*/ {
-			if (data == null)
-				throw new ArgumentNullException("Data to be sent cannot be null.");
-
-			if (SerialPort != null)
-			{
-				SerialPort.Write(data, 0, data.Length);
-			}
-		}
-
-		public void WriteData(byte[] data, int offset, int length) /*throws IOException*/ {
-			if (data == null)
-				throw new ArgumentNullException("Data to be sent cannot be null.");
-			if (offset < 0)
-				throw new ArgumentOutOfRangeException("Offset cannot be less than 0.");
-			if (length < 1)
-				throw new ArgumentOutOfRangeException("Length cannot be less than 0.");
-			if (offset >= data.Length)
-				throw new ArgumentOutOfRangeException("Offset must be less than the data Length.");
-			if (offset + length > data.Length)
-				throw new ArgumentOutOfRangeException("Offset + Length cannot be great than the data Length.");
-
-			if (GetOutputStream() != null)
-			{
-				SerialPort.Write(data, offset, length);
-				}
-		}
-
-		public int ReadData(byte[] data) /*throws IOException*/ {
-			if (data == null)
-				throw new ArgumentNullException("Buffer cannot be null.");
-
-			if (SerialPort != null)
-				return SerialPort.Read(data, 0, data.Length);
-			else return 0;
-		}
-
-		public int ReadData(byte[] data, int offset, int length) /*throws IOException */{
-			if (data == null)
-				throw new ArgumentNullException("Buffer cannot be null.");
-			if (offset < 0)
-				throw new ArgumentOutOfRangeException("Offset cannot be less than 0.");
-			if (length < 1)
-				throw new ArgumentOutOfRangeException("Length cannot be less than 0.");
-			if (offset >= data.Length)
-				throw new ArgumentOutOfRangeException("Offset must be less than the buffer Length.");
-			if (offset + length > data.Length)
-				throw new ArgumentOutOfRangeException("Offset + Length cannot be great than the buffer Length.");
-
-			if (SerialPort != null)
-				return SerialPort.Read(data, offset, length);
-			else return 0;
-		}
-
-		/**
-		 * Returns the XBee serial port parameters.
-		 * 
-		 * @return The XBee serial port parameters.
-		 * 
-		 * @see #setPortParameters(SerialPortParameters)
-		 * @see #setPortParameters(int, int, int, int, int)
-		 * @see SerialPortParameters
-		 */
-		public SerialPortParameters GetPortParameters()
-		{
-			if (parameters != null)
-				return parameters;
-			return new SerialPortParameters(baudRate, DEFAULT_DATA_BITS,
-					DEFAULT_STOP_BITS, DEFAULT_PARITY, DEFAULT_FLOW_CONTROL);
-		}
-
-		/**
-		 * Returns the serial port receive timeout (in milliseconds).
-		 * 
-		 * @return The serial port receive timeout in milliseconds.
-		 * 
-		 * @see #getReadTimeout()
-		 * @see #setReadTimeout(int)
-		 */
-		public int GetReceiveTimeout()
-		{
-			return receiveTimeout;
 		}
 
 		public override string ToString()
@@ -475,13 +260,5 @@ namespace Kveer.XBeeApi.Connection.Serial
 		}
 
 		public SerialPort SerialPort { get; protected set; }
-
-		public abstract void Open();
-
-		public abstract void Close();
-
-		public abstract Stream GetInputStream();
-
-		public abstract Stream GetOutputStream();
 	}
 }

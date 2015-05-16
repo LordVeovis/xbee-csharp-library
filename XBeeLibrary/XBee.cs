@@ -9,7 +9,6 @@ namespace Kveer.XBeeApi
 	 */
 	public class XBee
 	{
-
 		/**
 		 * Retrieves a serial port connection interface for the provided port with 
 		 * the given baud rate.
@@ -24,9 +23,9 @@ namespace Kveer.XBeeApi
 		 * @see #createConnectiontionInterface(String, SerialPortParameters)
 		 * @see com.digi.xbee.api.connection.IConnectionInterface
 		 */
-		public static IConnectionInterface createConnectiontionInterface(string port, int baudRate)
+		public static IConnectionInterface CreateConnectiontionInterface(string port, int baudRate)
 		{
-			IConnectionInterface connectionInterface = new NetSerialPort(port, baudRate);
+			IConnectionInterface connectionInterface = new MySerialPort(port, baudRate);
 			return connectionInterface;
 		}
 
@@ -46,9 +45,9 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.connection.IConnectionInterface
 		 * @see com.digi.xbee.api.connection.serial.SerialPortParameters
 		 */
-		public static IConnectionInterface createConnectiontionInterface(string port, SerialPortParameters serialPortParameters)
+		public static IConnectionInterface CreateConnectiontionInterface(string port, SerialPortParameters serialPortParameters)
 		{
-			IConnectionInterface connectionInterface = new NetSerialPort(port, serialPortParameters);
+			IConnectionInterface connectionInterface = new MySerialPort(port, serialPortParameters);
 			return connectionInterface;
 		}
 	}

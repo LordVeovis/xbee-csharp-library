@@ -31,7 +31,7 @@ namespace Kveer.XBeeApi
 		 * @throws ArgumentNullException if {@code port == null}.
 		 */
 		public DigiMeshDevice(String port, int baudRate)
-			: this(XBee.createConnectiontionInterface(port, baudRate))
+			: this(XBee.CreateConnectiontionInterface(port, baudRate))
 		{
 		}
 
@@ -71,7 +71,7 @@ namespace Kveer.XBeeApi
 		 * @see SerialPortParameters
 		 */
 		public DigiMeshDevice(String port, SerialPortParameters serialPortParameters)
-			: this(XBee.createConnectiontionInterface(port, serialPortParameters))
+			: this(XBee.CreateConnectiontionInterface(port, serialPortParameters))
 		{
 		}
 
@@ -100,7 +100,7 @@ namespace Kveer.XBeeApi
 			base.Open();
 
 			if (xbeeProtocol != XBeeProtocol.DIGI_MESH)
-				throw new XBeeDeviceException("XBee device is not a " + getXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
+				throw new XBeeDeviceException("XBee device is not a " + GetXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
 		}
 
 		public override XBeeNetwork GetNetwork()
@@ -112,7 +112,7 @@ namespace Kveer.XBeeApi
 			return network;
 		}
 
-		public override XBeeProtocol getXBeeProtocol()
+		public override XBeeProtocol GetXBeeProtocol()
 		{
 			return XBeeProtocol.DIGI_MESH;
 		}

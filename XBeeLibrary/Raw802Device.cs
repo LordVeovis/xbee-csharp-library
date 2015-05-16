@@ -33,7 +33,7 @@ namespace Kveer.XBeeApi
 		 * @throws ArgumentNullException if {@code port == null}.
 		 */
 		public Raw802Device(string port, int baudRate)
-			: this(XBee.createConnectiontionInterface(port, baudRate))
+			: this(XBee.CreateConnectiontionInterface(port, baudRate))
 		{
 		}
 
@@ -73,7 +73,7 @@ namespace Kveer.XBeeApi
 		 * @see SerialPortParameters
 		 */
 		public Raw802Device(String port, SerialPortParameters serialPortParameters)
-			: this(XBee.createConnectiontionInterface(port, serialPortParameters))
+			: this(XBee.CreateConnectiontionInterface(port, serialPortParameters))
 		{
 		}
 
@@ -104,7 +104,7 @@ namespace Kveer.XBeeApi
 			if (IsRemote)
 				return;
 			if (xbeeProtocol != XBeeProtocol.RAW_802_15_4)
-				throw new XBeeDeviceException("XBee device is not a " + getXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
+				throw new XBeeDeviceException("XBee device is not a " + GetXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
 		}
 
 		/*
@@ -127,7 +127,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.XBeeDevice#getXBeeProtocol()
 		 */
 		//@Override
-		public override XBeeProtocol getXBeeProtocol()
+		public override XBeeProtocol GetXBeeProtocol()
 		{
 			return XBeeProtocol.RAW_802_15_4;
 		}
@@ -162,15 +162,15 @@ namespace Kveer.XBeeApi
 				throw new ArgumentNullException("Data cannot be null");
 
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 			// Check if device is remote.
 			if (IsRemote)
 				throw new OperationNotSupportedException("Cannot send data to a remote device from a remote device.");
 
-			logger.InfoFormat(toString() + "Sending data asynchronously to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
+			logger.InfoFormat(ToString() + "Sending data asynchronously to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
 
-			XBeePacket xbeePacket = new TX16Packet(getNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
+			XBeePacket xbeePacket = new TX16Packet(GetNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
 			SendAndCheckXBeePacket(xbeePacket, true);
 		}
 
@@ -213,15 +213,15 @@ namespace Kveer.XBeeApi
 				throw new ArgumentNullException("Data cannot be null");
 
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 			// Check if device is remote.
 			if (IsRemote)
 				throw new OperationNotSupportedException("Cannot send data to a remote device from a remote device.");
 
-			logger.InfoFormat(toString() + "Sending data to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
+			logger.InfoFormat(ToString() + "Sending data to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
 
-			XBeePacket xbeePacket = new TX16Packet(getNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
+			XBeePacket xbeePacket = new TX16Packet(GetNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
 			SendAndCheckXBeePacket(xbeePacket, false);
 		}
 	}

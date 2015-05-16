@@ -113,7 +113,7 @@ namespace Kveer.XBeeApi
 		 * @see #AbstractXBeeDevice(String, int, int, int, int, int)
 		 */
 		public AbstractXBeeDevice(String port, int baudRate)
-			: this(XBee.createConnectiontionInterface(port, baudRate))
+			: this(XBee.CreateConnectiontionInterface(port, baudRate))
 		{
 		}
 
@@ -164,7 +164,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.connection.serial.SerialPortParameters
 		 */
 		public AbstractXBeeDevice(String port, SerialPortParameters serialPortParameters)
-			: this(XBee.createConnectiontionInterface(port, serialPortParameters))
+			: this(XBee.CreateConnectiontionInterface(port, serialPortParameters))
 		{
 		}
 
@@ -258,7 +258,7 @@ namespace Kveer.XBeeApi
 				throw new ArgumentException("The given local XBee device is remote.");
 
 			this.localXBeeDevice = localXBeeDevice;
-			this.connectionInterface = localXBeeDevice.getConnectionInterface();
+			this.connectionInterface = localXBeeDevice.GetConnectionInterface();
 			this.xbee64BitAddress = addr64;
 			this.xbee16BitAddress = addr16;
 			if (addr16 == null)
@@ -277,17 +277,14 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see com.digi.xbee.api.connection.IConnectionInterface
 		 */
-		public IConnectionInterface getConnectionInterface()
+		public IConnectionInterface GetConnectionInterface()
 		{
 			return connectionInterface;
 		}
 
-		/**
-		 * Returns whether this XBee device is a remote device.
-		 * 
-		 * @return {@code true} if this XBee device is a remote device, 
-		 *         {@code false} otherwise.
-		 */
+		/// <summary>
+		/// Indicates whether this XBee device is a remote device.
+		/// </summary>
 		abstract public bool IsRemote { get; }
 
 		/**
@@ -323,10 +320,10 @@ namespace Kveer.XBeeApi
 				String addressHigh;
 				String addressLow;
 
-				response = getParameter("SH");
+				response = GetParameter("SH");
 				addressHigh = HexUtils.ByteArrayToHexString(response);
 
-				response = getParameter("SL");
+				response = GetParameter("SL");
 				addressLow = HexUtils.ByteArrayToHexString(response);
 
 				while (addressLow.Length < 8)
@@ -335,17 +332,17 @@ namespace Kveer.XBeeApi
 				xbee64BitAddress = new XBee64BitAddress(addressHigh + addressLow);
 			}
 			// Get the Node ID.
-			response = getParameter("NI");
+			response = GetParameter("NI");
 			nodeID = Encoding.UTF8.GetString(response);
 
 			// Get the hardware version.
 			if (hardwareVersion == null)
 			{
-				response = getParameter("HV");
+				response = GetParameter("HV");
 				hardwareVersion = HardwareVersion.Get(response[0]);
 			}
 			// Get the firmware version.
-			response = getParameter("VR");
+			response = GetParameter("VR");
 			firmwareVersion = HexUtils.ByteArrayToHexString(response);
 
 			// Obtain the device protocol.
@@ -353,10 +350,10 @@ namespace Kveer.XBeeApi
 
 			// Get the 16-bit address. This must be done after obtaining the protocol because 
 			// DigiMesh and Point-to-Multipoint protocols don't have 16-bit addresses.
-			if (getXBeeProtocol() != XBeeProtocol.DIGI_MESH
-					&& getXBeeProtocol() != XBeeProtocol.DIGI_POINT)
+			if (GetXBeeProtocol() != XBeeProtocol.DIGI_MESH
+					&& GetXBeeProtocol() != XBeeProtocol.DIGI_POINT)
 			{
-				response = getParameter("MY");
+				response = GetParameter("MY");
 				xbee16BitAddress = new XBee16BitAddress(response);
 			}
 		}
@@ -370,7 +367,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see com.digi.xbee.api.models.XBee16BitAddress
 		 */
-		public XBee16BitAddress get16BitAddress()
+		public XBee16BitAddress Get16BitAddress()
 		{
 			return xbee16BitAddress;
 		}
@@ -386,7 +383,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see com.digi.xbee.api.models.XBee64BitAddress
 		 */
-		public XBee64BitAddress get64BitAddress()
+		public XBee64BitAddress Get64BitAddress()
 		{
 			return xbee64BitAddress;
 		}
@@ -401,10 +398,10 @@ namespace Kveer.XBeeApi
 		 * @see #isRemote()
 		 * @see com.digi.xbee.api.models.OperatingMode
 		 */
-		protected OperatingMode getOperatingMode()
+		protected OperatingMode GetOperatingMode()
 		{
 			if (IsRemote)
-				return localXBeeDevice.getOperatingMode();
+				return localXBeeDevice.GetOperatingMode();
 			return operatingMode;
 		}
 
@@ -417,47 +414,32 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see com.digi.xbee.api.models.XBeeProtocol
 		 */
-		public virtual XBeeProtocol getXBeeProtocol()
+		public virtual XBeeProtocol GetXBeeProtocol()
 		{
 			return xbeeProtocol;
 		}
 
-		/**
-		 * Returns the node identifier of this XBee device.
-		 * 
-		 * <p>To refresh this value use the {@link #readDeviceInfo()} method.</p>
-		 * 
-		 * @return The node identifier of this device.
-		 * 
-		 * @see #setNodeID(String)
-		 */
-		public String getNodeID()
+		/// <summary>
+		/// Gets or sets the node identifier of thix XBee device.
+		/// <remarks>To refresh this value use the <see cref="ReadDeviceInfo"/> method.</remarks>
+		/// </summary>
+		public string NodeID
 		{
-			return nodeID;
-		}
+			get
+			{
+				return nodeID;
+			}
+			set
+			{
+				if (value == null)
+					throw new ArgumentNullException("Node ID cannot be null.");
+				if (value.Length > 20)
+					throw new ArgumentException("Node ID length must be less than 21.");
 
-		/**
-		 * Sets the node identifier of this XBee device.
-		 * 
-		 * @param nodeID The new node id of the device.
-		 * 
-		 * @throws ArgumentException if {@code nodeID.length > 20}.
-		 * @throws InterfaceNotOpenException if this device connection is not open.
-		 * @throws ArgumentNullException if {@code nodeID == null}.
-		 * @throws TimeoutException if there is a timeout setting the node ID value.
-		 * @throws XBeeException if there is any other XBee related exception.
-		 * 
-		 * @see #getNodeID()
-		 */
-		public void setNodeID(String nodeID) /*throws TimeoutException, XBeeException*/ {
-			if (nodeID == null)
-				throw new ArgumentNullException("Node ID cannot be null.");
-			if (nodeID.Length > 20)
-				throw new ArgumentException("Node ID length must be less than 21.");
+				SetParameter("NI", Encoding.UTF8.GetBytes(nodeID));
 
-			setParameter("NI", Encoding.UTF8.GetBytes(nodeID));
-
-			this.nodeID = nodeID;
+				this.nodeID = value;
+			}
 		}
 
 		/**
@@ -468,7 +450,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @return The firmware version of the XBee device.
 		 */
-		public String getFirmwareVersion()
+		public String GetFirmwareVersion()
 		{
 			return firmwareVersion;
 		}
@@ -484,7 +466,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.models.HardwareVersion
 		 * @see com.digi.xbee.api.models.HardwareVersionEnum
 		 */
-		public HardwareVersion getHardwareVersion()
+		public HardwareVersion GetHardwareVersion()
 		{
 			return hardwareVersion;
 		}
@@ -497,18 +479,18 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @param device The XBee Device to get the data from.
 		 */
-		public void updateDeviceDataFrom(AbstractXBeeDevice device)
+		public void UpdateDeviceDataFrom(AbstractXBeeDevice device)
 		{
 			// TODO Should the devices have the same protocol??
 			// TODO Should be allow to update a local from a remote or viceversa?? Maybe 
 			// this must be in the Local/Remote device class(es) and not here... 
 
 			// Only update the Node Identifier if the provided is not null.
-			if (device.getNodeID() != null)
-				this.nodeID = device.getNodeID();
+			if (device.NodeID != null)
+				this.nodeID = device.NodeID;
 
 			// Only update the 64-bit address if the original is null or unknown.
-			XBee64BitAddress addr64 = device.get64BitAddress();
+			XBee64BitAddress addr64 = device.Get64BitAddress();
 			if (addr64 != null && addr64 != XBee64BitAddress.UNKNOWN_ADDRESS
 					&& !addr64.Equals(xbee64BitAddress)
 					&& (xbee64BitAddress == null
@@ -519,7 +501,7 @@ namespace Kveer.XBeeApi
 
 			// TODO Change here the 16-bit address or maybe in ZigBee and 802.15.4?
 			// TODO Should the 16-bit address be always updated? Or following the same rule as the 64-bit address.
-			XBee16BitAddress addr16 = device.get16BitAddress();
+			XBee16BitAddress addr16 = device.Get16BitAddress();
 			if (addr16 != null && !addr16.Equals(xbee16BitAddress))
 			{
 				xbee16BitAddress = addr16;
@@ -547,7 +529,7 @@ namespace Kveer.XBeeApi
 		 * @see #removePacketListener(IPacketReceiveListener)
 		 * @see com.digi.xbee.api.listeners.IPacketReceiveListener
 		 */
-		protected void addPacketListener(IPacketReceiveListener listener)
+		protected void AddPacketListener(IPacketReceiveListener listener)
 		{
 			if (listener == null)
 				throw new ArgumentNullException("Listener cannot be null.");
@@ -569,7 +551,7 @@ namespace Kveer.XBeeApi
 		 * @see #addPacketListener(IPacketReceiveListener)
 		 * @see com.digi.xbee.api.listeners.IPacketReceiveListener
 		 */
-		protected void removePacketListener(IPacketReceiveListener listener)
+		protected void RemovePacketListener(IPacketReceiveListener listener)
 		{
 			if (listener == null)
 				throw new ArgumentNullException("Listener cannot be null.");
@@ -593,7 +575,7 @@ namespace Kveer.XBeeApi
 		 * @see #removeDataListener(IDataReceiveListener)
 		 * @see com.digi.xbee.api.listeners.IDataReceiveListener
 		 */
-		protected void addDataListener(IDataReceiveListener listener)
+		protected void AddDataListener(IDataReceiveListener listener)
 		{
 			if (listener == null)
 				throw new ArgumentNullException("Listener cannot be null.");
@@ -615,7 +597,7 @@ namespace Kveer.XBeeApi
 		 * @see #addDataListener(IDataReceiveListener)
 		 * @see com.digi.xbee.api.listeners.IDataReceiveListener
 		 */
-		protected void removeDataListener(IDataReceiveListener listener)
+		protected void RemoveDataListener(IDataReceiveListener listener)
 		{
 			if (listener == null)
 				throw new ArgumentNullException("Listener cannot be null.");
@@ -639,14 +621,15 @@ namespace Kveer.XBeeApi
 		 * @see #removeIOSampleListener(IIOSampleReceiveListener)
 		 * @see com.digi.xbee.api.listeners.IIOSampleReceiveListener
 		 */
-		protected void addIOSampleListener(IIOSampleReceiveListener listener)
+		protected void AddIOSampleListener(EventHandler<IOSampleReceivedEventArgs> action)
 		{
-			if (listener == null)
+			if (action == null)
 				throw new ArgumentNullException("Listener cannot be null.");
 
 			if (dataReader == null)
 				return;
-			dataReader.AddIOSampleReceiveListener(listener);
+
+			dataReader.IOSampleReceived += action;
 		}
 
 		/**
@@ -661,14 +644,14 @@ namespace Kveer.XBeeApi
 		 * @see #addIOSampleListener(IIOSampleReceiveListener)
 		 * @see com.digi.xbee.api.listeners.IIOSampleReceiveListener
 		 */
-		protected void removeIOSampleListener(IIOSampleReceiveListener listener)
+		protected void RemoveIOSampleListener(EventHandler<IOSampleReceivedEventArgs> action)
 		{
-			if (listener == null)
+			if (action == null)
 				throw new ArgumentNullException("Listener cannot be null.");
 
 			if (dataReader == null)
 				return;
-			dataReader.RemoveIOSampleReceiveListener(listener);
+			dataReader.IOSampleReceived -= action;
 		}
 
 		/**
@@ -686,7 +669,7 @@ namespace Kveer.XBeeApi
 		 * @see #removeModemStatusListener(IModemStatusReceiveListener)
 		 * @see com.digi.xbee.api.listeners.IModemStatusReceiveListener
 		 */
-		protected void addModemStatusListener(IModemStatusReceiveListener listener)
+		protected void AddModemStatusListener(IModemStatusReceiveListener listener)
 		{
 			if (listener == null)
 				throw new ArgumentNullException("Listener cannot be null.");
@@ -748,11 +731,11 @@ namespace Kveer.XBeeApi
 			if (command == null)
 				throw new ArgumentNullException("AT command cannot be null.");
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
 			ATCommandResponse response = null;
-			OperatingMode operatingMode = getOperatingMode();
+			OperatingMode operatingMode = GetOperatingMode();
 			switch (operatingMode)
 			{
 				case OperatingMode.AT:
@@ -765,20 +748,20 @@ namespace Kveer.XBeeApi
 					XBeePacket packet;
 					if (IsRemote)
 					{
-						XBee16BitAddress remote16BitAddress = get16BitAddress();
+						XBee16BitAddress remote16BitAddress = Get16BitAddress();
 						if (remote16BitAddress == null)
 							remote16BitAddress = XBee16BitAddress.UNKNOWN_ADDRESS;
 						RemoteATCommandOptions remoteATCommandOptions = RemoteATCommandOptions.OPTION_NONE;
-						if (isApplyConfigurationChangesEnabled())
+						if (IsApplyConfigurationChangesEnabled())
 							remoteATCommandOptions |= RemoteATCommandOptions.OPTION_APPLY_CHANGES;
-						packet = new RemoteATCommandPacket(getNextFrameID(), get64BitAddress(), remote16BitAddress, (byte)remoteATCommandOptions, command.Command, command.Parameter);
+						packet = new RemoteATCommandPacket(GetNextFrameID(), Get64BitAddress(), remote16BitAddress, (byte)remoteATCommandOptions, command.Command, command.Parameter);
 					}
 					else
 					{
-						if (isApplyConfigurationChangesEnabled())
-							packet = new ATCommandPacket(getNextFrameID(), command.Command, command.Parameter);
+						if (IsApplyConfigurationChangesEnabled())
+							packet = new ATCommandPacket(GetNextFrameID(), command.Command, command.Parameter);
 						else
-							packet = new ATCommandQueuePacket(getNextFrameID(), command.Command, command.Parameter);
+							packet = new ATCommandQueuePacket(GetNextFrameID(), command.Command, command.Parameter);
 					}
 					if (command.Parameter == null)
 						logger.DebugFormat(ToString() + "Sending AT command '{}'.", command.Command);
@@ -868,10 +851,10 @@ namespace Kveer.XBeeApi
 			if (packet == null)
 				throw new ArgumentNullException("XBee packet cannot be null.");
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			OperatingMode operatingMode = getOperatingMode();
+			OperatingMode operatingMode = GetOperatingMode();
 			switch (operatingMode)
 			{
 				case OperatingMode.AT:
@@ -886,7 +869,7 @@ namespace Kveer.XBeeApi
 						if (((XBeeAPIPacket)packet).NeedsAPIFrameID)
 						{
 							if (((XBeeAPIPacket)packet).FrameID == XBeeAPIPacket.NO_FRAME_ID)
-								((XBeeAPIPacket)packet).FrameID = getNextFrameID();
+								((XBeeAPIPacket)packet).FrameID = GetNextFrameID();
 							if (packetReceiveListener != null)
 								dataReader.AddPacketReceiveListener(packetReceiveListener, ((XBeeAPIPacket)packet).FrameID);
 						}
@@ -936,10 +919,10 @@ namespace Kveer.XBeeApi
 			if (packet == null)
 				throw new ArgumentNullException("XBee packet cannot be null.");
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			OperatingMode operatingMode = getOperatingMode();
+			OperatingMode operatingMode = GetOperatingMode();
 			switch (operatingMode)
 			{
 				case OperatingMode.AT:
@@ -967,13 +950,13 @@ namespace Kveer.XBeeApi
 					}
 
 					// Add the required frame ID to the packet if necessary.
-					insertFrameID(packet);
+					InsertFrameID(packet);
 
 					// Generate a packet received listener for the packet to be sent.
-					IPacketReceiveListener packetReceiveListener = createPacketReceivedListener(packet, responseList);
+					IPacketReceiveListener packetReceiveListener = CreatePacketReceivedListener(packet, responseList);
 
 					// Add the packet listener to the data reader.
-					addPacketListener(packetReceiveListener);
+					AddPacketListener(packetReceiveListener);
 
 					// Write the packet data.
 					writePacket(packet);
@@ -986,7 +969,7 @@ namespace Kveer.XBeeApi
 							{
 								Monitor.Wait(responseList, receiveTimeout);
 							}
-							catch (ThreadInterruptedException ) { }
+							catch (ThreadInterruptedException) { }
 						}
 						// After the wait check if we received any response, if not throw timeout exception.
 						if (responseList.Count < 1)
@@ -997,7 +980,7 @@ namespace Kveer.XBeeApi
 					finally
 					{
 						// Always remove the packet listener from the list.
-						removePacketListener(packetReceiveListener);
+						RemovePacketListener(packetReceiveListener);
 					}
 			}
 		}
@@ -1010,13 +993,13 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see com.digi.xbee.api.packet.XBeePacket
 		 */
-		private void insertFrameID(XBeePacket xbeePacket)
+		private void InsertFrameID(XBeePacket xbeePacket)
 		{
 			if (xbeePacket is XBeeAPIPacket)
 				return;
 
 			if (((XBeeAPIPacket)xbeePacket).NeedsAPIFrameID && ((XBeeAPIPacket)xbeePacket).FrameID == XBeeAPIPacket.NO_FRAME_ID)
-				((XBeeAPIPacket)xbeePacket).FrameID = getNextFrameID();
+				((XBeeAPIPacket)xbeePacket).FrameID = GetNextFrameID();
 		}
 
 		class MyPacketReceiveListener : IPacketReceiveListener
@@ -1093,7 +1076,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.listeners.IPacketReceiveListener
 		 * @see com.digi.xbee.api.packet.XBeePacket
 		 */
-		private IPacketReceiveListener createPacketReceivedListener(XBeePacket sentPacket, IList<XBeePacket> responseList)
+		private IPacketReceiveListener CreatePacketReceivedListener(XBeePacket sentPacket, IList<XBeePacket> responseList)
 		{
 			IPacketReceiveListener packetReceiveListener = new MyPacketReceiveListener(this, sentPacket, responseList);
 
@@ -1136,23 +1119,24 @@ namespace Kveer.XBeeApi
 			{
 				case OperatingMode.API:
 				default:
-					connectionInterface.WriteData(packet.GenerateByteArray());
+					var buf = packet.GenerateByteArray();
+					connectionInterface.SerialPort.Write(buf, 0, buf.Length);
 					break;
 				case OperatingMode.API_ESCAPE:
-					connectionInterface.WriteData(packet.GenerateByteArrayEscaped());
+					var buf2 = packet.GenerateByteArrayEscaped();
+					connectionInterface.SerialPort.Write(buf2, 0, buf2.Length);
 					break;
 			}
 		}
 
-		/**
-		 * Returns the next Frame ID of this XBee device.
-		 * 
-		 * @return The next Frame ID.
-		 */
-		protected byte getNextFrameID()
+		/// <summary>
+		/// Gets the next Frame ID of this XBee device.
+		/// </summary>
+		/// <returns></returns>
+		protected byte GetNextFrameID()
 		{
 			if (IsRemote)
-				return localXBeeDevice.getNextFrameID();
+				return localXBeeDevice.GetNextFrameID();
 			if (currentFrameID == 0xff)
 			{
 				// Reset counter.
@@ -1248,10 +1232,10 @@ namespace Kveer.XBeeApi
 			if (ioMode == null)
 				throw new ArgumentNullException("IO mode cannot be null.");
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			setParameter(ioLine.GetConfigurationATCommand(), new byte[] { (byte)ioMode.GetId() });
+			SetParameter(ioLine.GetConfigurationATCommand(), new byte[] { (byte)ioMode.GetId() });
 		}
 
 		/**
@@ -1272,16 +1256,16 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.io.IOLine
 		 * @see com.digi.xbee.api.io.IOMode
 		 */
-		public IOMode getIOConfiguration(IOLine ioLine)/*throws TimeoutException, XBeeException */{
+		public IOMode GetIOConfiguration(IOLine ioLine)/*throws TimeoutException, XBeeException */{
 			// Check IO line.
 			if (ioLine == null)
 				throw new ArgumentNullException("DIO pin cannot be null.");
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
 			// Check if the received configuration mode is valid.
-			int ioModeValue = getParameter(ioLine.GetConfigurationATCommand())[0];
+			int ioModeValue = GetParameter(ioLine.GetConfigurationATCommand())[0];
 			IOMode dioMode = IOMode.UNKOWN.GetIOMode(ioModeValue, ioLine);
 			if (dioMode == null)
 				throw new OperationNotSupportedException("Received configuration mode '" + HexUtils.IntegerToHexString(ioModeValue, 1) + "' is not valid.");
@@ -1320,10 +1304,10 @@ namespace Kveer.XBeeApi
 			if (ioValue == null)
 				throw new ArgumentNullException("IO value cannot be null.");
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			setParameter(ioLine.GetConfigurationATCommand(), new byte[] { (byte)ioValue.GetID() });
+			SetParameter(ioLine.GetConfigurationATCommand(), new byte[] { (byte)ioValue.GetID() });
 		}
 
 		/**
@@ -1359,7 +1343,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.io.IOMode#DIGITAL_OUT_HIGH
 		 * @see com.digi.xbee.api.io.IOMode#DIGITAL_OUT_LOW
 		 */
-		public IOValue getDIOValue(IOLine ioLine)/*throws TimeoutException, XBeeException */{
+		public IOValue GetDIOValue(IOLine ioLine)/*throws TimeoutException, XBeeException */{
 			// Check IO line.
 			if (ioLine == null)
 				throw new ArgumentNullException("IO line cannot be null.");
@@ -1416,13 +1400,13 @@ namespace Kveer.XBeeApi
 			if (dutyCycle < 0 || dutyCycle > 100)
 				throw new ArgumentException("Duty Cycle must be between 0% and 100%.");
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
 			// Convert the value.
 			int finaldutyCycle = (int)(dutyCycle * 1023.0 / 100.0);
 
-			setParameter(ioLine.GetPWMDutyCycleATCommand(), ByteUtils.IntToByteArray(finaldutyCycle));
+			SetParameter(ioLine.GetPWMDutyCycleATCommand(), ByteUtils.IntToByteArray(finaldutyCycle));
 		}
 
 		/**
@@ -1455,7 +1439,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.io.IOLine
 		 * @see com.digi.xbee.api.io.IOMode#PWM
 		 */
-		public double getPWMDutyCycle(IOLine ioLine)/*throws TimeoutException, XBeeException */{
+		public double GetPWMDutyCycle(IOLine ioLine)/*throws TimeoutException, XBeeException */{
 			// Check IO line.
 			if (ioLine == null)
 				throw new ArgumentNullException("IO line cannot be null.");
@@ -1463,10 +1447,10 @@ namespace Kveer.XBeeApi
 			if (!ioLine.HasPWMCapability())
 				throw new ArgumentException("Provided IO line does not have PWM capability.");
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			byte[] value = getParameter(ioLine.GetPWMDutyCycleATCommand());
+			byte[] value = GetParameter(ioLine.GetPWMDutyCycleATCommand());
 
 			// Return the PWM duty cycle value.
 			int readValue = ByteUtils.ByteArrayToInt(value);
@@ -1494,7 +1478,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.io.IOLine
 		 * @see com.digi.xbee.api.io.IOMode#ADC
 		 */
-		public int getADCValue(IOLine ioLine)/*throws TimeoutException, XBeeException */{
+		public int GetADCValue(IOLine ioLine)/*throws TimeoutException, XBeeException */{
 			// Check IO line.
 			if (ioLine == null)
 				throw new ArgumentNullException("IO line cannot be null.");
@@ -1534,9 +1518,9 @@ namespace Kveer.XBeeApi
 
 			// This method needs to apply changes after modifying the destination 
 			// address, but only if the destination address could be set successfully.
-			bool applyChanges = isApplyConfigurationChangesEnabled();
+			bool applyChanges = IsApplyConfigurationChangesEnabled();
 			if (applyChanges)
-				enableApplyConfigurationChanges(false);
+				EnableApplyConfigurationChanges(false);
 
 			byte[] address = xbee64BitAddress.Value;
 			try
@@ -1545,14 +1529,14 @@ namespace Kveer.XBeeApi
 				var dl = new byte[4];
 				Array.Copy(address, 0, dh, 0, 4);
 				Array.Copy(address, 4, dl, 0, 4);
-				setParameter("DH", dh);
-				setParameter("DL", dl);
-				this.applyChanges();
+				SetParameter("DH", dh);
+				SetParameter("DL", dl);
+				this.ApplyChanges();
 			}
 			finally
 			{
 				// Always restore the old value of the AC.
-				enableApplyConfigurationChanges(applyChanges);
+				EnableApplyConfigurationChanges(applyChanges);
 			}
 		}
 
@@ -1573,9 +1557,9 @@ namespace Kveer.XBeeApi
 		 * @see #setDestinationAddress(XBee64BitAddress)
 		 * @see com.digi.xbee.api.models.XBee64BitAddress
 		 */
-		public XBee64BitAddress getDestinationAddress()/*throws TimeoutException, XBeeException */{
-			byte[] dh = getParameter("DH");
-			byte[] dl = getParameter("DL");
+		public XBee64BitAddress GetDestinationAddress()/*throws TimeoutException, XBeeException */{
+			byte[] dh = GetParameter("DH");
+			byte[] dl = GetParameter("DL");
 			byte[] address = new byte[dh.Length + dl.Length];
 
 			Array.Copy(dh, 0, address, 0, dh.Length);
@@ -1616,10 +1600,10 @@ namespace Kveer.XBeeApi
 			if (rate < 0 || rate > 0xFFFF)
 				throw new ArgumentException("Rate must be between 0 and 0xFFFF.");
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			setParameter("IR", ByteUtils.IntToByteArray(rate));
+			SetParameter("IR", ByteUtils.IntToByteArray(rate));
 		}
 
 		/**
@@ -1643,12 +1627,12 @@ namespace Kveer.XBeeApi
 		 * @see #setDestinationAddress(XBee64BitAddress)
 		 * @see #setIOSamplingRate(int)
 		 */
-		public int getIOSamplingRate()/*throws TimeoutException, XBeeException */{
+		public int GetIOSamplingRate()/*throws TimeoutException, XBeeException */{
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			byte[] rate = getParameter("IR");
+			byte[] rate = GetParameter("IR");
 			return ByteUtils.ByteArrayToInt(rate);
 		}
 
@@ -1678,9 +1662,9 @@ namespace Kveer.XBeeApi
 		 * @see #getDIOChangeDetection()
 		 * @see #setDestinationAddress(XBee64BitAddress)
 		 */
-		public void setDIOChangeDetection(ISet<IOLine> lines)/*throws TimeoutException, XBeeException */{
+		public void SetDIOChangeDetection(ISet<IOLine> lines)/*throws TimeoutException, XBeeException */{
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
 			byte[] bitfield = new byte[2];
@@ -1697,7 +1681,7 @@ namespace Kveer.XBeeApi
 				}
 			}
 
-			setParameter("IC", bitfield);
+			SetParameter("IC", bitfield);
 		}
 
 		/**
@@ -1723,12 +1707,12 @@ namespace Kveer.XBeeApi
 		 * @see #setDestinationAddress(XBee64BitAddress)
 		 * @see #setDIOChangeDetection(Set)
 		 */
-		public ISet<IOLine> getDIOChangeDetection()/*throws TimeoutException, XBeeException */{
+		public ISet<IOLine> GetDIOChangeDetection()/*throws TimeoutException, XBeeException */{
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			byte[] bitfield = getParameter("IC");
+			byte[] bitfield = GetParameter("IC");
 			var lines = new HashSet<IOLine>();
 			int mask = (bitfield[0] << 8) + (bitfield[1] & 0xFF);
 
@@ -1770,8 +1754,8 @@ namespace Kveer.XBeeApi
 		 * @see #setParameter(String, byte[])
 		 * @see #writeChanges()
 		 */
-		public void applyChanges()/*throws TimeoutException, XBeeException */{
-			executeParameter("AC");
+		public void ApplyChanges()/*throws TimeoutException, XBeeException */{
+			ExecuteParameter("AC");
 		}
 
 		/**
@@ -1785,7 +1769,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see com.digi.xbee.api.models.ATCommandResponse
 		 */
-		protected void checkATCommandResponseIsValid(ATCommandResponse response)/*throws ATCommandException */{
+		protected void CheckATCommandResponseIsValid(ATCommandResponse response)/*throws ATCommandException */{
 			if (response == null || response.Status == null)
 				throw new ATCommandException(ATCommandStatus.UNKNOWN);
 			else if (response.Status != ATCommandStatus.OK)
@@ -1807,7 +1791,7 @@ namespace Kveer.XBeeApi
 		 */
 		public IOSample readIOSample()/*throws TimeoutException, XBeeException */{
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
 			// Try to build an IO Sample from the sample payload.
@@ -1816,15 +1800,15 @@ namespace Kveer.XBeeApi
 
 			// The response to the IS command in local 802.15.4 devices is empty, 
 			// so we have to create a packet listener to receive the IO sample.
-			if (!IsRemote && getXBeeProtocol() == XBeeProtocol.RAW_802_15_4)
+			if (!IsRemote && GetXBeeProtocol() == XBeeProtocol.RAW_802_15_4)
 			{
-				executeParameter("IS");
+				ExecuteParameter("IS");
 				samplePayload = receiveRaw802IOPacket();
 				if (samplePayload == null)
 					throw new Kveer.XBeeApi.Exceptions.TimeoutException("Timeout waiting for the IO response packet.");
 			}
 			else
-				samplePayload = getParameter("IS");
+				samplePayload = GetParameter("IS");
 
 			try
 			{
@@ -1846,16 +1830,16 @@ namespace Kveer.XBeeApi
 		{
 			ioPacketReceived = false;
 			ioPacketPayload = null;
-			addPacketListener(IOPacketReceiveListener);
+			AddPacketListener(IOPacketReceiveListener);
 			lock (ioLock)
 			{
 				try
 				{
 					Monitor.Wait(ioLock, receiveTimeout);
 				}
-				catch (ThreadInterruptedException ) { }
+				catch (ThreadInterruptedException) { }
 			}
-			removePacketListener(IOPacketReceiveListener);
+			RemovePacketListener(IOPacketReceiveListener);
 			if (ioPacketReceived)
 				return ioPacketPayload;
 			return null;
@@ -1956,7 +1940,7 @@ namespace Kveer.XBeeApi
 		 * @see #isApplyConfigurationChangesEnabled()
 		 * @see #writeChanges()
 		 */
-		public void setParameter(String parameter, byte[] parameterValue)/*throws TimeoutException, XBeeException */{
+		public void SetParameter(String parameter, byte[] parameterValue)/*throws TimeoutException, XBeeException */{
 			if (parameterValue == null)
 				throw new ArgumentNullException("Value of the parameter cannot be null.");
 
@@ -1978,7 +1962,7 @@ namespace Kveer.XBeeApi
 		 * @see #executeParameter(String)
 		 * @see #setParameter(String, byte[])
 		 */
-		public byte[] getParameter(String parameter) /*throws TimeoutException, XBeeException */{
+		public byte[] GetParameter(string parameter) /*throws TimeoutException, XBeeException */{
 			byte[] parameterValue = SendParameter(parameter, null);
 
 			// Check if the response is null, if so throw an exception (maybe it was a write-only parameter).
@@ -2003,7 +1987,7 @@ namespace Kveer.XBeeApi
 		 * @see #getParameter(String)
 		 * @see #setParameter(String, byte[])
 		 */
-		public void executeParameter(String parameter)/*throws TimeoutException, XBeeException */{
+		public void ExecuteParameter(string parameter)/*throws TimeoutException, XBeeException */{
 			SendParameter(parameter, null);
 		}
 
@@ -2026,7 +2010,7 @@ namespace Kveer.XBeeApi
 		 * @see #executeParameter(String)
 		 * @see #setParameter(String, byte[])
 		 */
-		private byte[] SendParameter(String parameter, byte[] parameterValue)/*throws TimeoutException, XBeeException */{
+		private byte[] SendParameter(string parameter, byte[] parameterValue)/*throws TimeoutException, XBeeException */{
 			if (parameter == null)
 				throw new ArgumentNullException("Parameter cannot be null.");
 			if (parameter.Length != 2)
@@ -2046,17 +2030,12 @@ namespace Kveer.XBeeApi
 			}
 
 			// Check if AT Command response is valid.
-			checkATCommandResponseIsValid(response);
+			CheckATCommandResponseIsValid(response);
 
 			// Return the response value.
 			return response.Response;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
-		//@Override
 		public override string ToString()
 		{
 			return connectionInterface.ToString();
@@ -2079,7 +2058,7 @@ namespace Kveer.XBeeApi
 		 * @see #applyChanges()
 		 * @see #isApplyConfigurationChangesEnabled()
 		 */
-		public void enableApplyConfigurationChanges(bool enabled)
+		public void EnableApplyConfigurationChanges(bool enabled)
 		{
 			applyConfigurationChanges = enabled;
 		}
@@ -2100,7 +2079,7 @@ namespace Kveer.XBeeApi
 		 * @see #applyChanges()
 		 * @see #enableApplyConfigurationChanges(boolean)
 		 */
-		public bool isApplyConfigurationChangesEnabled()
+		public bool IsApplyConfigurationChangesEnabled()
 		{
 			return applyConfigurationChanges;
 		}
@@ -2119,11 +2098,11 @@ namespace Kveer.XBeeApi
 		 * @see #get16BitAddress()
 		 * @see com.digi.xbee.api.models.XBee16BitAddress
 		 */
-		protected void set16BitAddress(XBee16BitAddress xbee16BitAddress)/*throws TimeoutException, XBeeException */{
+		protected void Set16BitAddress(XBee16BitAddress xbee16BitAddress)/*throws TimeoutException, XBeeException */{
 			if (xbee16BitAddress == null)
 				throw new ArgumentNullException("16-bit address canot be null.");
 
-			setParameter("MY", xbee16BitAddress.Value);
+			SetParameter("MY", xbee16BitAddress.Value);
 
 			this.xbee16BitAddress = xbee16BitAddress;
 		}
@@ -2145,13 +2124,13 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see #setPANID(byte[])
 		 */
-		public byte[] getPANID()/*throws TimeoutException, XBeeException */{
-			switch (getXBeeProtocol())
+		public byte[] GetPANID()/*throws TimeoutException, XBeeException */{
+			switch (GetXBeeProtocol())
 			{
 				case XBeeProtocol.ZIGBEE:
-					return getParameter("OP");
+					return GetParameter("OP");
 				default:
-					return getParameter("ID");
+					return GetParameter("ID");
 			}
 		}
 
@@ -2174,7 +2153,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see #getPANID()
 		 */
-		public void setPANID(byte[] panID)/*throws TimeoutException, XBeeException */{
+		public void SetPANID(byte[] panID)/*throws TimeoutException, XBeeException */{
 			if (panID == null)
 				throw new ArgumentNullException("PAN ID cannot be null.");
 			if (panID.Length == 0)
@@ -2182,7 +2161,7 @@ namespace Kveer.XBeeApi
 			if (panID.Length > 8)
 				throw new ArgumentException("Length of the PAN ID cannot be longer than 8 bytes.");
 
-			setParameter("ID", panID);
+			SetParameter("ID", panID);
 		}
 
 		/**
@@ -2198,8 +2177,8 @@ namespace Kveer.XBeeApi
 		 * @see #setPowerLevel(PowerLevel)
 		 * @see com.digi.xbee.api.models.PowerLevel
 		 */
-		public PowerLevel getPowerLevel()/*throws TimeoutException, XBeeException */{
-			byte[] powerLevelValue = getParameter("PL");
+		public PowerLevel GetPowerLevel()/*throws TimeoutException, XBeeException */{
+			byte[] powerLevelValue = GetParameter("PL");
 			return PowerLevel.LEVEL_UNKNOWN.Get(ByteUtils.ByteArrayToInt(powerLevelValue));
 		}
 
@@ -2218,11 +2197,11 @@ namespace Kveer.XBeeApi
 		 * @see #getPowerLevel()
 		 * @see com.digi.xbee.api.models.PowerLevel
 		 */
-		public void setPowerLevel(PowerLevel powerLevel)/*throws TimeoutException, XBeeException */{
+		public void SetPowerLevel(PowerLevel powerLevel)/*throws TimeoutException, XBeeException */{
 			if (powerLevel == null)
 				throw new ArgumentNullException("Power level cannot be null.");
 
-			setParameter("PL", ByteUtils.IntToByteArray(powerLevel.GetValue()));
+			SetParameter("PL", ByteUtils.IntToByteArray(powerLevel.GetValue()));
 		}
 
 		/**
@@ -2241,9 +2220,9 @@ namespace Kveer.XBeeApi
 		 * @see #forceDisassociate()
 		 * @see com.digi.xbee.api.models.AssociationIndicationStatus
 		 */
-		protected AssociationIndicationStatus getAssociationIndicationStatus()/*throws TimeoutException, XBeeException */{
-			byte[] associationIndicationValue = getParameter("AI");
-			return AssociationIndicationStatus.NJ_EXPIRED.Get(ByteUtils.ByteArrayToInt(associationIndicationValue));
+		protected AssociationIndicationStatus GetAssociationIndicationStatus()/*throws TimeoutException, XBeeException */{
+			byte[] associationIndicationValue = GetParameter("AI");
+			return AssociationIndicationStatus.NJ_EXPIRED.Get((byte)ByteUtils.ByteArrayToInt(associationIndicationValue));
 		}
 
 		/**
@@ -2259,8 +2238,8 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see #getAssociationIndicationStatus()
 		 */
-		protected void forceDisassociate()/*throws TimeoutException, XBeeException */{
-			executeParameter("DA");
+		protected void ForceDisassociate()/*throws TimeoutException, XBeeException */{
+			ExecuteParameter("DA");
 		}
 
 		/**
@@ -2293,8 +2272,8 @@ namespace Kveer.XBeeApi
 		 * @see #isApplyConfigurationChangesEnabled()
 		 * @see #setParameter(String, byte[])
 		 */
-		public void writeChanges() /*throws TimeoutException, XBeeException*/ {
-			executeParameter("WR");
+		public void WriteChanges() /*throws TimeoutException, XBeeException*/ {
+			ExecuteParameter("WR");
 		}
 	}
 }

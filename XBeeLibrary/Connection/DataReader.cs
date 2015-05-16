@@ -39,7 +39,6 @@ namespace Kveer.XBeeApi.Connection
 		// The packetReceiveListeners requires to be a HashMap with an associated integer. The integer is used to determine 
 		// the frame ID of the packet that should be received. When it is 99999 (ALL_FRAME_IDS), all the packets will be handled.
 		private IDictionary<IPacketReceiveListener, int> packetReceiveListeners = new Dictionary<IPacketReceiveListener, int>();
-		private IList<IIOSampleReceiveListener> ioSampleReceiveListeners = new List<IIOSampleReceiveListener>();
 		private IList<IModemStatusReceiveListener> modemStatusListeners = new List<IModemStatusReceiveListener>();
 
 		private ILog logger;
@@ -214,48 +213,6 @@ namespace Kveer.XBeeApi.Connection
 		}
 
 		/**
-		 * Adds the given IO sample receive listener to the list of listeners that 
-		 * will be notified when an IO sample packet is received.
-		 * 
-		 * <p>If the listener has been already added, this method does nothing.</p>
-		 * 
-		 * @param listener Listener to be notified when new IO sample packets are 
-		 *                 received.
-		 * 
-		 * @see #removeIOSampleReceiveListener(IIOSampleReceiveListener)
-		 * @see com.digi.xbee.api.listeners.IIOSampleReceiveListener
-		 */
-		public void AddIOSampleReceiveListener(IIOSampleReceiveListener listener)
-		{
-			lock (ioSampleReceiveListeners)
-			{
-				if (!ioSampleReceiveListeners.Contains(listener))
-					ioSampleReceiveListeners.Add(listener);
-			}
-		}
-
-		/**
-		 * Removes the given IO sample receive listener from the list of IO sample 
-		 * receive listeners.
-		 * 
-		 * <p>If the listener is not included in the list, this method does nothing.
-		 * </p>
-		 * 
-		 * @param listener IO sample receive listener to remove from the list.
-		 * 
-		 * @see #addIOSampleReceiveListener(IIOSampleReceiveListener)
-		 * @see com.digi.xbee.api.listeners.IIOSampleReceiveListener
-		 */
-		public void RemoveIOSampleReceiveListener(IIOSampleReceiveListener listener)
-		{
-			lock (ioSampleReceiveListeners)
-			{
-				if (ioSampleReceiveListeners.Contains(listener))
-					ioSampleReceiveListeners.Remove(listener);
-			}
-		}
-
-		/**
 		 * Adds the given Modem Status receive listener to the list of listeners 
 		 * that will be notified when a modem status packet is received.
 		 * 
@@ -374,8 +331,8 @@ namespace Kveer.XBeeApi.Connection
 				if (running)
 				{
 					running = false;
-					if (connectionInterface.IsOpen)
-						connectionInterface.Close();
+					if (connectionInterface.SerialPort.IsOpen)
+						connectionInterface.SerialPort.Close();
 				}
 			}
 		}
@@ -394,7 +351,7 @@ namespace Kveer.XBeeApi.Connection
 			// Add the packet to the packets queue.
 			xbeePacketsQueue.AddPacket(packet);
 			// Notify that a packet has been received to the corresponding listeners.
-			notifyPacketReceived(packet);
+			NotifyPacketReceived(packet);
 
 			// Check if the packet is an API packet.
 			if (!(packet is XBeeAPIPacket))
@@ -573,7 +530,7 @@ namespace Kveer.XBeeApi.Connection
 		{
 			RemoteXBeeDevice device = null;
 
-			switch (xbeeDevice.getXBeeProtocol())
+			switch (xbeeDevice.GetXBeeProtocol())
 			{
 				case XBeeProtocol.ZIGBEE:
 					device = new RemoteZigBeeDevice(xbeeDevice, addr64, addr16, ni);
@@ -608,10 +565,10 @@ namespace Kveer.XBeeApi.Connection
 		{
 			if (xbeeMessage.IsBroadcast)
 				logger.InfoFormat(connectionInterface.ToString() +
-						"Broadcast data received from {0} >> {1}.", xbeeMessage.Device.get64BitAddress(), HexUtils.PrettyHexString(xbeeMessage.Data));
+						"Broadcast data received from {0} >> {1}.", xbeeMessage.Device.Get64BitAddress(), HexUtils.PrettyHexString(xbeeMessage.Data));
 			else
 				logger.InfoFormat(connectionInterface.ToString() +
-						"Data received from {0} >> {1}.", xbeeMessage.Device.get64BitAddress(), HexUtils.PrettyHexString(xbeeMessage.Data));
+						"Data received from {0} >> {1}.", xbeeMessage.Device.Get64BitAddress(), HexUtils.PrettyHexString(xbeeMessage.Data));
 
 			try
 			{
@@ -651,6 +608,8 @@ namespace Kveer.XBeeApi.Connection
 			}
 		}
 
+		//public event EventHandler<PacketReceivedEventArgs> PacketReceived;
+
 		/**
 		 * Notifies subscribed XBee packet listeners that a new XBee packet has 
 		 * been received.
@@ -660,7 +619,7 @@ namespace Kveer.XBeeApi.Connection
 		 * @see com.digi.xbee.api.packet.XBeeAPIPacket
 		 * @see com.digi.xbee.api.packet.XBeePacket
 		 */
-		private void notifyPacketReceived(XBeePacket packet)
+		private void NotifyPacketReceived(XBeePacket packet)
 		{
 			logger.DebugFormat(connectionInterface.ToString() + "Packet received: \n{0}", packet.ToPrettyString());
 
@@ -669,52 +628,25 @@ namespace Kveer.XBeeApi.Connection
 				lock (packetReceiveListeners)
 				{
 					var removeListeners = new List<IPacketReceiveListener>();
-					var runTask = new Action<IPacketReceiveListener>((listener) =>
-					{
-						lock (listener)
-						{
-							if (packetReceiveListeners[listener] == ALL_FRAME_IDS)
-								listener.PacketReceived(packet);
-							else if (((XBeeAPIPacket)packet).NeedsAPIFrameID &&
-									((XBeeAPIPacket)packet).FrameID == packetReceiveListeners[listener])
-							{
-								listener.PacketReceived(packet);
-								removeListeners.Add(listener);
-							}
-						}
-					});
 
-					//ScheduledExecutorService executor = Executors.newScheduledThreadPool(Math.Min(MAXIMUM_PARALLEL_LISTENER_THREADS, 
-					//packetReceiveListeners.Count));
 					var tasks = new ConcurrentBag<Task>();
 					foreach (IPacketReceiveListener listener in packetReceiveListeners.Keys)
 					{
 						tasks.Add(Task.Factory.StartNew((state) =>
 						{
-							runTask((IPacketReceiveListener)state);
+							var listener0 = (IPacketReceiveListener)state;
+							lock (listener0)
+							{
+								if (packetReceiveListeners[listener0] == ALL_FRAME_IDS)
+									listener0.PacketReceived(packet);
+								else if (((XBeeAPIPacket)packet).NeedsAPIFrameID &&
+										((XBeeAPIPacket)packet).FrameID == packetReceiveListeners[listener0])
+								{
+									listener0.PacketReceived(packet);
+									removeListeners.Add(listener0);
+								}
+							}
 						}, listener));
-						//	executor.execute(new Runnable() {
-						//		/*
-						//		 * (non-Javadoc)
-						//		 * @see java.lang.Runnable#run()
-						//		 */
-						//		//@Override
-						//		public void run() {
-						//			// Synchronize the listener so it is not called 
-						//			// twice. That is, let the listener to finish its job.
-						//			lock (packetReceiveListeners) {
-						//				lock (listener) {
-						//					if (packetReceiveListeners[listener] == ALL_FRAME_IDS)
-						//						listener.packetReceived(packet);
-						//					else if (((XBeeAPIPacket)packet).needsAPIFrameID() && 
-						//							((XBeeAPIPacket)packet).getFrameID() == packetReceiveListeners[listener]) {
-						//						listener.packetReceived(packet);
-						//						removeListeners.add(listener);
-						//					}
-						//				}
-						//			}
-						//		}
-						//	});
 					}
 					Task.WaitAll(tasks.ToArray());
 					//executor.shutdown();
@@ -728,6 +660,11 @@ namespace Kveer.XBeeApi.Connection
 				logger.Error(e.Message, e);
 			}
 		}
+
+		/// <summary>
+		/// Represents the method that will handle the IO sample packet received event.
+		/// </summary>
+		public event EventHandler<IOSampleReceivedEventArgs> IOSampleReceived;
 
 		/**
 		 * Notifies subscribed IO sample listeners that a new IO sample packet has
@@ -745,41 +682,18 @@ namespace Kveer.XBeeApi.Connection
 
 			try
 			{
-				lock (ioSampleReceiveListeners)
+				lock (IOSampleReceived)
 				{
-					var runTask = new Action<IIOSampleReceiveListener>(listener =>
+					var handler = IOSampleReceived;
+					if (handler != null)
 					{
-						lock (listener)
+						var args = new IOSampleReceivedEventArgs(remoteDevice, ioSample);
+
+						handler.GetInvocationList().AsParallel().ForAll((action) =>
 						{
-							listener.ioSampleReceived(remoteDevice, ioSample);
-						}
-					});
-					//ScheduledExecutorService executor = Executors.newScheduledThreadPool(Math.Min(MAXIMUM_PARALLEL_LISTENER_THREADS, 
-					//ioSampleReceiveListeners.Count));
-					var tasks = new ConcurrentBag<Task>();
-					foreach (IIOSampleReceiveListener listener in ioSampleReceiveListeners)
-					{
-						tasks.Add(Task.Factory.StartNew((state) =>
-						{
-							runTask((IIOSampleReceiveListener)state);
-						}, listener));
-						//executor.execute(new Runnable() {
-						//	/*
-						//	 * (non-Javadoc)
-						//	 * @see java.lang.Runnable#run()
-						//	 */
-						//	//@Override
-						//	public void run() {
-						//		// Synchronize the listener so it is not called 
-						//		// twice. That is, let the listener to finish its job.
-						//		lock (listener) {
-						//			listener.ioSampleReceived(remoteDevice, ioSample);
-						//		}
-						//	}
-						//});
+							action.DynamicInvoke(this, args);
+						});
 					}
-					Task.WaitAll(tasks.ToArray());
-					//executor.shutdown();
 				}
 			}
 			catch (Exception e)

@@ -11,7 +11,7 @@ namespace Kveer.XBeeApi.Models
 	/// This class represents a 64-bit address (also known as MAC address). 
 	/// </summary>
 	/// <remarks>The 64-bit address is a unique device address assigned during manufacturing. This address is unique to each physical device.</remarks>
-	public sealed class XBee64BitAddress
+	public sealed class XBee64BitAddress : IEquatable<XBee64BitAddress>
 	{
 		/// <summary>
 		/// 64-bit address reserved for the coordinator (value: 0000000000000000).
@@ -164,12 +164,14 @@ namespace Kveer.XBeeApi.Models
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is XBee64BitAddress))
-				return false;
+			var other = obj as XBee64BitAddress;
 
-			XBee64BitAddress addr = (XBee64BitAddress)obj;
+			return other != null && Equals(other);
+		}
 
-			return Enumerable.SequenceEqual(addr.Value, Value);
+		public bool Equals(XBee64BitAddress other)
+		{
+			return other != null && Enumerable.SequenceEqual(other.Value, Value);
 		}
 
 		public override int GetHashCode()

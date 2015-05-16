@@ -84,10 +84,10 @@ namespace Kveer.XBeeApi
 		//@Override
 		public override void reset()/*throws TimeoutException, XBeeException */{
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			logger.InfoFormat(ToString() + "Resetting the remote module ({0})...", get64BitAddress());
+			logger.InfoFormat(ToString() + "Resetting the remote module ({0})...", Get64BitAddress());
 
 			ATCommandResponse response = null;
 			try
@@ -101,22 +101,22 @@ namespace Kveer.XBeeApi
 			catch (Kveer.XBeeApi.Exceptions.TimeoutException e)
 			{
 				// Remote 802.15.4 devices do not respond to the AT command.
-				if (localXBeeDevice.getXBeeProtocol() == XBeeProtocol.RAW_802_15_4)
+				if (localXBeeDevice.GetXBeeProtocol() == XBeeProtocol.RAW_802_15_4)
 					return;
 				else
 					throw e;
 			}
 
 			// Check if AT Command response is valid.
-			checkATCommandResponseIsValid(response);
+			CheckATCommandResponseIsValid(response);
 		}
 
 		public override string ToString()
 		{
-			String id = getNodeID();
+			String id = GetNodeID();
 			if (id == null)
 				id = "";
-			return string.Format("{0} - {1}", get64BitAddress(), getNodeID());
+			return string.Format("{0} - {1}", Get64BitAddress(), GetNodeID());
 		}
 	}
 }

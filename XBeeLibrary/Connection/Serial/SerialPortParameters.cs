@@ -12,7 +12,6 @@ namespace Kveer.XBeeApi.Connection.Serial
 	 */
 	public sealed class SerialPortParameters : IEquatable<SerialPortParameters>
 	{
-
 		// Constants.
 		private const int HASH_SEED = 23;
 
@@ -54,10 +53,8 @@ namespace Kveer.XBeeApi.Connection.Serial
 		public override bool Equals(object obj)
 		{
 			var other = obj as SerialPortParameters;
-			if (other != null)
-				return Equals(other);
-			else
-				return false;
+
+			return other != null && Equals(other);
 		}
 
 		public bool Equals(SerialPortParameters other)

@@ -94,7 +94,8 @@
     <Compile Include="Connection\DataReader.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Connection\Serial\NetSerialPort.cs" />
+    <Compile Include="Connection\IOSampleReceivedEventArgs.cs" />
+    <Compile Include="Connection\PacketReceivedEventArgs.cs" />
     <Compile Include="Exceptions\ATCommandException.cs" />
     <Compile Include="Exceptions\CommunicationException.cs" />
     <Compile Include="Exceptions\InterfaceNotOpenException.cs" />
@@ -185,7 +186,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Connection\Serial\AbstractSerialPort.cs" />
-    <Compile Include="Connection\Serial\SerialPortInfo.cs" />
     <Compile Include="Connection\Serial\SerialPortParameters.cs" />
   </ItemGroup>
   <ItemGroup>

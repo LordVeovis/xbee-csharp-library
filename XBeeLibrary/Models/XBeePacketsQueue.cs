@@ -278,31 +278,31 @@ namespace Kveer.XBeeApi.Models
 			switch (packetType)
 			{
 				case APIFrameType.RECEIVE_PACKET:
-					if (remoteXBeeDevice.get64BitAddress() != null && ((ReceivePacket)xbeePacket).get64bitSourceAddress().Equals(remoteXBeeDevice.get64BitAddress()))
+					if (remoteXBeeDevice.Get64BitAddress() != null && ((ReceivePacket)xbeePacket).get64bitSourceAddress().Equals(remoteXBeeDevice.Get64BitAddress()))
 						return true;
-					if (remoteXBeeDevice.get16BitAddress() != null && ((ReceivePacket)xbeePacket).get16bitSourceAddress().Equals(remoteXBeeDevice.get16BitAddress()))
+					if (remoteXBeeDevice.Get16BitAddress() != null && ((ReceivePacket)xbeePacket).get16bitSourceAddress().Equals(remoteXBeeDevice.Get16BitAddress()))
 						return true;
 					break;
 				case APIFrameType.REMOTE_AT_COMMAND_RESPONSE:
-					if (remoteXBeeDevice.get64BitAddress() != null && ((RemoteATCommandResponsePacket)xbeePacket).get64bitSourceAddress().Equals(remoteXBeeDevice.get64BitAddress()))
+					if (remoteXBeeDevice.Get64BitAddress() != null && ((RemoteATCommandResponsePacket)xbeePacket).get64bitSourceAddress().Equals(remoteXBeeDevice.Get64BitAddress()))
 						return true;
-					if (remoteXBeeDevice.get16BitAddress() != null && ((RemoteATCommandResponsePacket)xbeePacket).get16bitSourceAddress().Equals(remoteXBeeDevice.get16BitAddress()))
+					if (remoteXBeeDevice.Get16BitAddress() != null && ((RemoteATCommandResponsePacket)xbeePacket).get16bitSourceAddress().Equals(remoteXBeeDevice.Get16BitAddress()))
 						return true;
 					break;
 				case APIFrameType.RX_16:
-					if (((RX16Packet)xbeePacket).Get16bitSourceAddress().Equals(remoteXBeeDevice.get16BitAddress()))
+					if (((RX16Packet)xbeePacket).Get16bitSourceAddress().Equals(remoteXBeeDevice.Get16BitAddress()))
 						return true;
 					break;
 				case APIFrameType.RX_64:
-					if (((RX64Packet)xbeePacket).SourceAddress64.Equals(remoteXBeeDevice.get64BitAddress()))
+					if (((RX64Packet)xbeePacket).SourceAddress64.Equals(remoteXBeeDevice.Get64BitAddress()))
 						return true;
 					break;
 				case APIFrameType.RX_IO_16:
-					if (((RX16IOPacket)xbeePacket).get16bitSourceAddress().Equals(remoteXBeeDevice.get16BitAddress()))
+					if (((RX16IOPacket)xbeePacket).get16bitSourceAddress().Equals(remoteXBeeDevice.Get16BitAddress()))
 						return true;
 					break;
 				case APIFrameType.RX_IO_64:
-					if (((RX64IOPacket)xbeePacket).SourceAddress64.Equals(remoteXBeeDevice.get64BitAddress()))
+					if (((RX64IOPacket)xbeePacket).SourceAddress64.Equals(remoteXBeeDevice.Get64BitAddress()))
 						return true;
 					break;
 				default:

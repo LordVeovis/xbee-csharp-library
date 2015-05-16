@@ -85,7 +85,7 @@ namespace Kveer.XBeeApi
 			if (id.Length == 0)
 				throw new ArgumentException("Device identifier cannot be an empty string.");
 
-			logger.DebugFormat("{0}Discovering '{1}' device.", localDevice.toString(), id);
+			logger.DebugFormat("{0}Discovering '{1}' device.", localDevice.ToString(), id);
 
 			return nodeDiscovery.discoverDevice(id);
 		}
@@ -121,7 +121,7 @@ namespace Kveer.XBeeApi
 			if (ids.Count == 0)
 				throw new ArgumentException("List of device identifiers cannot be empty.");
 
-			logger.DebugFormat("{0}Discovering all '{1}' devices.", localDevice.toString(), ids.ToString());
+			logger.DebugFormat("{0}Discovering all '{1}' devices.", localDevice.ToString(), ids.ToString());
 
 			return nodeDiscovery.discoverDevices(ids);
 		}
@@ -261,7 +261,7 @@ namespace Kveer.XBeeApi
 			if (timeout <= 0)
 				throw new ArgumentException("Timeout must be bigger than 0.");
 
-			localDevice.setParameter("NT", ByteUtils.LongToByteArray(timeout / 100));
+			localDevice.SetParameter("NT", ByteUtils.LongToByteArray(timeout / 100));
 		}
 
 		/**
@@ -281,8 +281,8 @@ namespace Kveer.XBeeApi
 			if (options == null)
 				throw new ArgumentNullException("Options cannot be null.");
 
-			int value = DiscoveryOptions.APPEND_DD.CalculateDiscoveryValue(localDevice.getXBeeProtocol(), options);
-			localDevice.setParameter("NO", ByteUtils.IntToByteArray(value));
+			int value = DiscoveryOptions.APPEND_DD.CalculateDiscoveryValue(localDevice.GetXBeeProtocol(), options);
+			localDevice.SetParameter("NO", ByteUtils.IntToByteArray(value));
 		}
 
 		/**
@@ -334,13 +334,13 @@ namespace Kveer.XBeeApi
 			// Look in the 64-bit map.
 			foreach (RemoteXBeeDevice remote in remotesBy64BitAddr.Values)
 			{
-				if (remote.getNodeID().Equals(id))
+				if (remote.GetNodeID().Equals(id))
 					devices.Add(remote);
 			}
 			// Look in the 16-bit map.
 			foreach (RemoteXBeeDevice remote in remotesBy16BitAddr.Values)
 			{
-				if (remote.getNodeID().Equals(id))
+				if (remote.GetNodeID().Equals(id))
 					devices.Add(remote);
 			}
 			// Return the list.
@@ -376,13 +376,13 @@ namespace Kveer.XBeeApi
 			// Look in the 64-bit map.
 			foreach (RemoteXBeeDevice remote in remotesBy64BitAddr.Values)
 			{
-				if (remote.getNodeID().Equals(id))
+				if (remote.GetNodeID().Equals(id))
 					return remote;
 			}
 			// Look in the 16-bit map.
 			foreach (RemoteXBeeDevice remote in remotesBy16BitAddr.Values)
 			{
-				if (remote.getNodeID().Equals(id))
+				if (remote.GetNodeID().Equals(id))
 					return remote;
 			}
 			// The given ID is not in the network.
@@ -411,7 +411,7 @@ namespace Kveer.XBeeApi
 			if (address.Equals(XBee64BitAddress.UNKNOWN_ADDRESS))
 				throw new ArgumentNullException("64-bit address cannot be unknown.");
 
-			logger.DebugFormat("{0}Getting device '{1}' from network.", localDevice.toString(), address);
+			logger.DebugFormat("{0}Getting device '{1}' from network.", localDevice.ToString(), address);
 
 			return remotesBy64BitAddr[address];
 		}
@@ -433,16 +433,16 @@ namespace Kveer.XBeeApi
 		 * @throws OperationNotSupportedException if the protocol of the local XBee device is DigiMesh or Point-to-Multipoint.
 		 */
 		public RemoteXBeeDevice getDevice(XBee16BitAddress address)/*throws OperationNotSupportedException */{
-			if (localDevice.getXBeeProtocol() == XBeeProtocol.DIGI_MESH)
+			if (localDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_MESH)
 				throw new OperationNotSupportedException("DigiMesh protocol does not support 16-bit addressing.");
-			if (localDevice.getXBeeProtocol() == XBeeProtocol.DIGI_POINT)
+			if (localDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_POINT)
 				throw new OperationNotSupportedException("Point-to-Multipoint protocol does not support 16-bit addressing.");
 			if (address == null)
 				throw new ArgumentNullException("16-bit address cannot be null.");
 			if (address.Equals(XBee16BitAddress.UNKNOWN_ADDRESS))
 				throw new ArgumentNullException("16-bit address cannot be unknown.");
 
-			logger.DebugFormat("{0}Getting device '{1}' from network.", localDevice.toString(), address);
+			logger.DebugFormat("{0}Getting device '{1}' from network.", localDevice.ToString(), address);
 
 			// The preference order is: 
 			//    1.- Look in the 64-bit map 
@@ -502,10 +502,10 @@ namespace Kveer.XBeeApi
 			if (remoteDevice == null)
 				throw new ArgumentNullException("Remote device cannot be null.");
 
-			logger.DebugFormat("{0}Adding device '{1}' to network.", localDevice.toString(), remoteDevice.ToString());
+			logger.DebugFormat("{0}Adding device '{1}' to network.", localDevice.ToString(), remoteDevice.ToString());
 
 			RemoteXBeeDevice devInNetwork = null;
-			XBee64BitAddress addr64 = remoteDevice.get64BitAddress();
+			XBee64BitAddress addr64 = remoteDevice.Get64BitAddress();
 			XBee16BitAddress addr16 = get16BitAddress(remoteDevice);
 
 			// Check if the device has 64-bit address.
@@ -516,8 +516,8 @@ namespace Kveer.XBeeApi
 				if (devInNetwork != null)
 				{
 					// The device exists in the 64-bit map, so update the reference and return it.
-					logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.toString(), devInNetwork.ToString());
-					devInNetwork.updateDeviceDataFrom(remoteDevice);
+					logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.ToString(), devInNetwork.ToString());
+					devInNetwork.UpdateDeviceDataFrom(remoteDevice);
 					return devInNetwork;
 				}
 				else
@@ -530,9 +530,9 @@ namespace Kveer.XBeeApi
 						if (devInNetwork != null)
 						{
 							// The device exists in the 16-bit map, so remove it and add it to the 64-bit map.
-							logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.toString(), devInNetwork.ToString());
+							logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.ToString(), devInNetwork.ToString());
 							remotesBy16BitAddr.TryRemove(addr16, out devInNetwork);
-							devInNetwork.updateDeviceDataFrom(remoteDevice);
+							devInNetwork.UpdateDeviceDataFrom(remoteDevice);
 							remotesBy64BitAddr.AddOrUpdate(addr64, devInNetwork, (k, v) => devInNetwork);
 							return devInNetwork;
 						}
@@ -570,8 +570,8 @@ namespace Kveer.XBeeApi
 				if (devInNetwork != null)
 				{
 					// The device exists in the 64-bit map, so update the reference and return it.
-					logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.toString(), devInNetwork.ToString());
-					devInNetwork.updateDeviceDataFrom(remoteDevice);
+					logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.ToString(), devInNetwork.ToString());
+					devInNetwork.UpdateDeviceDataFrom(remoteDevice);
 					return devInNetwork;
 				}
 				else
@@ -581,8 +581,8 @@ namespace Kveer.XBeeApi
 					if (devInNetwork != null)
 					{
 						// The device exists in the 16-bit map, so update the reference and return it.
-						logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.toString(), devInNetwork.ToString());
-						devInNetwork.updateDeviceDataFrom(remoteDevice);
+						logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.ToString(), devInNetwork.ToString());
+						devInNetwork.UpdateDeviceDataFrom(remoteDevice);
 						return devInNetwork;
 					}
 					else
@@ -596,7 +596,7 @@ namespace Kveer.XBeeApi
 
 			// If the device does not contain a valid address, return null.
 			logger.ErrorFormat("{0}Remote device '{1}' cannot be added: 64-bit and 16-bit addresses must be specified.",
-					localDevice.toString(), remoteDevice.ToString());
+					localDevice.ToString(), remoteDevice.ToString());
 			return null;
 		}
 
@@ -635,7 +635,7 @@ namespace Kveer.XBeeApi
 			if (list.Count == 0)
 				return addedList;
 
-			logger.DebugFormat("{0}Adding '{1}' devices to network.", localDevice.toString(), list.Count);
+			logger.DebugFormat("{0}Adding '{1}' devices to network.", localDevice.ToString(), list.Count);
 
 			for (int i = 0; i < list.Count; i++)
 			{
@@ -676,7 +676,7 @@ namespace Kveer.XBeeApi
 			RemoteXBeeDevice devInNetwork = null;
 
 			// Look in the 64-bit map.
-			XBee64BitAddress addr64 = remoteDevice.get64BitAddress();
+			XBee64BitAddress addr64 = remoteDevice.Get64BitAddress();
 			if (addr64 != null && !addr64.Equals(XBee64BitAddress.UNKNOWN_ADDRESS))
 			{
 				if (remotesBy64BitAddr.TryRemove(addr64, out devInNetwork))
@@ -701,7 +701,7 @@ namespace Kveer.XBeeApi
 					if (a != null && a.Equals(addr16))
 					{
 						RemoteXBeeDevice r;
-						remotesBy64BitAddr.TryRemove(d.get64BitAddress(), out r);
+						remotesBy64BitAddr.TryRemove(d.Get64BitAddress(), out r);
 						return;
 					}
 				}
@@ -716,7 +716,7 @@ namespace Kveer.XBeeApi
 			if ((addr64 == null || addr64.Equals(XBee64BitAddress.UNKNOWN_ADDRESS))
 					&& (addr16 == null || addr16.Equals(XBee16BitAddress.UNKNOWN_ADDRESS)))
 				logger.ErrorFormat("{0}Remote device '{1}' cannot be removed: 64-bit and 16-bit addresses must be specified.",
-						localDevice.toString(), remoteDevice.ToString());
+						localDevice.ToString(), remoteDevice.ToString());
 		}
 
 		/**
@@ -733,7 +733,7 @@ namespace Kveer.XBeeApi
 		 */
 		public void clearDeviceList()
 		{
-			logger.DebugFormat("{0}Clearing the network.", localDevice.toString());
+			logger.DebugFormat("{0}Clearing the network.", localDevice.ToString());
 			remotesBy64BitAddr.Clear();
 			remotesBy64BitAddr.Clear();
 		}
@@ -763,17 +763,17 @@ namespace Kveer.XBeeApi
 
 			XBee16BitAddress address = null;
 
-			switch (device.getXBeeProtocol())
+			switch (device.GetXBeeProtocol())
 			{
 				case XBeeProtocol.RAW_802_15_4:
-					address = ((RemoteRaw802Device)device).get16BitAddress();
+					address = ((RemoteRaw802Device)device).Get16BitAddress();
 					break;
 				case XBeeProtocol.ZIGBEE:
-					address = ((RemoteZigBeeDevice)device).get16BitAddress();
+					address = ((RemoteZigBeeDevice)device).Get16BitAddress();
 					break;
 				default:
 					// TODO should we allow this operation for general remote devices?
-					address = device.get16BitAddress();
+					address = device.Get16BitAddress();
 					break;
 			}
 
@@ -782,7 +782,7 @@ namespace Kveer.XBeeApi
 
 		public override string ToString()
 		{
-			return string.Format("{0} [{1}] @{2}", GetType().Name, localDevice.toString(),
+			return string.Format("{0} [{1}] @{2}", GetType().Name, localDevice.ToString(),
 					GetHashCode().ToString("x"));
 		}
 	}

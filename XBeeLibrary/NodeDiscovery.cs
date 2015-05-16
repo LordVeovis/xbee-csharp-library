@@ -95,7 +95,7 @@ namespace Kveer.XBeeApi
 			if (!xbeeDevice.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			logger.DebugFormat("{0}ND for {1} device.", xbeeDevice.toString(), id);
+			logger.DebugFormat("{0}ND for {1} device.", xbeeDevice.ToString(), id);
 
 			running = true;
 			discovering = true;
@@ -138,7 +138,7 @@ namespace Kveer.XBeeApi
 			if (!xbeeDevice.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			logger.DebugFormat("{0}ND for all {1} devices.", xbeeDevice.toString(), ids.ToString());
+			logger.DebugFormat("{0}ND for all {1} devices.", xbeeDevice.ToString(), ids.ToString());
 
 			running = true;
 			discovering = true;
@@ -153,7 +153,7 @@ namespace Kveer.XBeeApi
 
 			foreach (RemoteXBeeDevice d in deviceList)
 			{
-				String nID = d.getNodeID();
+				String nID = d.GetNodeID();
 				if (nID == null)
 					continue;
 				foreach (String id in ids)
@@ -247,7 +247,7 @@ namespace Kveer.XBeeApi
 		private void performNodeDiscovery(IList<IDiscoveryListener> listeners, String id)/*throws XBeeException */{
 			try
 			{
-				discoverDevicesAPI(listeners, id);
+				DiscoverDevicesAPI(listeners, id);
 
 				// Notify that the discovery finished without errors.
 				notifyDiscoveryFinished(listeners, null);
@@ -277,22 +277,22 @@ namespace Kveer.XBeeApi
 					return;
 				RemoteXBeeDevice rdevice = null;
 
-				byte[] commandValue = _node.getRemoteDeviceData((XBeeAPIPacket)receivedPacket);
+				byte[] commandValue = _node.GetRemoteDeviceData((XBeeAPIPacket)receivedPacket);
 
-				rdevice = await _node.parseDiscoveryAPIData(commandValue, _node.xbeeDevice);
+				rdevice = await _node.ParseDiscoveryAPIData(commandValue, _node.xbeeDevice);
 
 				// If a device with a specific id is being search and it is 
 				// already found, return it.
 				if (_id != null)
 				{
-					if (rdevice != null && _id.Equals(rdevice.getNodeID()))
+					if (rdevice != null && _id.Equals(rdevice.GetNodeID()))
 					{
 						lock (_node.deviceList)
 						{
 							_node.deviceList.Add(rdevice);
 						}
 						// If the local device is 802.15.4 wait until the 'end' command is received.
-						if (_node.xbeeDevice.getXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
+						if (_node.xbeeDevice.GetXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
 							_node.discovering = false;
 					}
 				}
@@ -310,15 +310,15 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @throws XBeeException if there is an error sending the discovery command.
 		 */
-		private void discoverDevicesAPI(IList<IDiscoveryListener> listeners, String id)/*throws XBeeException */{
+		private void DiscoverDevicesAPI(IList<IDiscoveryListener> listeners, string id)/*throws XBeeException */{
 			if (deviceList == null)
 				deviceList = new List<RemoteXBeeDevice>();
 			deviceList.Clear();
 
 			IPacketReceiveListener packetReceiveListener = new CustomPacketReceiveListener(this, listeners, id);
 
-			logger.DebugFormat("{0}Start listening.", xbeeDevice.toString());
-			xbeeDevice.addPacketListener(packetReceiveListener);
+			logger.DebugFormat("{0}Start listening.", xbeeDevice.ToString());
+			xbeeDevice.AddPacketListener(packetReceiveListener);
 
 			try
 			{
@@ -327,12 +327,12 @@ namespace Kveer.XBeeApi
 
 				// In 802.15.4 devices, the discovery finishes when the 'end' command 
 				// is received, so it's not necessary to calculate the timeout.
-				if (xbeeDevice.getXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
-					deadLine += calculateTimeout(listeners);
+				if (xbeeDevice.GetXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
+					deadLine += CalculateTimeout(listeners);
 
 				sendNodeDiscoverCommand(id);
 
-				if (xbeeDevice.getXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
+				if (xbeeDevice.GetXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
 				{
 					// Wait for scan timeout.
 					while (discovering)
@@ -365,8 +365,8 @@ namespace Kveer.XBeeApi
 			}
 			finally
 			{
-				xbeeDevice.removePacketListener(packetReceiveListener);
-				logger.DebugFormat("{0}Stop listening.", xbeeDevice.toString());
+				xbeeDevice.RemovePacketListener(packetReceiveListener);
+				logger.DebugFormat("{0}Stop listening.", xbeeDevice.ToString());
 			}
 		}
 
@@ -378,18 +378,18 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @return Maximum network discovery timeout.
 		 */
-		private long calculateTimeout(IList<IDiscoveryListener> listeners)
+		private long CalculateTimeout(IList<IDiscoveryListener> listeners)
 		{
 			long timeout = -1;
 
 			// Read the maximum discovery timeout (N?).
 			try
 			{
-				timeout = ByteUtils.ByteArrayToLong(xbeeDevice.getParameter("N?"));
+				timeout = ByteUtils.ByteArrayToLong(xbeeDevice.GetParameter("N?"));
 			}
 			catch (XBeeException )
 			{
-				logger.DebugFormat("{0}Could not read the N? value.", xbeeDevice.toString());
+				logger.DebugFormat("{0}Could not read the N? value.", xbeeDevice.ToString());
 			}
 
 			// If N? does not exist, read the NT parameter.
@@ -398,7 +398,7 @@ namespace Kveer.XBeeApi
 				// Read the device timeout (NT).
 				try
 				{
-					timeout = ByteUtils.ByteArrayToLong(xbeeDevice.getParameter("NT")) * 100;
+					timeout = ByteUtils.ByteArrayToLong(xbeeDevice.GetParameter("NT")) * 100;
 				}
 				catch (XBeeException )
 				{
@@ -411,28 +411,28 @@ namespace Kveer.XBeeApi
 				// In DigiMesh/DigiPoint the network discovery timeout is NT + the 
 				// network propagation time. It means that if the user sends an AT 
 				// command just after NT ms, s/he will receive a timeout exception. 
-				if (xbeeDevice.getXBeeProtocol() == XBeeProtocol.DIGI_MESH)
+				if (xbeeDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_MESH)
 				{
 					timeout += 3000;
 				}
-				else if (xbeeDevice.getXBeeProtocol() == XBeeProtocol.DIGI_POINT)
+				else if (xbeeDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_POINT)
 				{
 					timeout += 8000;
 				}
 			}
 
-			if (xbeeDevice.getXBeeProtocol() == XBeeProtocol.DIGI_MESH)
+			if (xbeeDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_MESH)
 			{
 				try
 				{
 					// If the module is 'Sleep support', wait another discovery cycle.
-					bool isSleepSupport = ByteUtils.ByteArrayToInt(xbeeDevice.getParameter("SM")) == 7;
+					bool isSleepSupport = ByteUtils.ByteArrayToInt(xbeeDevice.GetParameter("SM")) == 7;
 					if (isSleepSupport)
 						timeout += timeout + (timeout / 10L);
 				}
 				catch (XBeeException )
 				{
-					logger.DebugFormat("{0}Could not determine if the module is 'Sleep Support'.", xbeeDevice.toString());
+					logger.DebugFormat("{0}Could not determine if the module is 'Sleep Support'.", xbeeDevice.ToString());
 				}
 			}
 
@@ -446,11 +446,11 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @return A byte array with the data to be parsed.
 		 */
-		private byte[] getRemoteDeviceData(XBeeAPIPacket packet)
+		private byte[] GetRemoteDeviceData(XBeeAPIPacket packet)
 		{
 			byte[] data = null;
 
-			logger.TraceFormat("{0}Received packet: {1}.", xbeeDevice.toString(), packet);
+			logger.TraceFormat("{0}Received packet: {1}.", xbeeDevice.ToString(), packet);
 
 			APIFrameType frameType = packet.FrameType;
 			switch (frameType)
@@ -470,7 +470,7 @@ namespace Kveer.XBeeApi
 						return null;
 					}
 
-					logger.DebugFormat("{0}Received self response: {1}.", xbeeDevice.toString(), packet);
+					logger.DebugFormat("{0}Received self response: {1}.", xbeeDevice.ToString(), packet);
 
 					data = atResponse.CommandValue;
 					break;
@@ -490,7 +490,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @return Discovered XBee device.
 		 */
-		private async Task<RemoteXBeeDevice> parseDiscoveryAPIData(byte[] data, XBeeDevice localDevice)
+		private async Task<RemoteXBeeDevice> ParseDiscoveryAPIData(byte[] data, XBeeDevice localDevice)
 		{
 			if (data == null)
 				return null;
@@ -513,7 +513,7 @@ namespace Kveer.XBeeApi
 				addr64 = new XBee64BitAddress(await ByteUtils.ReadBytes(8, inputStream));
 
 
-				switch (localDevice.getXBeeProtocol())
+				switch (localDevice.GetXBeeProtocol())
 				{
 					case XBeeProtocol.ZIGBEE:
 					case XBeeProtocol.DIGI_MESH:
@@ -537,7 +537,7 @@ namespace Kveer.XBeeApi
 						manufacturerID = await ByteUtils.ReadBytes(2, inputStream);
 
 						logger.DebugFormat("{0}Discovered {1} device: 16-bit[{2}], 64-bit[{3}], id[{4}], parent[{5}], profile[{6}], manufacturer[{7}].",
-								xbeeDevice.toString(), localDevice.getXBeeProtocol().GetDescription(), addr16,
+								xbeeDevice.ToString(), localDevice.GetXBeeProtocol().GetDescription(), addr16,
 								addr64, id, parentAddress, HexUtils.ByteArrayToHexString(profileID),
 								HexUtils.ByteArrayToHexString(manufacturerID));
 
@@ -549,18 +549,18 @@ namespace Kveer.XBeeApi
 						id = ByteUtils.ReadString(inputStream);
 
 						logger.DebugFormat("{0}Discovered {1} device: 16-bit[{2}], 64-bit[{3}], id[{4}], rssi[{5}].",
-								xbeeDevice.toString(), localDevice.getXBeeProtocol().GetDescription(), addr16, addr64, id, signalStrength);
+								xbeeDevice.ToString(), localDevice.GetXBeeProtocol().GetDescription(), addr16, addr64, id, signalStrength);
 
 						break;
 					case XBeeProtocol.UNKNOWN:
 					default:
 						logger.DebugFormat("{0}Discovered {1} device: 16-bit[{2}], 64-bit[{3}].",
-								xbeeDevice.toString(), localDevice.getXBeeProtocol().GetDescription(), addr16, addr64);
+								xbeeDevice.ToString(), localDevice.GetXBeeProtocol().GetDescription(), addr16, addr64);
 						break;
 				}
 
 				// Create device and fill with parameters.
-				switch (localDevice.getXBeeProtocol())
+				switch (localDevice.GetXBeeProtocol())
 				{
 					case XBeeProtocol.ZIGBEE:
 						device = new RemoteZigBeeDevice(localDevice, addr64, addr16, id/*, role*/);
@@ -642,7 +642,7 @@ namespace Kveer.XBeeApi
 		 */
 		private void notifyDiscoveryError(IList<IDiscoveryListener> listeners, String error)
 		{
-			logger.ErrorFormat("{0}Error discovering devices: {1}", xbeeDevice.toString(), error);
+			logger.ErrorFormat("{0}Error discovering devices: {1}", xbeeDevice.ToString(), error);
 
 			if (listeners == null)
 				return;
@@ -662,9 +662,9 @@ namespace Kveer.XBeeApi
 		private void notifyDiscoveryFinished(IList<IDiscoveryListener> listeners, String error)
 		{
 			if (error != null && error.Length > 0)
-				logger.ErrorFormat("{0}Finished discovery: {1}", xbeeDevice.toString(), error);
+				logger.ErrorFormat("{0}Finished discovery: {1}", xbeeDevice.ToString(), error);
 			else
-				logger.DebugFormat("{0}Finished discovery.", xbeeDevice.toString());
+				logger.DebugFormat("{0}Finished discovery.", xbeeDevice.ToString());
 
 			if (listeners == null)
 				return;
@@ -680,7 +680,7 @@ namespace Kveer.XBeeApi
 		//@Override
 		public override string ToString()
 		{
-			return GetType().Name + " [" + xbeeDevice.toString() + "] @" +
+			return GetType().Name + " [" + xbeeDevice.ToString() + "] @" +
 					GetHashCode().ToString("x");
 		}
 	}

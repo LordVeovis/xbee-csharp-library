@@ -160,11 +160,11 @@ namespace Kveer.XBeeApi
 			logger.Info(ToString() + "Opening the connection interface...");
 
 			// First, verify that the connection is not already open.
-			if (connectionInterface.IsOpen)
+			if (connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceAlreadyOpenException();
 
 			// Connect the interface.
-			connectionInterface.Open();
+			connectionInterface.SerialPort.Open();
 
 			logger.Info(ToString() + "Connection interface open.");
 
@@ -180,7 +180,7 @@ namespace Kveer.XBeeApi
 			{
 				Thread.Sleep(10);
 			}
-			catch (ThreadInterruptedException e) { }
+			catch (ThreadInterruptedException) { }
 
 			// Determine the operating mode of the XBee device if it is unknown.
 			if (operatingMode == OperatingMode.UNKNOWN)
@@ -213,7 +213,7 @@ namespace Kveer.XBeeApi
 			if (dataReader != null && dataReader.IsRunning)
 				dataReader.StopReader();
 			// Close interface.
-			connectionInterface.Close();
+			connectionInterface.SerialPort.Close();
 			logger.Info(ToString() + "Connection interface closed.");
 		}
 
@@ -231,7 +231,7 @@ namespace Kveer.XBeeApi
 			get
 			{
 				if (connectionInterface != null)
-					return connectionInterface.IsOpen;
+					return connectionInterface.SerialPort.IsOpen;
 				return false;
 			}
 		}
@@ -312,11 +312,11 @@ namespace Kveer.XBeeApi
 						operatingMode = OperatingMode.API_ESCAPE;
 						dataReader.SetXBeeReaderMode(operatingMode);
 					}
-					logger.DebugFormat(toString() + "Using {0}.", operatingMode.GetName());
+					logger.DebugFormat(ToString() + "Using {0}.", operatingMode.GetName());
 					return operatingMode;
 				}
 			}
-			catch (Kveer.XBeeApi.Exceptions.TimeoutException )
+			catch (Kveer.XBeeApi.Exceptions.TimeoutException)
 			{
 				// Check if device is in AT operating mode.
 				operatingMode = OperatingMode.AT;
@@ -369,7 +369,7 @@ namespace Kveer.XBeeApi
 		 * @throws TimeoutException if the configured time for this device expires.
 		 */
 		private bool EnterATCommandMode()/*throws InvalidOperatingModeException, TimeoutException */{
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 			if (operatingMode != OperatingMode.AT)
 				throw new InvalidOperatingModeException("Invalid mode. Command mode can be only accessed while in AT mode.");
@@ -379,15 +379,16 @@ namespace Kveer.XBeeApi
 			try
 			{
 				// Send the command mode sequence.
-				connectionInterface.WriteData(Encoding.UTF8.GetBytes(COMMAND_MODE_CHAR));
-				connectionInterface.WriteData(Encoding.UTF8.GetBytes(COMMAND_MODE_CHAR));
-				connectionInterface.WriteData(Encoding.UTF8.GetBytes(COMMAND_MODE_CHAR));
+				var rawCmdModeChar = Encoding.UTF8.GetBytes(COMMAND_MODE_CHAR);
+				connectionInterface.SerialPort.Write(rawCmdModeChar, 0, rawCmdModeChar.Length);
+				connectionInterface.SerialPort.Write(rawCmdModeChar, 0, rawCmdModeChar.Length);
+				connectionInterface.SerialPort.Write(rawCmdModeChar, 0, rawCmdModeChar.Length);
 
 				// Wait some time to let the module generate a response.
 				Thread.Sleep(TIMEOUT_ENTER_COMMAND_MODE);
 
 				// Read data from the device (it should answer with 'OK\r').
-				int readBytes = connectionInterface.ReadData(readData);
+				int readBytes = connectionInterface.SerialPort.Read(readData, 0, readData.Length);
 				if (readBytes < COMMAND_MODE_OK.Length)
 					throw new Kveer.XBeeApi.Exceptions.TimeoutException();
 
@@ -415,9 +416,9 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.AbstractXBeeDevice#addPacketListener(com.digi.xbee.api.listeners.IPacketReceiveListener)
 		 */
 		//@Override
-		public new void addPacketListener(IPacketReceiveListener listener)
+		public new void AddPacketListener(IPacketReceiveListener listener)
 		{
-			base.addPacketListener(listener);
+			base.AddPacketListener(listener);
 		}
 
 		/*
@@ -425,9 +426,9 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.AbstractXBeeDevice#removePacketListener(com.digi.xbee.api.listeners.IPacketReceiveListener)
 		 */
 		//@Override
-		public new void removePacketListener(IPacketReceiveListener listener)
+		public new void RemovePacketListener(IPacketReceiveListener listener)
 		{
-			base.removePacketListener(listener);
+			base.RemovePacketListener(listener);
 		}
 
 		/*
@@ -435,9 +436,9 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.AbstractXBeeDevice#addDataListener(com.digi.xbee.api.listeners.IDataReceiveListener)
 		 */
 		//@Override
-		public new void addDataListener(IDataReceiveListener listener)
+		public new void AddDataListener(IDataReceiveListener listener)
 		{
-			base.addDataListener(listener);
+			base.AddDataListener(listener);
 		}
 
 		/*
@@ -445,29 +446,19 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.AbstractXBeeDevice#removeDataListener(com.digi.xbee.api.listeners.IDataReceiveListener)
 		 */
 		//@Override
-		public new void removeDataListener(IDataReceiveListener listener)
+		public new void RemoveDataListener(IDataReceiveListener listener)
 		{
-			base.removeDataListener(listener);
+			base.RemoveDataListener(listener);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.digi.xbee.api.AbstractXBeeDevice#addIOSampleListener(com.digi.xbee.api.listeners.IIOSampleReceiveListener)
-		 */
-		//@Override
-		public new void addIOSampleListener(IIOSampleReceiveListener listener)
+		public new void AddIOSampleListener(EventHandler<IOSampleReceivedEventArgs> action)
 		{
-			base.addIOSampleListener(listener);
+			base.AddIOSampleListener(action);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.digi.xbee.api.AbstractXBeeDevice#removeIOSampleListener(com.digi.xbee.api.listeners.IIOSampleReceiveListener)
-		 */
-		//@Override
-		public new void removeIOSampleListener(IIOSampleReceiveListener listener)
+		public new void RemoveIOSampleListener(EventHandler<IOSampleReceivedEventArgs> action)
 		{
-			base.removeIOSampleListener(listener);
+			base.RemoveIOSampleListener(action);
 		}
 
 		/*
@@ -475,9 +466,9 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.AbstractXBeeDevice#addModemStatusListener(com.digi.xbee.api.listeners.IModemStatusReceiveListener)
 		 */
 		//@Override
-		public new void addModemStatusListener(IModemStatusReceiveListener listener)
+		public new void AddModemStatusListener(IModemStatusReceiveListener listener)
 		{
-			base.addModemStatusListener(listener);
+			base.AddModemStatusListener(listener);
 		}
 
 		/*
@@ -520,22 +511,22 @@ namespace Kveer.XBeeApi
 				throw new ArgumentNullException("Data cannot be null");
 
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 			// Check if device is remote.
 			if (IsRemote)
 				throw new OperationNotSupportedException("Cannot send data to a remote device from a remote device.");
 
-			logger.DebugFormat(toString() + "Sending data asynchronously to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
+			logger.DebugFormat(ToString() + "Sending data asynchronously to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
 
 			XBeePacket xbeePacket;
-			switch (getXBeeProtocol())
+			switch (GetXBeeProtocol())
 			{
 				case XBeeProtocol.RAW_802_15_4:
-					xbeePacket = new TX64Packet(getNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
+					xbeePacket = new TX64Packet(GetNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
 					break;
 				default:
-					xbeePacket = new TransmitPacket(getNextFrameID(), address, XBee16BitAddress.UNKNOWN_ADDRESS, 0, (byte)XBeeTransmitOptions.NONE, data);
+					xbeePacket = new TransmitPacket(GetNextFrameID(), address, XBee16BitAddress.UNKNOWN_ADDRESS, 0, (byte)XBeeTransmitOptions.NONE, data);
 					break;
 			}
 			SendAndCheckXBeePacket(xbeePacket, true);
@@ -583,16 +574,16 @@ namespace Kveer.XBeeApi
 				throw new ArgumentNullException("Data cannot be null");
 
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 			// Check if device is remote.
 			if (IsRemote)
 				throw new OperationNotSupportedException("Cannot send data to a remote device from a remote device.");
 
-			logger.DebugFormat(toString() + "Sending data asynchronously to {0}[{1}] >> {2}.",
+			logger.DebugFormat(ToString() + "Sending data asynchronously to {0}[{1}] >> {2}.",
 					address64Bit, address16bit, HexUtils.PrettyHexString(data));
 
-			XBeePacket xbeePacket = new TransmitPacket(getNextFrameID(), address64Bit, address16bit, 0, (byte)XBeeTransmitOptions.NONE, data);
+			XBeePacket xbeePacket = new TransmitPacket(GetNextFrameID(), address64Bit, address16bit, 0, (byte)XBeeTransmitOptions.NONE, data);
 			SendAndCheckXBeePacket(xbeePacket, true);
 		}
 
@@ -617,7 +608,7 @@ namespace Kveer.XBeeApi
 		public void SendDataAsync(RemoteXBeeDevice xbeeDevice, byte[] data)/*throws XBeeException */{
 			if (xbeeDevice == null)
 				throw new ArgumentNullException("Remote XBee device cannot be null");
-			SendDataAsync(xbeeDevice.get64BitAddress(), data);
+			SendDataAsync(xbeeDevice.Get64BitAddress(), data);
 		}
 
 		/**
@@ -659,22 +650,22 @@ namespace Kveer.XBeeApi
 				throw new ArgumentNullException("Data cannot be null");
 
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 			// Check if device is remote.
 			if (IsRemote)
 				throw new OperationNotSupportedException("Cannot send data to a remote device from a remote device.");
 
-			logger.DebugFormat(toString() + "Sending data to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
+			logger.DebugFormat(ToString() + "Sending data to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
 
 			XBeePacket xbeePacket;
-			switch (getXBeeProtocol())
+			switch (GetXBeeProtocol())
 			{
 				case XBeeProtocol.RAW_802_15_4:
-					xbeePacket = new TX64Packet(getNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
+					xbeePacket = new TX64Packet(GetNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
 					break;
 				default:
-					xbeePacket = new TransmitPacket(getNextFrameID(), address, XBee16BitAddress.UNKNOWN_ADDRESS, 0, (byte)XBeeTransmitOptions.NONE, data);
+					xbeePacket = new TransmitPacket(GetNextFrameID(), address, XBee16BitAddress.UNKNOWN_ADDRESS, 0, (byte)XBeeTransmitOptions.NONE, data);
 					break;
 			}
 			SendAndCheckXBeePacket(xbeePacket, false);
@@ -729,16 +720,16 @@ namespace Kveer.XBeeApi
 				throw new ArgumentNullException("Data cannot be null");
 
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 			// Check if device is remote.
 			if (IsRemote)
 				throw new OperationNotSupportedException("Cannot send data to a remote device from a remote device.");
 
-			logger.DebugFormat(toString() + "Sending data to {0}[{1}] >> {2}.",
+			logger.DebugFormat(ToString() + "Sending data to {0}[{1}] >> {2}.",
 					address64Bit, address16bit, HexUtils.PrettyHexString(data));
 
-			XBeePacket xbeePacket = new TransmitPacket(getNextFrameID(), address64Bit, address16bit, 0, (byte)XBeeTransmitOptions.NONE, data);
+			XBeePacket xbeePacket = new TransmitPacket(GetNextFrameID(), address64Bit, address16bit, 0, (byte)XBeeTransmitOptions.NONE, data);
 			SendAndCheckXBeePacket(xbeePacket, false);
 		}
 
@@ -773,29 +764,29 @@ namespace Kveer.XBeeApi
 			if (xbeeDevice == null)
 				throw new ArgumentNullException("Remote XBee device cannot be null");
 
-			switch (getXBeeProtocol())
+			switch (GetXBeeProtocol())
 			{
 				case XBeeProtocol.ZIGBEE:
 				case XBeeProtocol.DIGI_POINT:
-					if (xbeeDevice.get64BitAddress() != null && xbeeDevice.get16BitAddress() != null)
-						SendData(xbeeDevice.get64BitAddress(), xbeeDevice.get16BitAddress(), data);
+					if (xbeeDevice.Get64BitAddress() != null && xbeeDevice.Get16BitAddress() != null)
+						SendData(xbeeDevice.Get64BitAddress(), xbeeDevice.Get16BitAddress(), data);
 					else
-						SendData(xbeeDevice.get64BitAddress(), data);
+						SendData(xbeeDevice.Get64BitAddress(), data);
 					break;
 				case XBeeProtocol.RAW_802_15_4:
 					if (this is Raw802Device)
 					{
-						if (xbeeDevice.get64BitAddress() != null)
-							((Raw802Device)this).SendData(xbeeDevice.get64BitAddress(), data);
+						if (xbeeDevice.Get64BitAddress() != null)
+							((Raw802Device)this).SendData(xbeeDevice.Get64BitAddress(), data);
 						else
-							((Raw802Device)this).SendData(xbeeDevice.get16BitAddress(), data);
+							((Raw802Device)this).SendData(xbeeDevice.Get16BitAddress(), data);
 					}
 					else
-						SendData(xbeeDevice.get64BitAddress(), data);
+						SendData(xbeeDevice.Get64BitAddress(), data);
 					break;
 				case XBeeProtocol.DIGI_MESH:
 				default:
-					SendData(xbeeDevice.get64BitAddress(), data);
+					SendData(xbeeDevice.Get64BitAddress(), data);
 					break;
 			}
 		}
@@ -937,14 +928,14 @@ namespace Kveer.XBeeApi
 		private bool waitForModemResetStatusPacket()
 		{
 			modemStatusReceived = false;
-			addModemStatusListener(resetStatusListener);
+			AddModemStatusListener(resetStatusListener);
 			lock (resetLock)
 			{
 				try
 				{
 					Monitor.Wait(resetLock, TIMEOUT_RESET);
 				}
-				catch (ThreadInterruptedException ) { }
+				catch (ThreadInterruptedException) { }
 			}
 			removeModemStatusListener(resetStatusListener);
 			return modemStatusReceived;
@@ -994,10 +985,10 @@ namespace Kveer.XBeeApi
 		//@Override
 		public override void reset()/*throws TimeoutException, XBeeException */{
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
-			logger.Info(toString() + "Resetting the local module...");
+			logger.Info(ToString() + "Resetting the local module...");
 
 			ATCommandResponse response = null;
 			try
@@ -1010,13 +1001,13 @@ namespace Kveer.XBeeApi
 			}
 
 			// Check if AT Command response is valid.
-			checkATCommandResponseIsValid(response);
+			CheckATCommandResponseIsValid(response);
 
 			// Wait for a Modem Status packet.
 			if (!waitForModemResetStatusPacket())
 				throw new Kveer.XBeeApi.Exceptions.TimeoutException("Timeout waiting for the Modem Status packet.");
 
-			logger.Info(toString() + "Module reset successfully.");
+			logger.Info(ToString() + "Module reset successfully.");
 		}
 
 		/**
@@ -1048,7 +1039,7 @@ namespace Kveer.XBeeApi
 		 */
 		public XBeeMessage readData()
 		{
-			return readDataPacket(null, TIMEOUT_READ_PACKET);
+			return ReadDataPacket(null, TIMEOUT_READ_PACKET);
 		}
 
 		/**
@@ -1080,7 +1071,7 @@ namespace Kveer.XBeeApi
 			if (timeout < 0)
 				throw new ArgumentException("Read timeout must be 0 or greater.");
 
-			return readDataPacket(null, timeout);
+			return ReadDataPacket(null, timeout);
 		}
 
 		/**
@@ -1119,7 +1110,7 @@ namespace Kveer.XBeeApi
 			if (remoteXBeeDevice == null)
 				throw new ArgumentNullException("Remote XBee device cannot be null.");
 
-			return readDataPacket(remoteXBeeDevice, TIMEOUT_READ_PACKET);
+			return ReadDataPacket(remoteXBeeDevice, TIMEOUT_READ_PACKET);
 		}
 
 		/**
@@ -1159,7 +1150,7 @@ namespace Kveer.XBeeApi
 			if (timeout < 0)
 				throw new ArgumentException("Read timeout must be 0 or greater.");
 
-			return readDataPacket(remoteXBeeDevice, timeout);
+			return ReadDataPacket(remoteXBeeDevice, timeout);
 		}
 
 		/**
@@ -1192,10 +1183,10 @@ namespace Kveer.XBeeApi
 		 * @see RemoteXBeeDevice
 		 * @see com.digi.xbee.api.models.XBeeMessage
 		 */
-		private XBeeMessage readDataPacket(RemoteXBeeDevice remoteXBeeDevice, int timeout)
+		private XBeeMessage ReadDataPacket(RemoteXBeeDevice remoteXBeeDevice, int timeout)
 		{
 			// Check connection.
-			if (!connectionInterface.IsOpen)
+			if (!connectionInterface.SerialPort.IsOpen)
 				throw new InterfaceNotOpenException();
 
 			XBeePacketsQueue xbeePacketsQueue = dataReader.XBeePacketsQueue;
@@ -1256,16 +1247,11 @@ namespace Kveer.XBeeApi
 			return new XBeeMessage(remoteDevice, data, ((XBeeAPIPacket)xbeePacket).IsBroadcast);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.digi.xbee.api.AbstractXBeeDevice#toString()
-		 */
-		//@Override
-		public String toString()
+		public override string ToString()
 		{
-			String id = getNodeID() == null ? "" : getNodeID();
-			String addr64 = get64BitAddress() == null || get64BitAddress() == XBee64BitAddress.UNKNOWN_ADDRESS ?
-					"" : get64BitAddress().ToString();
+			string id = NodeID ?? "";
+			string addr64 = Get64BitAddress() == null || Get64BitAddress() == XBee64BitAddress.UNKNOWN_ADDRESS ?
+					"" : Get64BitAddress().ToString();
 
 			if (id.Length == 0 && addr64.Length == 0)
 				return base.ToString();

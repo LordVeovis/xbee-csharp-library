@@ -58,7 +58,7 @@ namespace Kveer.XBeeApi
 		{
 
 			// Verify the local device has point-to-multipoint protocol.
-			if (localXBeeDevice.getXBeeProtocol() != XBeeProtocol.DIGI_POINT)
+			if (localXBeeDevice.GetXBeeProtocol() != XBeeProtocol.DIGI_POINT)
 				throw new ArgumentException("The protocol of the local XBee device is not " + XBeeProtocol.DIGI_POINT.GetDescription() + ".");
 		}
 
@@ -87,11 +87,11 @@ namespace Kveer.XBeeApi
 		{
 
 			// Verify the local device has point-to-multipoint protocol.
-			if (localXBeeDevice.getXBeeProtocol() != XBeeProtocol.DIGI_POINT)
+			if (localXBeeDevice.GetXBeeProtocol() != XBeeProtocol.DIGI_POINT)
 				throw new ArgumentException("The protocol of the local XBee device is not " + XBeeProtocol.DIGI_POINT.GetDescription() + ".");
 		}
 
-		public override XBeeProtocol getXBeeProtocol()
+		public override XBeeProtocol GetXBeeProtocol()
 		{
 			return XBeeProtocol.DIGI_POINT;
 		}

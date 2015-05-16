@@ -30,7 +30,7 @@ namespace Kveer.XBeeApi
 		 * @throws ArgumentNullException if {@code port == null}.
 		 */
 		public DigiPointDevice(String port, int baudRate)
-			: this(XBee.createConnectiontionInterface(port, baudRate))
+			: this(XBee.CreateConnectiontionInterface(port, baudRate))
 		{
 		}
 
@@ -70,7 +70,7 @@ namespace Kveer.XBeeApi
 		 * @see SerialPortParameters
 		 */
 		public DigiPointDevice(String port, SerialPortParameters serialPortParameters)
-			: this(XBee.createConnectiontionInterface(port, serialPortParameters))
+			: this(XBee.CreateConnectiontionInterface(port, serialPortParameters))
 		{
 		}
 
@@ -100,7 +100,7 @@ namespace Kveer.XBeeApi
 			if (IsRemote)
 				return;
 			if (xbeeProtocol != XBeeProtocol.DIGI_POINT)
-				throw new XBeeDeviceException("XBee device is not a " + getXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
+				throw new XBeeDeviceException("XBee device is not a " + GetXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
 		}
 
 		/*
@@ -123,7 +123,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.XBeeDevice#getXBeeProtocol()
 		 */
 		//@Override
-		public override XBeeProtocol getXBeeProtocol()
+		public override XBeeProtocol GetXBeeProtocol()
 		{
 			return XBeeProtocol.DIGI_POINT;
 		}

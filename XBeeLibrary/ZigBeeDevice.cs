@@ -29,7 +29,7 @@ namespace Kveer.XBeeApi
 		 * @throws ArgumentNullException if {@code port == null}.
 		 */
 		public ZigBeeDevice(string port, int baudRate)
-			: this(XBee.createConnectiontionInterface(port, baudRate))
+			: this(XBee.CreateConnectiontionInterface(port, baudRate))
 		{
 		}
 
@@ -69,7 +69,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.connection.serial.SerialPortParameters
 		 */
 		public ZigBeeDevice(String port, SerialPortParameters serialPortParameters)
-			: this(XBee.createConnectiontionInterface(port, serialPortParameters))
+			: this(XBee.CreateConnectiontionInterface(port, serialPortParameters))
 		{
 		}
 
@@ -97,7 +97,7 @@ namespace Kveer.XBeeApi
 		public void open()/*throws XBeeException */{
 			base.Open();
 			if (xbeeProtocol != XBeeProtocol.ZIGBEE)
-				throw new XBeeDeviceException("XBee device is not a " + getXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
+				throw new XBeeDeviceException("XBee device is not a " + GetXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
 		}
 
 		/*
@@ -119,7 +119,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.XBeeDevice#getXBeeProtocol()
 		 */
 		//@Override
-		public override XBeeProtocol getXBeeProtocol()
+		public override XBeeProtocol GetXBeeProtocol()
 		{
 			return XBeeProtocol.ZIGBEE;
 		}
