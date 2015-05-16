@@ -318,7 +318,7 @@ namespace Kveer.XBeeApi.Connection
 				{
 					if (!running)
 						break;
-					if (connectionInterface.GetInputStream() != null)
+					if (connectionInterface.SerialPort != null)
 					{
 						switch (mode)
 						{
@@ -326,13 +326,13 @@ namespace Kveer.XBeeApi.Connection
 								break;
 							case OperatingMode.API:
 							case OperatingMode.API_ESCAPE:
-								int headerByte = connectionInterface.GetInputStream().ReadByte();
+								int headerByte = connectionInterface.SerialPort.ReadByte();
 								// If it is packet header parse the packet, if not discard this byte and continue.
 								if (headerByte == SpecialByte.HEADER_BYTE.GetValue())
 								{
 									try
 									{
-										XBeePacket packet = parser.ParsePacket(connectionInterface.GetInputStream(), mode);
+										XBeePacket packet = parser.ParsePacket(connectionInterface.SerialPort, mode);
 										PacketReceived(packet);
 									}
 									catch (InvalidPacketException e)
@@ -345,11 +345,11 @@ namespace Kveer.XBeeApi.Connection
 								break;
 						}
 					}
-					else if (connectionInterface.GetInputStream() == null)
+					else if (connectionInterface.SerialPort == null)
 						break;
-					if (connectionInterface.GetInputStream() == null)
+					if (connectionInterface.SerialPort == null)
 						break;
-					else if (connectionInterface.GetInputStream().available() > 0)
+					else if (connectionInterface.SerialPort.BytesToRead > 0)
 						continue;
 					lock (connectionInterface)
 					{
@@ -365,10 +365,10 @@ namespace Kveer.XBeeApi.Connection
 			{
 				logger.Error(e.Message, e);
 			}
-			catch (IllegalStateException e)
-			{
-				logger.Error(e.Message, e);
-			}
+			//catch (IllegalStateException e)
+			//{
+			//	logger.Error(e.Message, e);
+			//}
 			finally
 			{
 				if (running)

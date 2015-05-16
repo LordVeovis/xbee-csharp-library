@@ -11,6 +11,7 @@ using Kveer.XBeeApi.Exceptions;
 using Kveer.XBeeApi.Packet.Raw;
 using Kveer.XBeeApi.Packet.Common;
 using System.Diagnostics;
+using System.IO.Ports;
 
 namespace Kveer.XBeeApi.Packet
 {
@@ -157,6 +158,43 @@ namespace Kveer.XBeeApi.Packet
 			}
 		}
 
+		public XBeePacket ParsePacket(SerialPort serialPort, OperatingMode mode)
+		{
+			Contract.Requires<ArgumentNullException>(serialPort != null, "Input stream cannot be null.");
+			Contract.Requires<ArgumentException>(serialPort.IsOpen);
+			Contract.Requires<ArgumentException>(mode == OperatingMode.API || mode == OperatingMode.API_ESCAPE, "Operating mode must be API or API Escaped.");
+
+			try
+			{
+				// Read packet size.
+				int hSize = ReadByte(serialPort, mode);
+				int lSize = ReadByte(serialPort, mode);
+				int Length = hSize << 8 | lSize;
+
+				// Read the payload.
+				byte[] payload = ReadBytes(serialPort, mode, Length);
+
+				// Calculate the expected checksum.
+				XBeeChecksum checksum = new XBeeChecksum();
+				checksum.Add(payload);
+				byte expectedChecksum = (byte)(checksum.Generate() & 0xFF);
+
+				// Read checksum from the input stream.
+				byte readChecksum = (byte)(ReadByte(serialPort, mode) & 0xFF);
+
+				// Verify the checksum of the read bytes.
+				if (readChecksum != expectedChecksum)
+					throw new InvalidPacketException("Invalid checksum (expected 0x"
+								+ HexUtils.ByteToHexString(expectedChecksum) + ").");
+
+				return ParsePayload(payload);
+
+			}
+			catch (IOException e)
+			{
+				throw new InvalidPacketException("Error parsing packet: " + e.Message, e);
+			}
+		}
 		/**
 		 * Parses the bytes from the given array depending on the provided operating
 		 * mode and returns the API packet.
@@ -340,6 +378,45 @@ namespace Kveer.XBeeApi.Packet
 			return b;
 		}
 
+		private int ReadByte(SerialPort serialPort, OperatingMode mode) /*throws InvalidPacketException, IOException*/ {
+			Contract.Requires<ArgumentNullException>(serialPort != null, "Input stream cannot be null.");
+			Contract.Requires<ArgumentException>(serialPort.IsOpen);
+
+			int timeout = 300;
+
+			int b = ReadByteFrom(serialPort, timeout);
+
+			if (b == -1)
+				throw new InvalidPacketException("Error parsing packet: Incomplete packet.");
+
+			/* Process the byte for API1. */
+
+			if (mode == OperatingMode.API)
+				return b;
+
+			/* Process the byte for API2. */
+
+			// Check if the byte is special.
+			if (!SpecialByte.ESCAPE_BYTE.IsSpecialByte((byte)b))
+				return b;
+
+			// Check if the byte is ESCAPE.
+			if (b == SpecialByte.ESCAPE_BYTE.GetValue())
+			{
+				// Read next byte and escape it.
+				b = ReadByteFrom(serialPort, timeout);
+
+				if (b == -1)
+					throw new InvalidPacketException("Error parsing packet: Incomplete packet.");
+
+				b ^= 0x20;
+			}
+			else
+				// If the byte is not a escape there is a special byte not escaped.
+				throw new InvalidPacketException("Special byte not escaped: 0x" + HexUtils.ByteToHexString((byte)(b & 0xFF)) + ".");
+
+			return b;
+		}
 		/**
 		 * Reads the given amount of bytes from the input stream.
 		 * 
@@ -369,6 +446,20 @@ namespace Kveer.XBeeApi.Packet
 
 			return data;
 		}
+
+		private byte[] ReadBytes(SerialPort serialPort, OperatingMode mode, int numBytes)/*throws IOException, InvalidPacketException*/ {
+			Contract.Requires<ArgumentNullException>(serialPort != null, "Input stream cannot be null.");
+			Contract.Requires<ArgumentException>(serialPort.IsOpen);
+
+			byte[] data = new byte[numBytes];
+
+			for (int i = 0; i < numBytes; i++)
+				data[i] = (byte)ReadByte(serialPort, mode);
+
+			return data;
+		}
+
+
 
 		/**
 		 * Reads a byte from the given input stream.
@@ -403,5 +494,28 @@ namespace Kveer.XBeeApi.Packet
 			stopwatch.Stop();
 			return b;
 		}
+
+		private int ReadByteFrom(SerialPort serialPort, int timeout) /*throws IOException*/ {
+			Contract.Requires<ArgumentNullException>(serialPort != null, "Input stream cannot be null.");
+			Contract.Requires<ArgumentException>(serialPort.IsOpen);
+
+			var stopwatch = Stopwatch.StartNew();
+
+			int b = serialPort.ReadByte();
+			// Let's try again if the byte is -1.
+			while (b == -1 && stopwatch.ElapsedMilliseconds < timeout)
+			{
+				b = serialPort.ReadByte();
+				try
+				{
+					Thread.Sleep(10);
+				}
+				catch (ThreadInterruptedException) { }
+			}
+
+			stopwatch.Stop();
+			return b;
+		}
+
 	}
 }

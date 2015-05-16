@@ -26,7 +26,7 @@ namespace Kveer.XBeeApi
 		 */
 		public static IConnectionInterface createConnectiontionInterface(string port, int baudRate)
 		{
-			IConnectionInterface connectionInterface = new SerialPortRxTx(port, baudRate);
+			IConnectionInterface connectionInterface = new NetSerialPort(port, baudRate);
 			return connectionInterface;
 		}
 
@@ -48,7 +48,7 @@ namespace Kveer.XBeeApi
 		 */
 		public static IConnectionInterface createConnectiontionInterface(string port, SerialPortParameters serialPortParameters)
 		{
-			IConnectionInterface connectionInterface = new SerialPortRxTx(port, serialPortParameters);
+			IConnectionInterface connectionInterface = new NetSerialPort(port, serialPortParameters);
 			return connectionInterface;
 		}
 	}

@@ -94,6 +94,7 @@
     <Compile Include="Connection\DataReader.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Connection\Serial\NetSerialPort.cs" />
     <Compile Include="Exceptions\ATCommandException.cs" />
     <Compile Include="Exceptions\CommunicationException.cs" />
     <Compile Include="Exceptions\InterfaceNotOpenException.cs" />

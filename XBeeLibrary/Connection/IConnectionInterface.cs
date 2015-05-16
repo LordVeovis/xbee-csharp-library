@@ -1,4 +1,5 @@
 using System.IO;
+using System.IO.Ports;
 
 namespace Kveer.XBeeApi.Connection
 {
@@ -33,19 +34,20 @@ namespace Kveer.XBeeApi.Connection
 		/// <seealso cref="Open"/>
 		bool IsOpen { get; }
 
+		SerialPort SerialPort { get; }
 		/// <summary>
 		/// Gets the connection interface input stream to read data from.
 		/// </summary>
 		/// <returns>The connection interface input stream to read data from.</returns>
 		/// <seealso cref="GetOutputStream"/>
-		Stream GetInputStream();
+		//Stream GetInputStream();
 
 		/// <summary>
 		/// Gets the connection interface output stream to write data to.
 		/// </summary>
 		/// <returns>The connection interface output stream to write data to.</returns>
 		/// <seealso cref="GetInputStream"/>
-		Stream GetOutputStream();
+		//Stream GetOutputStream();
 
 		/// <summary>
 		/// Writes the given data in the connection interface.

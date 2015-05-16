@@ -56,8 +56,6 @@ namespace Kveer.XBeeApi.Connection.Serial
 
 		protected SerialPortParameters parameters;
 
-		protected bool connectionOpen = false;
-
 		private ILog logger;
 
 		/**
@@ -163,7 +161,7 @@ namespace Kveer.XBeeApi.Connection.Serial
 		{
 			get
 			{
-				return connectionOpen;
+				return SerialPort != null && SerialPort.IsOpen;
 			}
 		}
 
@@ -334,13 +332,11 @@ namespace Kveer.XBeeApi.Connection.Serial
 		 */
 		public void Purge()
 		{
-			if (GetInputStream() != null)
+			if (SerialPort != null)
 			{
 				try
 				{
-					byte[] availableBytes = new byte[GetInputStream().available()];
-					if (GetInputStream().available() > 0)
-						GetInputStream().Read(availableBytes, 0, GetInputStream().available());
+					SerialPort.DiscardInBuffer();
 				}
 				catch (IOException e)
 				{
@@ -373,114 +369,54 @@ namespace Kveer.XBeeApi.Connection.Serial
 			if (data == null)
 				throw new ArgumentNullException("Data to be sent cannot be null.");
 
-			if (GetOutputStream() != null)
+			if (SerialPort != null)
 			{
-				// Writing data in ports without any device connected and configured with 
-				// hardware flow-control causes the majority of serial libraries to hang.
-
-				// Before writing any data, check if the port is configured with hardware 
-				// flow-control and, if so, try to write the data up to 3 times verifying 
-				// that the CTS line is high (there is a device connected to the other side 
-				// ready to receive data).
-				if (IsHardwareFlowControl)
-				{
-					int tries = 0;
-					while (tries < 3 && !IsCTS)
-					{
-						try
-						{
-							Thread.Sleep(100);
-						}
-						catch (ThreadInterruptedException) { }
-						tries += 1;
-					}
-					if (IsCTS)
-					{
-						GetOutputStream().Write(data, 0, data.Length);
-						GetOutputStream().Flush();
-					}
-				}
-				else
-				{
-					GetOutputStream().Write(data, 0, data.Length);
-					GetOutputStream().Flush();
-				}
+				SerialPort.Write(data, 0, data.Length);
 			}
 		}
 
-		public void WriteData(byte[] data, int offset, int Length) /*throws IOException*/ {
+		public void WriteData(byte[] data, int offset, int length) /*throws IOException*/ {
 			if (data == null)
 				throw new ArgumentNullException("Data to be sent cannot be null.");
 			if (offset < 0)
 				throw new ArgumentOutOfRangeException("Offset cannot be less than 0.");
-			if (Length < 1)
+			if (length < 1)
 				throw new ArgumentOutOfRangeException("Length cannot be less than 0.");
 			if (offset >= data.Length)
 				throw new ArgumentOutOfRangeException("Offset must be less than the data Length.");
-			if (offset + Length > data.Length)
+			if (offset + length > data.Length)
 				throw new ArgumentOutOfRangeException("Offset + Length cannot be great than the data Length.");
 
 			if (GetOutputStream() != null)
 			{
-				// Writing data in ports without any device connected and configured with 
-				// hardware flow-control causes the majority of serial libraries to hang.
-
-				// Before writing any data, check if the port is configured with hardware 
-				// flow-control and, if so, try to write the data up to 3 times verifying 
-				// that the CTS line is high (there is a device connected to the other side 
-				// ready to receive data).
-				if (IsHardwareFlowControl)
-				{
-					int tries = 0;
-					while (tries < 3 && !IsCTS)
-					{
-						try
-						{
-							Thread.Sleep(100);
-						}
-						catch (ThreadInterruptedException) { }
-						tries += 1;
-					}
-					if (IsCTS)
-					{
-						GetOutputStream().Write(data, offset, Length);
-						GetOutputStream().Flush();
-					}
+				SerialPort.Write(data, offset, length);
 				}
-				else
-				{
-					GetOutputStream().Write(data, offset, Length);
-					GetOutputStream().Flush();
-				}
-			}
 		}
 
 		public int ReadData(byte[] data) /*throws IOException*/ {
 			if (data == null)
 				throw new ArgumentNullException("Buffer cannot be null.");
 
-			int readBytes = 0;
-			if (GetInputStream() != null)
-				readBytes = GetInputStream().Read(data, 0, data.Length);
-			return readBytes;
+			if (SerialPort != null)
+				return SerialPort.Read(data, 0, data.Length);
+			else return 0;
 		}
 
-		public int ReadData(byte[] data, int offset, int Length) /*throws IOException */{
+		public int ReadData(byte[] data, int offset, int length) /*throws IOException */{
 			if (data == null)
 				throw new ArgumentNullException("Buffer cannot be null.");
 			if (offset < 0)
 				throw new ArgumentOutOfRangeException("Offset cannot be less than 0.");
-			if (Length < 1)
+			if (length < 1)
 				throw new ArgumentOutOfRangeException("Length cannot be less than 0.");
 			if (offset >= data.Length)
 				throw new ArgumentOutOfRangeException("Offset must be less than the buffer Length.");
-			if (offset + Length > data.Length)
+			if (offset + length > data.Length)
 				throw new ArgumentOutOfRangeException("Offset + Length cannot be great than the buffer Length.");
 
-			int readBytes = 0;
-			if (GetInputStream() != null)
-				readBytes = GetInputStream().Read(data, offset, Length);
-			return readBytes;
+			if (SerialPort != null)
+				return SerialPort.Read(data, offset, length);
+			else return 0;
 		}
 
 		/**
@@ -527,9 +463,9 @@ namespace Kveer.XBeeApi.Connection.Serial
 					parity = "M";
 				else if (parameters.Parity == Parity.Space)
 					parity = "S";
-				if (parameters.FlowControl ==  Handshake.RequestToSend)
+				if (parameters.FlowControl == Handshake.RequestToSend)
 					flowControl = "H";
-				else if (parameters.FlowControl ==  Handshake.XOnXOff)
+				else if (parameters.FlowControl == Handshake.XOnXOff)
 					flowControl = "S";
 				return "[" + port + " - " + baudRate + "/" + parameters.DataBits +
 						"/" + parity + "/" + parameters.StopBits + "/" + flowControl + "] ";
@@ -537,6 +473,8 @@ namespace Kveer.XBeeApi.Connection.Serial
 			else
 				return "[" + port + " - " + baudRate + "/8/N/1/N] ";
 		}
+
+		public SerialPort SerialPort { get; protected set; }
 
 		public abstract void Open();
 

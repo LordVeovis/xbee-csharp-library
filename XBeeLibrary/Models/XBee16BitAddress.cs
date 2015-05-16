@@ -38,7 +38,7 @@ namespace Kveer.XBeeApi.Models
 		/// <summary>
 		/// Pattern for the 16-bit address string.
 		/// </summary>
-		private static readonly Regex XBEE_16_BIT_ADDRESS_PATTERN = new Regex("(0[xX])?[0-9a-fA-F]{1,4}");
+		public static readonly Regex XBEE_16_BIT_ADDRESS_PATTERN = new Regex("(0[xX])?[0-9a-fA-F]{1,4}");
 
 		private const int HASH_SEED = 23;
 

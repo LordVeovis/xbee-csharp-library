@@ -13,7 +13,6 @@ namespace Kveer.XBeeApi.Connection.Serial
 {
 	public class NetSerialPort : AbstractSerialPort
 	{
-		SerialPort _serialPort;
 		ILog _logger;
 
 		public NetSerialPort(string port, int baudRate)
@@ -37,13 +36,13 @@ namespace Kveer.XBeeApi.Connection.Serial
 		{
 		}
 
-		public void Open()
+		public override void Open()
 		{
-			if (_serialPort == null)
+			if (SerialPort == null)
 			{
 				try
 				{
-					_serialPort = new SerialPort(this.port, this.baudRate);
+					SerialPort = new SerialPort(this.port, this.baudRate);
 				}
 				catch (IOException ex)
 				{
@@ -53,23 +52,23 @@ namespace Kveer.XBeeApi.Connection.Serial
 
 			try
 			{
-				_serialPort.Open();
+				SerialPort.Open();
 
 				if (parameters == null)
 					parameters = new SerialPortParameters(baudRate, DEFAULT_DATA_BITS, DEFAULT_STOP_BITS, DEFAULT_PARITY, DEFAULT_FLOW_CONTROL);
 
-				_serialPort.BaudRate = baudRate;
-				_serialPort.DataBits = parameters.DataBits;
-				_serialPort.StopBits = parameters.StopBits;
-				_serialPort.Parity = parameters.Parity;
+				SerialPort.BaudRate = baudRate;
+				SerialPort.DataBits = parameters.DataBits;
+				SerialPort.StopBits = parameters.StopBits;
+				SerialPort.Parity = parameters.Parity;
 
-				_serialPort.Handshake = parameters.FlowControl;
+				SerialPort.Handshake = parameters.FlowControl;
 
-				_serialPort.ReadTimeout = receiveTimeout;
+				SerialPort.ReadTimeout = receiveTimeout;
 
 				// Register serial port event listener to be notified when data is available.
 				//serialPort.addEventListener(this);
-				_serialPort.DataReceived += _serialPort_DataReceived;
+				SerialPort.DataReceived += _serialPort_DataReceived;
 			}
 			catch (InvalidOperationException ex)
 			{
@@ -81,7 +80,7 @@ namespace Kveer.XBeeApi.Connection.Serial
 		{
 			try
 			{
-				if (_serialPort.BytesToRead > 0)
+				if (SerialPort.BytesToRead > 0)
 				{
 					Monitor.Pulse(this);
 				}
@@ -92,54 +91,79 @@ namespace Kveer.XBeeApi.Connection.Serial
 			}
 		}
 
-		public void Close()
+		public override void Close()
 		{
-			lock (_serialPort)
+			lock (SerialPort)
 			{
-				if (_serialPort != null)
+				if (SerialPort != null)
 				{
 					try
 					{
-						_serialPort.Close();
+						SerialPort.Close();
 					}
 					catch (Exception) { }
 				}
 			}
 		}
 
-		public bool IsOpen
+		public override Stream GetInputStream()
 		{
-			get { return _serialPort != null && _serialPort.IsOpen; }
+			return SerialPort.BaseStream;
 		}
 
-		public Stream GetInputStream()
+		public override Stream GetOutputStream()
 		{
-			return _serialPort.BaseStream;
+			return SerialPort.BaseStream;
 		}
 
-		public Stream GetOutputStream()
+		public override bool IsCD
 		{
-			return _serialPort.BaseStream;
+			get { return SerialPort.CDHolding; }
 		}
 
-		public void WriteData(byte[] data)
+		public override bool IsCTS
 		{
-			_serialPort.Write(data, 0, data.Length);
+			get { return SerialPort.CtsHolding; }
 		}
 
-		public void WriteData(byte[] data, int offset, int length)
+		public override bool IsDSR
 		{
-			_serialPort.Write(data, offset, length);
+			get { return SerialPort.DsrHolding; }
 		}
 
-		public int ReadData(byte[] data)
+		public override int ReadTimeout
 		{
-			return _serialPort.Read(data, 0, data.Length);
+			get
+			{
+				return SerialPort.ReadTimeout;
+			}
+			set
+			{
+				SerialPort.ReadTimeout = value;
+			}
 		}
 
-		public int ReadData(byte[] data, int offset, int length)
+		public override void SetDTR(bool state)
 		{
-			return _serialPort.Read(data, offset, length);
+			SerialPort.DtrEnable = state;
+		}
+
+		public override void SetRTS(bool state)
+		{
+			SerialPort.RtsEnable = state;
+		}
+
+		public override void SetBreak(bool enabled)
+		{
+			SerialPort.BreakState = enabled;
+		}
+
+		public override void SendBreak(int duration)
+		{
+			var oldState = SerialPort.BreakState;
+			SerialPort.BreakState = true;
+			Task.Delay(duration);
+			SerialPort.BreakState = oldState;
 		}
 	}
 }

@@ -15,14 +15,13 @@ using System.Threading;
 
 namespace Kveer.XBeeApi
 {
-	/**
-	 * This class represents a local XBee device.
-	 * 
-	 * @see DigiMeshDevice
-	 * @see DigiPointDevice
-	 * @see Raw802Device
-	 * @see ZigBeeDevice
-	 */
+	/// <summary>
+	/// This class represents a local XBee device.
+	/// </summary>
+	/// <seealso cref="DigiMeshDevice"/>
+	/// <seealso cref="DigiPointDevice"/>
+	/// <seealso cref="Raw802Device"/>
+	/// <seealso cref="ZigBeeDevice"/>
 	public class XBeeDevice : AbstractXBeeDevice
 	{
 
@@ -60,6 +59,7 @@ namespace Kveer.XBeeApi
 		public XBeeDevice(String port, int baudRate)
 			: base(port, baudRate)
 		{
+			resetStatusListener = new CustomModemStatusReceiveListener(this);
 		}
 
 		/**
@@ -88,6 +88,7 @@ namespace Kveer.XBeeApi
 		public XBeeDevice(String port, int baudRate, int dataBits, StopBits stopBits, Parity parity, Handshake flowControl)
 			: base(port, baudRate, dataBits, stopBits, parity, flowControl)
 		{
+			resetStatusListener = new CustomModemStatusReceiveListener(this);
 		}
 
 		/**
@@ -109,6 +110,7 @@ namespace Kveer.XBeeApi
 		public XBeeDevice(String port, SerialPortParameters serialPortParameters)
 			: base(port, serialPortParameters)
 		{
+			resetStatusListener = new CustomModemStatusReceiveListener(this);
 		}
 
 		/**
@@ -128,6 +130,7 @@ namespace Kveer.XBeeApi
 		public XBeeDevice(IConnectionInterface connectionInterface)
 			: base(connectionInterface)
 		{
+			resetStatusListener = new CustomModemStatusReceiveListener(this);
 		}
 
 		/**
@@ -199,12 +202,11 @@ namespace Kveer.XBeeApi
 			readDeviceInfo();
 		}
 
-		/**
-		 * Closes the connection interface associated with this XBee device.
-		 * 
-		 * @see #isOpen()
-		 * @see #open()
-		 */
+		/// <summary>
+		/// Closes the connection interface associated with this XBee device.
+		/// </summary>
+		/// <seealso cref="IsOpen"/>
+		/// <seealso cref="Open"/>
 		public void Close()
 		{
 			// Stop XBee reader.
@@ -983,7 +985,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.models.ModemStatusEvent#STATUS_HARDWARE_RESET
 		 * @see com.digi.xbee.api.models.ModemStatusEvent#STATUS_WATCHDOG_TIMER_RESET
 		 */
-		private IModemStatusReceiveListener resetStatusListener = new CustomModemStatusReceiveListener(this);
+		private IModemStatusReceiveListener resetStatusListener;
 
 		/*
 		 * (non-Javadoc)
