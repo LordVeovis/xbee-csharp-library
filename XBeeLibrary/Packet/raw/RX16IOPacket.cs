@@ -68,7 +68,7 @@ namespace Kveer.XBeeApi.Packet.Raw
 			Contract.Requires<ArgumentNullException>(payload != null, "RX16 Address IO packet payload cannot be null.");
 			// 1 (Frame type) + 2 (16-bit address) + 1 (RSSI) + 1 (receive options)
 			Contract.Requires<ArgumentException>(payload.Length >= MIN_API_PAYLOAD_LENGTH, "Incomplete RX16 Address IO packet.");
-			Contract.Requires<ArgumentException>((payload[0] & 0xFF) == APIFrameType.RX_IO_16.GetValue(), "Payload is not a RX16 Address IO packet.");
+			Contract.Requires<ArgumentException>(payload[0] == APIFrameType.RX_IO_16.GetValue(), "Payload is not a RX16 Address IO packet.");
 
 			// payload[0] is the frame type.
 			int index = 1;

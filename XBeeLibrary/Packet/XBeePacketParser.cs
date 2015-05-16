@@ -254,7 +254,7 @@ namespace Kveer.XBeeApi.Packet
 			// Get the API frame type.
 			APIFrameType apiType = APIFrameType.GENERIC.Get(payload[0]);
 
-			if (apiType == null)
+			if (apiType == APIFrameType.UNKNOWN)
 				// Create unknown packet.
 				return UnknownXBeePacket.CreatePacket(payload);
 

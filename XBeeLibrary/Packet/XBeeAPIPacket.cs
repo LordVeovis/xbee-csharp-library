@@ -44,8 +44,7 @@ namespace Kveer.XBeeApi.Packet
 		protected XBeeAPIPacket(APIFrameType frameType)
 			: base()
 		{
-
-			Contract.Requires<ArgumentNullException>(frameType != null, "Frame type cannot be null.");
+			Contract.Requires<ArgumentNullException>(frameType != APIFrameType.UNKNOWN, "Frame type cannot be unknown.");
 
 			this.FrameType = frameType;
 			FrameTypeValue = frameType.GetValue();

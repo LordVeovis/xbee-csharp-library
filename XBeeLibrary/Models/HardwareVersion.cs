@@ -5,7 +5,7 @@ namespace Kveer.XBeeApi.Models
 	/// <summary>
 	/// This class represents the hardware version number of an XBee device.
 	/// </summary>
-	public class HardwareVersion
+	public class HardwareVersion : IEquatable<HardwareVersion>
 	{
 		// Constants.
 		private const int HASH_SEED = 23;
@@ -66,14 +66,16 @@ namespace Kveer.XBeeApi.Models
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is HardwareVersion))
-				return false;
+			var other = obj as HardwareVersion;
 
-			HardwareVersion hwVersion = (HardwareVersion)obj;
-			if (hwVersion.Value == Value
-					&& hwVersion.Description == Description)
-				return true;
-			return false;
+			return other != null && Equals(other);
+		}
+
+		public bool Equals(HardwareVersion other)
+		{
+			return other != null
+				&& other.Value == Value
+				&& other.Description == Description;
 		}
 
 		public override int GetHashCode()

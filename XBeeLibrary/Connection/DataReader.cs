@@ -353,7 +353,7 @@ namespace Kveer.XBeeApi.Connection
 			// Get the API packet type.
 			XBeeAPIPacket apiPacket = (XBeeAPIPacket)packet;
 			APIFrameType apiType = apiPacket.FrameType;
-			if (apiType == null)
+			if (apiType == APIFrameType.UNKNOWN)
 				return;
 
 			try
@@ -437,7 +437,7 @@ namespace Kveer.XBeeApi.Connection
 
 			XBeeAPIPacket apiPacket = (XBeeAPIPacket)packet;
 			APIFrameType apiType = apiPacket.FrameType;
-			if (apiType == null)
+			if (apiType == APIFrameType.UNKNOWN)
 				return null;
 
 			RemoteXBeeDevice remoteDevice = null;

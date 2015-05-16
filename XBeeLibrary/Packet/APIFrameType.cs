@@ -1,6 +1,7 @@
 using Kveer.XBeeApi.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Kveer.XBeeApi.Packet
@@ -28,6 +29,7 @@ namespace Kveer.XBeeApi.Packet
 		IO_DATA_SAMPLE_RX_INDICATOR = 0x92,
 		REMOTE_AT_COMMAND_RESPONSE = 0x97,
 		GENERIC = 0xFF,
+		UNKNOWN = 0xfe
 	}
 
 	public static class APIFrameTypeExtensions
@@ -69,7 +71,7 @@ namespace Kveer.XBeeApi.Packet
 			if (values.Cast<byte>().Contains(value))
 				return (APIFrameType)value;
 
-			return APIFrameType.GENERIC;
+			return APIFrameType.UNKNOWN;
 		}
 
 		/// <summary>
@@ -77,6 +79,7 @@ namespace Kveer.XBeeApi.Packet
 		/// </summary>
 		/// <param name="source"></param>
 		/// <returns>The API frame type value.</returns>
+		[Pure]
 		public static byte GetValue(this APIFrameType source)
 		{
 			return (byte)source;
@@ -89,7 +92,7 @@ namespace Kveer.XBeeApi.Packet
 		/// <returns>The API frame type name.</returns>
 		public static string GetName(this APIFrameType source)
 		{
-			return lookupTable[source];
+			return lookupTable.ContainsKey(source) ? lookupTable[source] : source.ToString();
 		}
 
 		public static string ToDisplayString(this APIFrameType source)

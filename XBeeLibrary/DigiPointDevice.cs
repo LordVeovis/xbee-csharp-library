@@ -90,7 +90,7 @@ namespace Kveer.XBeeApi
 		{
 		}
 
-		public void Open()/*throws XBeeException */{
+		public override void Open()/*throws XBeeException */{
 			base.Open();
 			if (IsRemote)
 				return;

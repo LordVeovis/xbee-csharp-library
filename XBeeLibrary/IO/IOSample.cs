@@ -297,34 +297,6 @@ namespace Kveer.XBeeApi.IO
 			}
 		}
 
-		/**
-		 * Returns the digital value of the provided IO line.
-		 * 
-		 * <p>
-		 * {@code IOLine}, use the method {@code hasDigitalValue(IOLine)}.</p>
-		 * 
-		 * <pre>
-		 * {@code
-		 * if (ioSample.hasDigitalValue(IOLine.DIO0_AD0)) {
-		 *     IOValue value = ioSample.getDigitalValue(IOLine.DIO0_AD0);
-		 *     ...
-		 * } else {
-		 *     ...
-		 * }
-		 * }
-		 * </pre>
-		 * 
-		 * @param ioLine 
-		 * 
-		 * @return The {@code IOValue} of the given IO line or {@code null} if the
-		 *         IO sample does not contain a digital value for the given IO line.
-		 * 
-		 * @see #getDigitalValues()
-		 * @see #hasDigitalValues()
-		 * @see IOLine
-		 * @see IOValue
-		 */
-		int e;
 		/// <summary>
 		/// Gets the digital value of the provided IO line.
 		/// </summary>
