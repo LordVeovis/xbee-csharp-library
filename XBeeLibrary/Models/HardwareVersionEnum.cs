@@ -1,0 +1,152 @@
+using Kveer.XBeeApi.Utils;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Kveer.XBeeApi.Models
+{
+	/// <summary>
+	/// Enumerates the different hardware versions of the XBee devices.
+	/// </summary>
+	public enum HardwareVersionEnum
+	{
+		X09_009 = 1,
+		X09_019 = 2,
+		XH9_009 = 3,
+		XH9_019 = 4,
+		X24_009 = 5,
+		X24_019 = 6,
+		X09_001 = 7,
+		XH9_001 = 8,
+		X08_004 = 9,
+		XC09_009 = 0xa,
+		XC09_038 = 0xb,
+		X24_038 = 0xc,
+		X09_009_TX = 0xd,
+		X09_019_TX = 0xe,
+		XH9_009_TX = 0xf,
+		XH9_019_TX = 0x10,
+		X09_001_TX = 0x11,
+		XH9_001_TX = 0x12,
+		XT09B_XXX = 0x13,
+		XT09_XXX = 0x14,
+		XC08_009 = 0x15,
+		XC08_038 = 0x16,
+		XB24_AXX_XX = 0x17,
+		XBP24_AXX_XX = 0x18,
+		XB24_BXIX_XXX = 0x19,
+		XBP24_BXIX_XXX = 0x1a,
+		XBP09_DXIX_XXX = 0x1b,
+		XBP09_XCXX_XXX = 0x1c,
+		XBP08_DXXX_XXX = 0x1d,
+		XBP24B = 0x1e,
+		XB24_WF = 0x1f,
+		AMBER_MBUS = 0x20,
+		XBP24C = 0x21,
+		XB24C = 0x22,
+		XSC_GEN3 = 0x23,
+		SRD_868_GEN3 = 0x24,
+		ABANDONATED = 0x25,
+		SMT_900LP = 0x26,
+		WIFI_ATHEROS = 0x27,
+		SMT_WIFI_ATHEROS = 0x28,
+		SMT_475LP = 0x29,
+		XBEE_CELL_TH = 0x2a,
+		XLR_MODULE = 0x2b,
+		XB900HP_NZ = 0x2c,
+		XBP24C_TH_DIP = 0x2d,
+		XB24C_TH_DIP = 0x2e,
+		XLR_BASEBOARD = 0x2f
+	}
+
+	public static class HardwareVersionEnumExtensions
+	{
+		static IDictionary<HardwareVersionEnum, string> lookupTable = new Dictionary<HardwareVersionEnum, string>();
+
+		static HardwareVersionEnumExtensions()
+		{
+			lookupTable.Add(HardwareVersionEnum.X09_009, "X09-009");
+			lookupTable.Add(HardwareVersionEnum.X09_019, "X09-019");
+			lookupTable.Add(HardwareVersionEnum.XH9_009, "XH9-009");
+			lookupTable.Add(HardwareVersionEnum.XH9_019, "XH9-019");
+			lookupTable.Add(HardwareVersionEnum.X24_009, "X24-009");
+			lookupTable.Add(HardwareVersionEnum.X24_019, "X24-019");
+			lookupTable.Add(HardwareVersionEnum.X09_001, "X09-001");
+			lookupTable.Add(HardwareVersionEnum.XH9_001, "XH9-001");
+			lookupTable.Add(HardwareVersionEnum.X08_004, "X08-004");
+			lookupTable.Add(HardwareVersionEnum.XC09_009, "XC09-009");
+			lookupTable.Add(HardwareVersionEnum.XC09_038, "XC09-038");
+			lookupTable.Add(HardwareVersionEnum.X24_038, "X24-038");
+			lookupTable.Add(HardwareVersionEnum.X09_009_TX, "X09-009-TX");
+			lookupTable.Add(HardwareVersionEnum.X09_019_TX, "X09-019-TX");
+			lookupTable.Add(HardwareVersionEnum.XH9_009_TX, "XH9-009-TX");
+			lookupTable.Add(HardwareVersionEnum.XH9_019_TX, "XH9-019-TX");
+			lookupTable.Add(HardwareVersionEnum.X09_001_TX, "X09-001-TX");
+			lookupTable.Add(HardwareVersionEnum.XH9_001_TX, "XH9-001-TX");
+			lookupTable.Add(HardwareVersionEnum.XT09B_XXX, "XT09B-xxx (Attenuator version)");
+			lookupTable.Add(HardwareVersionEnum.XT09_XXX, "XT09-xxx");
+			lookupTable.Add(HardwareVersionEnum.XC08_009, "XC08-009");
+			lookupTable.Add(HardwareVersionEnum.XC08_038, "XC08-038");
+			lookupTable.Add(HardwareVersionEnum.XB24_AXX_XX, "XB24-Axx-xx");
+			lookupTable.Add(HardwareVersionEnum.XBP24_AXX_XX, "XBP24-Axx-xx");
+			lookupTable.Add(HardwareVersionEnum.XB24_BXIX_XXX, "XB24-BxIx-xxx and XB24-Z7xx-xxx");
+			lookupTable.Add(HardwareVersionEnum.XBP24_BXIX_XXX, "XBP24-BxIx-xxx and XBP24-Z7xx-xxx");
+			lookupTable.Add(HardwareVersionEnum.XBP09_DXIX_XXX, "XBP09-DxIx-xxx Digi Mesh");
+			lookupTable.Add(HardwareVersionEnum.XBP09_XCXX_XXX, "XBP09-XCxx-xxx: S3 XSC Compatibility");
+			lookupTable.Add(HardwareVersionEnum.XBP08_DXXX_XXX, "XBP08-Dxx-xxx 868MHz");
+			lookupTable.Add(HardwareVersionEnum.XBP24B, "XBP24B: Low cost ZB PRO and PLUS S2B");
+			lookupTable.Add(HardwareVersionEnum.XB24_WF, "XB24-WF: XBee 802.11 (Redpine module)");
+			lookupTable.Add(HardwareVersionEnum.AMBER_MBUS, "??????: M-Bus module made by Amber");
+			lookupTable.Add(HardwareVersionEnum.XBP24C, "XBP24C: XBee PRO SMT Ember 357 S2C PRO");
+			lookupTable.Add(HardwareVersionEnum.XB24C, "XB24C: XBee SMT Ember 357 S2C");
+			lookupTable.Add(HardwareVersionEnum.XSC_GEN3, "XSC_GEN3: XBP9 XSC 24 dBm");
+			lookupTable.Add(HardwareVersionEnum.SRD_868_GEN3, "SDR_868_GEN3: XB8 12 dBm");
+			lookupTable.Add(HardwareVersionEnum.ABANDONATED, "Abandonated");
+			lookupTable.Add(HardwareVersionEnum.SMT_900LP, "900LP (SMT): 900LP on 'S8 HW'");
+			lookupTable.Add(HardwareVersionEnum.WIFI_ATHEROS, "WiFi Atheros (TH-DIP) XB2S-WF");
+			lookupTable.Add(HardwareVersionEnum.SMT_WIFI_ATHEROS, "WiFi Atheros (SMT) XB2B-WF");
+			lookupTable.Add(HardwareVersionEnum.SMT_475LP, "475LP (SMT): Beta 475MHz");
+			lookupTable.Add(HardwareVersionEnum.XBEE_CELL_TH, "XBee-Cell (TH): XBee Cellular");
+			lookupTable.Add(HardwareVersionEnum.XLR_MODULE, "XLR Module");
+			lookupTable.Add(HardwareVersionEnum.XB900HP_NZ, "XB900HP (New Zealand): XB9 NZ HW/SW");
+			lookupTable.Add(HardwareVersionEnum.XBP24C_TH_DIP, "XBP24C (TH-DIP): XBee PRO DIP");
+			lookupTable.Add(HardwareVersionEnum.XB24C_TH_DIP, "XB24C (TH-DIP): XBee DIP");
+			lookupTable.Add(HardwareVersionEnum.XLR_BASEBOARD, "XLR Baseboard");
+		}
+
+		/// <summary>
+		/// Gets the Hardware version numeric value.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns>The hardware version numeric value.</returns>
+		public static int GetValue(this HardwareVersionEnum source)
+		{
+			return (int)source;
+		}
+
+		/// <summary>
+		/// Gets the hardware version description.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns>The hardware version description.</returns>
+		public static string GetDescription(this HardwareVersionEnum source)
+		{
+			return lookupTable[source];
+		}
+
+		/// <summary>
+		/// Gets the <see cref="HardwareVersionEnum"/> associated to the given numeric value.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="value">Numeric value of the <see cref="HardwareVersionEnum"/> to retrieve.</param>
+		/// <returns>The <see cref="HardwareVersionEnum"/> associated to the given numeric value.</returns>
+		public static HardwareVersionEnum Get(this HardwareVersionEnum dumb, int value)
+		{
+			return (HardwareVersionEnum)value;
+		}
+
+		public static string ToDisplayString(this HardwareVersionEnum source)
+		{
+			return string.Format("{0}: {1}", HexUtils.ByteToHexString((byte)source.GetValue()), source.GetDescription());
+		}
+	}
+}
