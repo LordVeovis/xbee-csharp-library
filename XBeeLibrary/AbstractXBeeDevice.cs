@@ -878,7 +878,7 @@ namespace Kveer.XBeeApi
 					}
 
 					// Write packet data.
-					writePacket(packet);
+					WritePacket(packet);
 					break;
 			}
 		}
@@ -932,7 +932,7 @@ namespace Kveer.XBeeApi
 				case OperatingMode.API:
 				case OperatingMode.API_ESCAPE:
 					// Build response container.
-					List<XBeePacket> responseList = new List<XBeePacket>();
+					var responseList = new List<XBeePacket>();
 
 					// If the packet does not need frame ID, send it async. and return null.
 					if (packet is XBeeAPIPacket)
@@ -959,7 +959,7 @@ namespace Kveer.XBeeApi
 					AddPacketListener(packetReceiveListener);
 
 					// Write the packet data.
-					writePacket(packet);
+					WritePacket(packet);
 					try
 					{
 						// Wait for response or timeout.
@@ -1112,7 +1112,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see com.digi.xbee.api.packet.XBeePacket
 		 */
-		private void writePacket(XBeePacket packet)/*throws IOException */{
+		private void WritePacket(XBeePacket packet)/*throws IOException */{
 			logger.DebugFormat(ToString() + "Sending XBee packet: \n{}", packet.ToPrettyString());
 			// Write bytes with the required escaping mode.
 			switch (operatingMode)
@@ -2179,7 +2179,7 @@ namespace Kveer.XBeeApi
 		 */
 		public PowerLevel GetPowerLevel()/*throws TimeoutException, XBeeException */{
 			byte[] powerLevelValue = GetParameter("PL");
-			return PowerLevel.LEVEL_UNKNOWN.Get(ByteUtils.ByteArrayToInt(powerLevelValue));
+			return PowerLevel.LEVEL_UNKNOWN.Get((byte)ByteUtils.ByteArrayToInt(powerLevelValue));
 		}
 
 		/**

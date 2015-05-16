@@ -172,7 +172,10 @@ namespace Kveer.XBeeApi.Connection.Serial
 			{
 				if (SerialPort.BytesToRead > 0)
 				{
-					Monitor.Pulse(this);
+					lock (this)
+					{
+						Monitor.Pulse(this);
+					}
 				}
 			}
 			catch (Exception ex)

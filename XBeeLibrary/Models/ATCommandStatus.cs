@@ -61,8 +61,9 @@ namespace Kveer.XBeeApi.Models
 		/// <returns>The <see cref="ATCommandStatus"/> associated to the specified <paramref name="id"/>.</returns>
 		public static ATCommandStatus Get(this ATCommandStatus dumb, byte id)
 		{
-			var values = Enum.GetValues(typeof(ATCommandStatus));
-			if (values.OfType<byte>().Contains(id))
+			var values = Enum.GetValues(typeof(ATCommandStatus)).OfType<ATCommandStatus>();
+
+			if (values.Cast<byte>().Contains(id))
 				return (ATCommandStatus)id;
 
 			return ATCommandStatus.UNKNOWN;

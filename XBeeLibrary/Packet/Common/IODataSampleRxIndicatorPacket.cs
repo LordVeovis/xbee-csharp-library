@@ -85,7 +85,7 @@ namespace Kveer.XBeeApi.Packet.Common
 			index = index + 8;
 
 			// 2 bytes of 16-bit address.
-			XBee16BitAddress sourceAddress16 = new XBee16BitAddress(payload[index] & 0xFF, payload[index + 1] & 0xFF);
+			XBee16BitAddress sourceAddress16 = new XBee16BitAddress(payload[index], payload[index + 1]);
 			index = index + 2;
 
 			// Receive options
@@ -234,7 +234,7 @@ namespace Kveer.XBeeApi.Packet.Common
 						{
 							parameters.Add("Power supply value", HexUtils.PrettyHexString(HexUtils.IntegerToHexString(IOSample.PowerSupplyValue, 2)));
 						}
-						catch (OperationNotSupportedException ) { }
+						catch (OperationNotSupportedException) { }
 				}
 				else if (RFData != null)
 					parameters.Add("RF data", HexUtils.PrettyHexString(HexUtils.ByteArrayToHexString(RFData)));

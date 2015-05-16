@@ -64,12 +64,12 @@ namespace Kveer.XBeeApi.Packet
 		/// <returns>The <see cref="APIFrameType"/> for the specified ID <paramref name="value"/>, null if it does not exist.</returns>
 		public static APIFrameType Get(this APIFrameType dumb, byte value)
 		{
-			var values = Enum.GetValues(typeof(APIFrameType));
+			var values = Enum.GetValues(typeof(APIFrameType)).OfType<APIFrameType>();
 
-			if (values.OfType<byte>().Contains(value))
+			if (values.Cast<byte>().Contains(value))
 				return (APIFrameType)value;
 
-			return 0;
+			return APIFrameType.GENERIC;
 		}
 
 		/// <summary>

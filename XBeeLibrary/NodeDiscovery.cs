@@ -153,10 +153,10 @@ namespace Kveer.XBeeApi
 
 			foreach (RemoteXBeeDevice d in deviceList)
 			{
-				String nID = d.GetNodeID();
+				string nID = d.NodeID;
 				if (nID == null)
 					continue;
-				foreach (String id in ids)
+				foreach (string id in ids)
 				{
 					if (nID.Equals(id))
 					{
@@ -285,7 +285,7 @@ namespace Kveer.XBeeApi
 				// already found, return it.
 				if (_id != null)
 				{
-					if (rdevice != null && _id.Equals(rdevice.GetNodeID()))
+					if (rdevice != null && _id.Equals(rdevice.NodeID))
 					{
 						lock (_node.deviceList)
 						{

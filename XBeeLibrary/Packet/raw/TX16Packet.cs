@@ -72,7 +72,7 @@ namespace Kveer.XBeeApi.Packet.Raw
 			index = index + 1;
 
 			// 2 bytes of address, starting at 2nd byte.
-			XBee16BitAddress destAddress16 = new XBee16BitAddress(payload[index] & 0xFF, payload[index + 1] & 0xFF);
+			XBee16BitAddress destAddress16 = new XBee16BitAddress(payload[index], payload[index + 1]);
 			index = index + 2;
 
 			// Transmit options byte.

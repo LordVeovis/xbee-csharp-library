@@ -93,7 +93,7 @@ namespace Kveer.XBeeApi.Packet.Common
 			index = index + 8;
 
 			// 2 bytes of 16-bit address.
-			XBee16BitAddress destAddress16 = new XBee16BitAddress(payload[index] & 0xFF, payload[index + 1] & 0xFF);
+			XBee16BitAddress destAddress16 = new XBee16BitAddress(payload[index], payload[index + 1]);
 			index = index + 2;
 
 			// Options byte.

@@ -145,7 +145,7 @@ namespace System.Collections.Generic
 
 		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return new Enumerator(this, 0);
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

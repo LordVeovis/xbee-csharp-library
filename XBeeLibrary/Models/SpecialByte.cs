@@ -36,9 +36,9 @@ namespace Kveer.XBeeApi.Models
 		/// <returns><see cref="SpecialByte"/> associated to the given value, null if it does not exist in the list.</returns>
 		public static SpecialByte Get(this SpecialByte dumb, byte value)
 		{
-			var values = Enum.GetValues(typeof(SpecialByte));
+			var values = Enum.GetValues(typeof(SpecialByte)).OfType<SpecialByte>();
 
-			if (values.OfType<byte>().Contains(value))
+			if (values.Cast<byte>().Contains(value))
 				return (SpecialByte)value;
 
 			return 0;

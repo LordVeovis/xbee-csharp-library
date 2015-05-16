@@ -8,7 +8,7 @@ namespace Kveer.XBeeApi.Models
 	/// <summary>
 	/// Enumerates the different power levels. The power level indicates the output power value of a radio when transmitting data.
 	/// </summary>
-	public enum PowerLevel
+	public enum PowerLevel : byte
 	{
 		// Enumeration entries
 		LEVEL_LOWEST = 0x00,
@@ -38,9 +38,9 @@ namespace Kveer.XBeeApi.Models
 		/// </summary>
 		/// <param name="source"></param>
 		/// <returns>The power level value.</returns>
-		public static int GetValue(this PowerLevel source)
+		public static byte GetValue(this PowerLevel source)
 		{
-			return (int)source;
+			return (byte)source;
 		}
 
 		/// <summary>
@@ -59,11 +59,11 @@ namespace Kveer.XBeeApi.Models
 		/// <param name="dumb"></param>
 		/// <param name="value">Value of the <see cref="PowerLevel"/> to retrieve.</param>
 		/// <returns>The <see cref="PowerLevel"/> entry associated to the given value, <code>PowerLevel.LEVEL.UNKNOWN</code> if the <paramref name="value"/> could not be found in the list.</returns>
-		public static PowerLevel Get(this PowerLevel dumb, int value)
+		public static PowerLevel Get(this PowerLevel dumb, byte value)
 		{
-			var values = Enum.GetValues(typeof(PowerLevel));
+			var values = Enum.GetValues(typeof(PowerLevel)).OfType<PowerLevel>();
 
-			if (values.OfType<int>().Contains(value))
+			if (values.Cast<byte>().Contains(value))
 				return (PowerLevel)value;
 
 			return PowerLevel.LEVEL_UNKNOWN;

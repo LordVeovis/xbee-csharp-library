@@ -13,6 +13,16 @@ namespace Kveer.XBeeApi.Models
 	/// <remarks>The 64-bit address is a unique device address assigned during manufacturing. This address is unique to each physical device.</remarks>
 	public sealed class XBee64BitAddress : IEquatable<XBee64BitAddress>
 	{
+		private const string DEVICE_ID_SEPARATOR = "-";
+		private const string DEVICE_ID_MAC_SEPARATOR = "FF";
+
+		/// <summary>
+		/// Pattern for the 64-bit address string.
+		/// </summary>
+		public static readonly Regex XBEE_64_BIT_ADDRESS_PATTERN = new Regex("(0[xX])?[0-9a-fA-F]{1,16}");
+
+		private const int HASH_SEED = 23;
+
 		/// <summary>
 		/// 64-bit address reserved for the coordinator (value: 0000000000000000).
 		/// </summary>
@@ -27,16 +37,6 @@ namespace Kveer.XBeeApi.Models
 		/// 64-bit unknown address (value: 000000000000FFFE).
 		/// </summary>
 		public static readonly XBee64BitAddress UNKNOWN_ADDRESS = new XBee64BitAddress("FFFE");
-
-		private const string DEVICE_ID_SEPARATOR = "-";
-		private const string DEVICE_ID_MAC_SEPARATOR = "FF";
-
-		/// <summary>
-		/// Pattern for the 64-bit address string.
-		/// </summary>
-		public static readonly Regex XBEE_64_BIT_ADDRESS_PATTERN = new Regex("(0[xX])?[0-9a-fA-F]{1,16}");
-
-		private const int HASH_SEED = 23;
 
 		// Variables
 		private byte[] address;
@@ -71,7 +71,7 @@ namespace Kveer.XBeeApi.Models
 		public XBee64BitAddress(string address)
 		{
 			Contract.Requires<ArgumentNullException>(address != null, "Address cannot be null.");
-			Contract.Requires<ArgumentOutOfRangeException>(address.Length < 1, "Address must contain at least 1 character.");
+			Contract.Requires<ArgumentOutOfRangeException>(address.Length >= 1, "Address must contain at least 1 character.");
 			Contract.Requires<FormatException>(XBEE_64_BIT_ADDRESS_PATTERN.IsMatch(address), "Address must follow this pattern: (0x)0013A20040XXXXXX.");
 
 			byte[] byteAddress = HexUtils.HexStringToByteArray(address);

@@ -316,7 +316,7 @@ namespace Kveer.XBeeApi
 					return operatingMode;
 				}
 			}
-			catch (Kveer.XBeeApi.Exceptions.TimeoutException)
+			catch (Exceptions.TimeoutException)
 			{
 				// Check if device is in AT operating mode.
 				operatingMode = OperatingMode.AT;
@@ -332,7 +332,11 @@ namespace Kveer.XBeeApi
 					if (success)
 						return OperatingMode.AT;
 				}
-				catch (Kveer.XBeeApi.Exceptions.TimeoutException e1)
+				catch (Exceptions.TimeoutException e1)
+				{
+					logger.Error(e1.Message, e1);
+				}
+				catch (System.TimeoutException e1)
 				{
 					logger.Error(e1.Message, e1);
 				}

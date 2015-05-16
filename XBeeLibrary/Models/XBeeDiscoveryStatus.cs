@@ -8,7 +8,7 @@ namespace Kveer.XBeeApi.Models
 	/// Enumerates all the possible states of the discovery. Discovery status field is part of the <see cref="TransmitStatusPacket"/> indicating the status of the discovery when a packet is sent.
 	/// </summary>
 	/// <seealso cref="TransmitStatusPacket"/>
-	public enum XBeeDiscoveryStatus:byte
+	public enum XBeeDiscoveryStatus : byte
 	{
 		DISCOVERY_STATUS_NO_DISCOVERY_OVERHEAD = 0x00,
 		DISCOVERY_STATUS_ADDRESS_DISCOVERY = 0x01,
@@ -59,9 +59,9 @@ namespace Kveer.XBeeApi.Models
 		/// <returns>The <see cref="XBeeDiscoveryStatus"/> associated with the given ID.</returns>
 		public static XBeeDiscoveryStatus Get(this XBeeDiscoveryStatus dumb, byte id)
 		{
-			var values = Enum.GetValues(typeof(XBeeDiscoveryStatus));
+			var values = Enum.GetValues(typeof(XBeeDiscoveryStatus)).OfType<byte>();
 
-			if (values.OfType<byte>().Contains(id))
+			if (values.Cast<byte>().Contains(id))
 				return (XBeeDiscoveryStatus)id;
 
 			return XBeeDiscoveryStatus.DISCOVERY_STATUS_UNKNOWN;

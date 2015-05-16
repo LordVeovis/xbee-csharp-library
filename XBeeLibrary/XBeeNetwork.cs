@@ -296,7 +296,7 @@ namespace Kveer.XBeeApi
 		 * @see #getDevices(String)
 		 * @see RemoteXBeeDevice
 		 */
-		public IList<RemoteXBeeDevice> getDevices()
+		public IList<RemoteXBeeDevice> GetDevices()
 		{
 			//var nodes = new List<RemoteXBeeDevice>();
 			//nodes.addAll(remotesBy64BitAddr.Values);
@@ -322,7 +322,7 @@ namespace Kveer.XBeeApi
 		 * @see #getDevice(String)
 		 * @see RemoteXBeeDevice
 		 */
-		public List<RemoteXBeeDevice> getDevices(String id)
+		public List<RemoteXBeeDevice> GetDevices(String id)
 		{
 			if (id == null)
 				throw new ArgumentNullException("Device identifier cannot be null.");
@@ -334,13 +334,13 @@ namespace Kveer.XBeeApi
 			// Look in the 64-bit map.
 			foreach (RemoteXBeeDevice remote in remotesBy64BitAddr.Values)
 			{
-				if (remote.GetNodeID().Equals(id))
+				if (remote.NodeID == id)
 					devices.Add(remote);
 			}
 			// Look in the 16-bit map.
 			foreach (RemoteXBeeDevice remote in remotesBy16BitAddr.Values)
 			{
-				if (remote.GetNodeID().Equals(id))
+				if (remote.NodeID == id)
 					devices.Add(remote);
 			}
 			// Return the list.
@@ -366,7 +366,7 @@ namespace Kveer.XBeeApi
 		 * @see #getDevices(String)
 		 * @see RemoteXBeeDevice
 		 */
-		public RemoteXBeeDevice getDevice(String id)
+		public RemoteXBeeDevice GetDevice(String id)
 		{
 			if (id == null)
 				throw new ArgumentNullException("Device identifier cannot be null.");
@@ -374,17 +374,15 @@ namespace Kveer.XBeeApi
 				throw new ArgumentException("Device identifier cannot be an empty string.");
 
 			// Look in the 64-bit map.
-			foreach (RemoteXBeeDevice remote in remotesBy64BitAddr.Values)
-			{
-				if (remote.GetNodeID().Equals(id))
-					return remote;
-			}
+			var remote64 = remotesBy64BitAddr.Values.SingleOrDefault(r => r.NodeID == id);
+			if (remote64 != null)
+				return remote64;
+
 			// Look in the 16-bit map.
-			foreach (RemoteXBeeDevice remote in remotesBy16BitAddr.Values)
-			{
-				if (remote.GetNodeID().Equals(id))
-					return remote;
-			}
+			var remote16 = remotesBy16BitAddr.Values.SingleOrDefault(r => r.NodeID == id);
+			if (remote16 != null)
+				return remote16;
+
 			// The given ID is not in the network.
 			return null;
 		}
@@ -404,7 +402,7 @@ namespace Kveer.XBeeApi
 		 * @throws ArgumentException if {@code address.equals(XBee64BitAddress.UNKNOWN_ADDRESS)}.
 		 * @throws ArgumentNullException if {@code address == null}.
 		 */
-		public RemoteXBeeDevice getDevice(XBee64BitAddress address)
+		public RemoteXBeeDevice GetDevice(XBee64BitAddress address)
 		{
 			if (address == null)
 				throw new ArgumentNullException("64-bit address cannot be null.");
@@ -432,7 +430,7 @@ namespace Kveer.XBeeApi
 		 * @throws ArgumentNullException if {@code address == null}.
 		 * @throws OperationNotSupportedException if the protocol of the local XBee device is DigiMesh or Point-to-Multipoint.
 		 */
-		public RemoteXBeeDevice getDevice(XBee16BitAddress address)/*throws OperationNotSupportedException */{
+		public RemoteXBeeDevice GetDevice(XBee16BitAddress address)/*throws OperationNotSupportedException */{
 			if (localDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_MESH)
 				throw new OperationNotSupportedException("DigiMesh protocol does not support 16-bit addressing.");
 			if (localDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_POINT)
@@ -455,7 +453,7 @@ namespace Kveer.XBeeApi
 			ICollection<RemoteXBeeDevice> devices = remotesBy64BitAddr.Values;
 			foreach (RemoteXBeeDevice d in devices)
 			{
-				XBee16BitAddress a = get16BitAddress(d);
+				XBee16BitAddress a = Get16BitAddress(d);
 				if (a != null && a.Equals(address))
 				{
 					devInNetwork = d;
@@ -506,7 +504,7 @@ namespace Kveer.XBeeApi
 
 			RemoteXBeeDevice devInNetwork = null;
 			XBee64BitAddress addr64 = remoteDevice.Get64BitAddress();
-			XBee16BitAddress addr16 = get16BitAddress(remoteDevice);
+			XBee16BitAddress addr16 = Get16BitAddress(remoteDevice);
 
 			// Check if the device has 64-bit address.
 			if (addr64 != null && !addr64.Equals(XBee64BitAddress.UNKNOWN_ADDRESS))
@@ -559,7 +557,7 @@ namespace Kveer.XBeeApi
 				ICollection<RemoteXBeeDevice> devices = remotesBy64BitAddr.Values;
 				foreach (RemoteXBeeDevice d in devices)
 				{
-					XBee16BitAddress a = get16BitAddress(d);
+					XBee16BitAddress a = Get16BitAddress(d);
 					if (a != null && a.Equals(addr16))
 					{
 						devInNetwork = d;
@@ -684,7 +682,7 @@ namespace Kveer.XBeeApi
 			}
 
 			// If not found, look in the 16-bit map.
-			XBee16BitAddress addr16 = get16BitAddress(remoteDevice);
+			XBee16BitAddress addr16 = Get16BitAddress(remoteDevice);
 			if (addr16 != null && !addr16.Equals(XBee16BitAddress.UNKNOWN_ADDRESS))
 			{
 
@@ -697,7 +695,7 @@ namespace Kveer.XBeeApi
 				ICollection<RemoteXBeeDevice> devices = remotesBy64BitAddr.Values;
 				foreach (RemoteXBeeDevice d in devices)
 				{
-					XBee16BitAddress a = get16BitAddress(d);
+					XBee16BitAddress a = Get16BitAddress(d);
 					if (a != null && a.Equals(addr16))
 					{
 						RemoteXBeeDevice r;
@@ -731,7 +729,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see #removeRemoteDevice(RemoteXBeeDevice)
 		 */
-		public void clearDeviceList()
+		public void ClearDeviceList()
 		{
 			logger.DebugFormat("{0}Clearing the network.", localDevice.ToString());
 			remotesBy64BitAddr.Clear();
@@ -743,7 +741,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @return The number of devices already discovered in this network.
 		 */
-		public int getNumberOfDevices()
+		public int GetNumberOfDevices()
 		{
 			return remotesBy64BitAddr.Count + remotesBy16BitAddr.Count;
 		}
@@ -756,7 +754,7 @@ namespace Kveer.XBeeApi
 		 * @return The 16-bit address of the device, {@code null} if it does not
 		 *         contain a valid one.
 		 */
-		private XBee16BitAddress get16BitAddress(RemoteXBeeDevice device)
+		private XBee16BitAddress Get16BitAddress(RemoteXBeeDevice device)
 		{
 			if (device == null)
 				return null;

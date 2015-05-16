@@ -89,12 +89,7 @@ namespace Kveer.XBeeApi
 		{
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.digi.xbee.api.XBeeDevice#open()
-		 */
-		//@Override
-		public void open()/*throws XBeeException */{
+		public override void Open()/*throws XBeeException */{
 			base.Open();
 			if (xbeeProtocol != XBeeProtocol.ZIGBEE)
 				throw new XBeeDeviceException("XBee device is not a " + GetXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");

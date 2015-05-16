@@ -38,7 +38,7 @@ namespace Kveer.XBeeApi.Connection
 		private IList<IDataReceiveListener> dataReceiveListeners = new List<IDataReceiveListener>();
 		// The packetReceiveListeners requires to be a HashMap with an associated integer. The integer is used to determine 
 		// the frame ID of the packet that should be received. When it is 99999 (ALL_FRAME_IDS), all the packets will be handled.
-		private IDictionary<IPacketReceiveListener, int> packetReceiveListeners = new Dictionary<IPacketReceiveListener, int>();
+		private ConcurrentDictionary<IPacketReceiveListener, int> packetReceiveListeners = new ConcurrentDictionary<IPacketReceiveListener, int>();
 		private IList<IModemStatusReceiveListener> modemStatusListeners = new List<IModemStatusReceiveListener>();
 
 		private ILog logger;
@@ -183,11 +183,7 @@ namespace Kveer.XBeeApi.Connection
 		 */
 		public void AddPacketReceiveListener(IPacketReceiveListener listener, int frameID)
 		{
-			lock (packetReceiveListeners)
-			{
-				if (!packetReceiveListeners.ContainsKey(listener))
-					packetReceiveListeners.Add(listener, frameID);
-			}
+			packetReceiveListeners.TryAdd(listener, frameID);
 		}
 
 		/**
@@ -205,11 +201,8 @@ namespace Kveer.XBeeApi.Connection
 		 */
 		public void RemovePacketReceiveListener(IPacketReceiveListener listener)
 		{
-			lock (packetReceiveListeners)
-			{
-				if (packetReceiveListeners.ContainsKey(listener))
-					packetReceiveListeners.Remove(listener);
-			}
+			int value;
+			packetReceiveListeners.TryRemove(listener, out value);
 		}
 
 		/**
@@ -459,35 +452,35 @@ namespace Kveer.XBeeApi.Connection
 					ReceivePacket receivePacket = (ReceivePacket)apiPacket;
 					addr64 = receivePacket.get64bitSourceAddress();
 					addr16 = receivePacket.get16bitSourceAddress();
-					remoteDevice = network.getDevice(addr64);
+					remoteDevice = network.GetDevice(addr64);
 					break;
 				case APIFrameType.RX_64:
 					RX64Packet rx64Packet = (RX64Packet)apiPacket;
 					addr64 = rx64Packet.SourceAddress64;
-					remoteDevice = network.getDevice(addr64);
+					remoteDevice = network.GetDevice(addr64);
 					break;
 				case APIFrameType.RX_16:
 					RX16Packet rx16Packet = (RX16Packet)apiPacket;
 					addr64 = XBee64BitAddress.UNKNOWN_ADDRESS;
 					addr16 = rx16Packet.Get16bitSourceAddress();
-					remoteDevice = network.getDevice(addr16);
+					remoteDevice = network.GetDevice(addr16);
 					break;
 				case APIFrameType.IO_DATA_SAMPLE_RX_INDICATOR:
 					IODataSampleRxIndicatorPacket ioSamplePacket = (IODataSampleRxIndicatorPacket)apiPacket;
 					addr64 = ioSamplePacket.get64bitSourceAddress();
 					addr16 = ioSamplePacket.get16bitSourceAddress();
-					remoteDevice = network.getDevice(addr64);
+					remoteDevice = network.GetDevice(addr64);
 					break;
 				case APIFrameType.RX_IO_64:
 					RX64IOPacket rx64IOPacket = (RX64IOPacket)apiPacket;
 					addr64 = rx64IOPacket.SourceAddress64;
-					remoteDevice = network.getDevice(addr64);
+					remoteDevice = network.GetDevice(addr64);
 					break;
 				case APIFrameType.RX_IO_16:
 					RX16IOPacket rx16IOPacket = (RX16IOPacket)apiPacket;
 					addr64 = XBee64BitAddress.UNKNOWN_ADDRESS;
 					addr16 = rx16IOPacket.get16bitSourceAddress();
-					remoteDevice = network.getDevice(addr16);
+					remoteDevice = network.GetDevice(addr16);
 					break;
 				default:
 					// Rest of the types are considered not to contain information 
@@ -652,7 +645,10 @@ namespace Kveer.XBeeApi.Connection
 					//executor.shutdown();
 					// Remove required listeners.
 					foreach (IPacketReceiveListener listener in removeListeners)
-						packetReceiveListeners.Remove(listener);
+					{
+						int value;
+						packetReceiveListeners.TryRemove(listener, out value);
+					}
 				}
 			}
 			catch (Exception e)

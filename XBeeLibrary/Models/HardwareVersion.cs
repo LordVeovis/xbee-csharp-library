@@ -29,9 +29,8 @@ namespace Kveer.XBeeApi.Models
 		/// <exception cref="ArgumentException">if <paramref name="value"/> &lt; 0 or Length of <paramref name="description"/> is lower than 1.</exception>
 		private HardwareVersion(int value, string description)
 		{
-			Contract.Requires<ArgumentNullException>(description != null, "Description cannot be null.");
-			Contract.Requires<ArgumentException>(value < 0, "Value cannot be less than 0.");
-			Contract.Requires<ArgumentException>(description.Length >= 1, "Description cannot be empty.");
+			Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(description), "Description cannot be null or empty.");
+			Contract.Requires<ArgumentException>(value >= 0, "Value cannot be less than 0.");
 
 			this.Value = value;
 			this.Description = description;

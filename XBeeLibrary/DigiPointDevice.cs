@@ -90,12 +90,7 @@ namespace Kveer.XBeeApi
 		{
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.digi.xbee.api.XBeeDevice#open()
-		 */
-		//@Override
-		public void open()/*throws XBeeException */{
+		public void Open()/*throws XBeeException */{
 			base.Open();
 			if (IsRemote)
 				return;

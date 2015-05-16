@@ -18,8 +18,15 @@ namespace Kveer.XBeeApi.Models
 	/// Each device has its own 16-bit address which is unique in the network. It is automatically assigned when the radio joins the network for ZigBee and ZNet 2.5, and manually configured in 802.15.4 radios.
 	/// </summary>
 	/// <remarks>DigiMesh and Point-to-Multipoint protocols don't support 16-bit addressing.</remarks>
-	public sealed class XBee16BitAddress:IEquatable<XBee16BitAddress>
+	public sealed class XBee16BitAddress : IEquatable<XBee16BitAddress>
 	{
+		/// <summary>
+		/// Pattern for the 16-bit address string.
+		/// </summary>
+		public static readonly Regex XBEE_16_BIT_ADDRESS_PATTERN = new Regex("(0[xX])?[0-9a-fA-F]{1,4}");
+
+		private const int HASH_SEED = 23;
+
 		/// <summary>
 		/// 16-bit address reserved for the coordinator (value: 0000).
 		/// </summary>
@@ -35,13 +42,6 @@ namespace Kveer.XBeeApi.Models
 		/// </summary>
 		public static readonly XBee16BitAddress UNKNOWN_ADDRESS = new XBee16BitAddress("FFFE");
 
-		/// <summary>
-		/// Pattern for the 16-bit address string.
-		/// </summary>
-		public static readonly Regex XBEE_16_BIT_ADDRESS_PATTERN = new Regex("(0[xX])?[0-9a-fA-F]{1,4}");
-
-		private const int HASH_SEED = 23;
-
 		// Variables
 		private readonly byte[] address;
 
@@ -51,7 +51,7 @@ namespace Kveer.XBeeApi.Models
 		/// <param name="hsb">High significant byte of the address.</param>
 		/// <param name="lsb">Low significant byte of the address.</param>
 		/// <exception cref="ArgumentOutOfRangeException">if <paramref name="hsb"/> &gt; 255 or <paramref name="hsb"/> &lt; 0 or <paramref name="lsb"/> &gt; 255 or <paramref name="lsb"/> &lt; 0.</exception>
-		public XBee16BitAddress(int hsb, int lsb)
+		public XBee16BitAddress(byte hsb, byte lsb)
 		{
 			Contract.Requires<ArgumentOutOfRangeException>(hsb >= 0 && hsb <= 255, "HSB must be between 0 and 255.");
 			Contract.Requires<ArgumentOutOfRangeException>(lsb >= 0 && lsb <= 255, "LSB must be between 0 and 255.");
@@ -92,7 +92,7 @@ namespace Kveer.XBeeApi.Models
 		public XBee16BitAddress(string address)
 		{
 			Contract.Requires<ArgumentNullException>(address != null, "Address cannot be null.");
-			Contract.Requires<ArgumentOutOfRangeException>(address.Length < 1, "Address must contain at least 1 character.");
+			Contract.Requires<ArgumentOutOfRangeException>(address.Length >= 1, "Address must contain at least 1 character.");
 			Contract.Requires<FormatException>(XBEE_16_BIT_ADDRESS_PATTERN.IsMatch(address), "Address must follow this pattern: (0x)XXXX.");
 
 			// Convert the string into a byte array.
@@ -145,7 +145,7 @@ namespace Kveer.XBeeApi.Models
 
 			return other != null && Equals(other);
 		}
-		
+
 		public bool Equals(XBee16BitAddress other)
 		{
 			return other != null && Enumerable.SequenceEqual(other.Value, Value);

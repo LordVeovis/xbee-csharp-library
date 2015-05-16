@@ -113,7 +113,7 @@ namespace Kveer.XBeeApi.Packet
 					{
 						try
 						{
-							data.Write(apiData, 0, APIData.Length);
+							data.Write(apiData, 0, apiData.Length);
 						}
 						catch (IOException e)
 						{

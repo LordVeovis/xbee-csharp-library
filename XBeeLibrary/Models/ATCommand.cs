@@ -53,7 +53,7 @@ namespace Kveer.XBeeApi.Models
 		public ATCommand(string command, byte[] parameter)
 		{
 			Contract.Requires<ArgumentNullException>(command != null, "Command cannot be null.");
-			Contract.Requires<ArgumentException>(command.Length != 2, "Command lenght must be 2.");
+			Contract.Requires<ArgumentException>(command.Length == 2, "Command lenght must be 2.");
 
 			this.Command = command;
 			this.Parameter = parameter;

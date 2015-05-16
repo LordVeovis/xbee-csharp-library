@@ -113,10 +113,7 @@ namespace Kveer.XBeeApi
 
 		public override string ToString()
 		{
-			String id = GetNodeID();
-			if (id == null)
-				id = "";
-			return string.Format("{0} - {1}", Get64BitAddress(), GetNodeID());
+			return string.Format("{0} - {1}", Get64BitAddress(), NodeID ?? "");
 		}
 	}
 }
