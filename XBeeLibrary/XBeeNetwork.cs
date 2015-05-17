@@ -6,21 +6,18 @@ using Kveer.XBeeApi.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Kveer.XBeeApi
 {
-	/**
-	 * This class represents an XBee Network.
-	 *  
-	 * <p>The network allows the discovery of remote devices in the same network 
-	 * as the local one and stores them.</p>
-	 */
+	/// <summary>
+	/// This class represents an XBee Network.
+	/// </summary>
+	/// <remarks>The network allows the discovery of remote devices in the same network as the local one and stores them.</remarks>
 	public class XBeeNetwork
 	{
-
 		// Variables.
-
 		private XBeeDevice localDevice;
 
 		private ConcurrentDictionary<XBee64BitAddress, RemoteXBeeDevice> remotesBy64BitAddr;
@@ -79,15 +76,12 @@ namespace Kveer.XBeeApi
 		 * @see #getDevice(String)
 		 * @see RemoteXBeeDevice
 		 */
-		public RemoteXBeeDevice discoverDevice(String id)/*throws XBeeException */{
-			if (id == null)
-				throw new ArgumentNullException("Device identifier cannot be null.");
-			if (id.Length == 0)
-				throw new ArgumentException("Device identifier cannot be an empty string.");
+		public RemoteXBeeDevice DiscoverDevice(string id)/*throws XBeeException */{
+			Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(id), "Device identifier cannot be null or empty.");
 
 			logger.DebugFormat("{0}Discovering '{1}' device.", localDevice.ToString(), id);
 
-			return nodeDiscovery.discoverDevice(id);
+			return nodeDiscovery.DiscoverDevice(id);
 		}
 
 		/**
@@ -115,7 +109,7 @@ namespace Kveer.XBeeApi
 		 * @see #discoverDevice(String)
 		 * @see RemoteXBeeDevice
 		 */
-		public List<RemoteXBeeDevice> discoverDevices(IList<String> ids)/*throws XBeeException */{
+		public List<RemoteXBeeDevice> discoverDevices(IList<string> ids)/*throws XBeeException */{
 			if (ids == null)
 				throw new ArgumentNullException("List of device identifiers cannot be null.");
 			if (ids.Count == 0)
@@ -411,7 +405,10 @@ namespace Kveer.XBeeApi
 
 			logger.DebugFormat("{0}Getting device '{1}' from network.", localDevice.ToString(), address);
 
-			return remotesBy64BitAddr[address];
+			RemoteXBeeDevice result;
+			remotesBy64BitAddr.TryGetValue(address, out result);
+
+			return result;
 		}
 
 		/**
@@ -510,8 +507,7 @@ namespace Kveer.XBeeApi
 			if (addr64 != null && !addr64.Equals(XBee64BitAddress.UNKNOWN_ADDRESS))
 			{
 				// The device has 64-bit address, so look in the 64-bit map.
-				devInNetwork = remotesBy64BitAddr[addr64];
-				if (devInNetwork != null)
+				if (remotesBy64BitAddr.TryGetValue(addr64, out devInNetwork))
 				{
 					// The device exists in the 64-bit map, so update the reference and return it.
 					logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.ToString(), devInNetwork.ToString());
@@ -524,8 +520,7 @@ namespace Kveer.XBeeApi
 					if (addr16 != null && !addr16.Equals(XBee16BitAddress.UNKNOWN_ADDRESS))
 					{
 						// The device has 16-bit address, so look in the 16-bit map.
-						devInNetwork = remotesBy16BitAddr[addr16];
-						if (devInNetwork != null)
+						if (remotesBy16BitAddr.TryGetValue(addr16, out devInNetwork))
 						{
 							// The device exists in the 16-bit map, so remove it and add it to the 64-bit map.
 							logger.DebugFormat("{0}Existing device '{1}' in network.", localDevice.ToString(), devInNetwork.ToString());

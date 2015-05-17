@@ -95,17 +95,13 @@ namespace Kveer.XBeeApi
 				throw new XBeeDeviceException("XBee device is not a " + GetXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.digi.xbee.api.XBeeDevice#GetNetwork()
-		 */
-		//@Override
 		public override XBeeNetwork GetNetwork()
 		{
 			if (!IsOpen)
 				throw new InterfaceNotOpenException();
 			if (network == null)
 				network = new ZigBeeNetwork(this);
+
 			return network;
 		}
 

@@ -255,11 +255,16 @@ namespace Kveer.XBeeApi.Connection.Serial
 					flowControl = "H";
 				else if (parameters.FlowControl == Handshake.XOnXOff)
 					flowControl = "S";
-				return "[" + port + " - " + baudRate + "/" + parameters.DataBits +
-						"/" + parity + "/" + parameters.StopBits + "/" + flowControl + "] ";
+				return string.Format("[{0} - {1}/{2}/{3}/{4}/{5}] ",
+					port,
+					baudRate,
+					parameters.DataBits,
+					parity,
+					parameters.StopBits,
+					flowControl);
 			}
 			else
-				return "[" + port + " - " + baudRate + "/8/N/1/N] ";
+				return string.Format("[{0} - {1}/8/N/1/N] ", port, baudRate);
 		}
 
 		public SerialPort SerialPort { get; protected set; }

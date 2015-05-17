@@ -764,9 +764,9 @@ namespace Kveer.XBeeApi
 							packet = new ATCommandQueuePacket(GetNextFrameID(), command.Command, command.Parameter);
 					}
 					if (command.Parameter == null)
-						logger.DebugFormat(ToString() + "Sending AT command '{}'.", command.Command);
+						logger.DebugFormat(ToString() + "Sending AT command '{0}'.", command.Command);
 					else
-						logger.DebugFormat(ToString() + "Sending AT command '{} {}'.", command.Command, HexUtils.PrettyHexString(command.Parameter));
+						logger.DebugFormat(ToString() + "Sending AT command '{0} {1}'.", command.Command, HexUtils.PrettyHexString(command.Parameter));
 					try
 					{
 						// Send the packet and build the corresponding response depending on if the device is local or remote.
@@ -781,7 +781,7 @@ namespace Kveer.XBeeApi
 							response = new ATCommandResponse(command, ((RemoteATCommandResponsePacket)answerPacket).getCommandValue(), ((RemoteATCommandResponsePacket)answerPacket).Status);
 
 						if (response != null && response.Response != null)
-							logger.DebugFormat(ToString() + "AT command response: {}.", HexUtils.PrettyHexString(response.Response));
+							logger.DebugFormat(ToString() + "AT command response: {0}.", HexUtils.PrettyHexString(response.Response));
 						else
 							logger.Debug(ToString() + "AT command response: null.");
 					}
@@ -1113,7 +1113,7 @@ namespace Kveer.XBeeApi
 		 * @see com.digi.xbee.api.packet.XBeePacket
 		 */
 		private void WritePacket(XBeePacket packet)/*throws IOException */{
-			logger.DebugFormat(ToString() + "Sending XBee packet: \n{}", packet.ToPrettyString());
+			logger.DebugFormat(ToString() + "Sending XBee packet: \n{0}", packet.ToPrettyString());
 			// Write bytes with the required escaping mode.
 			switch (operatingMode)
 			{

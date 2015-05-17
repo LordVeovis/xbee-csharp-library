@@ -90,7 +90,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see #discoverDevices(List)
 		 */
-		public RemoteXBeeDevice discoverDevice(string id)/*throws XBeeException */{
+		public RemoteXBeeDevice DiscoverDevice(string id)/*throws XBeeException */{
 			// Check if the connection is open.
 			if (!xbeeDevice.IsOpen)
 				throw new InterfaceNotOpenException();
@@ -133,7 +133,7 @@ namespace Kveer.XBeeApi
 		 * 
 		 * @see #discoverDevice(String)
 		 */
-		public List<RemoteXBeeDevice> discoverDevices(IList<String> ids)/*throws XBeeException */{
+		public List<RemoteXBeeDevice> discoverDevices(IList<string> ids)/*throws XBeeException */{
 			// Check if the connection is open.
 			if (!xbeeDevice.IsOpen)
 				throw new InterfaceNotOpenException();
