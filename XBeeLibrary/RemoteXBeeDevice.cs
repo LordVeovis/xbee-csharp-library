@@ -101,7 +101,7 @@ namespace Kveer.XBeeApi
 			catch (Kveer.XBeeApi.Exceptions.TimeoutException e)
 			{
 				// Remote 802.15.4 devices do not respond to the AT command.
-				if (localXBeeDevice.GetXBeeProtocol() == XBeeProtocol.RAW_802_15_4)
+				if (localXBeeDevice.XBeeProtocol == XBeeProtocol.RAW_802_15_4)
 					return;
 				else
 					throw e;

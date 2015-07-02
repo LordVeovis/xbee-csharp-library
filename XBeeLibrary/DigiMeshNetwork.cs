@@ -14,16 +14,11 @@ namespace Kveer.XBeeApi
 	 */
 	public class DigiMeshNetwork : XBeeNetwork
 	{
-
-		/**
-		 * Instantiates a new DigiMesh Network object.
-		 * 
-		 * @param device Local DigiMesh device to get the network from.
-		 * 
-		 * @throws ArgumentNullException if {@code device == null}.
-		 * 
-		 * @see DigiMeshDevice
-		 */
+		/// <summary>
+		/// Initializes a new instance of <see cref="DigiMeshNetwork"/>.
+		/// </summary>
+		/// <param name="device">A local DigiMesh device to get the network from.</param>
+		/// <exception cref="ArgumentNullException">if <paramref name="device"/> is null.</exception>
 		public DigiMeshNetwork(DigiMeshDevice device)
 			: base(device)
 		{

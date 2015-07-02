@@ -99,8 +99,8 @@ namespace Kveer.XBeeApi
 		public override void Open()/*throws XBeeException */{
 			base.Open();
 
-			if (xbeeProtocol != XBeeProtocol.DIGI_MESH)
-				throw new XBeeDeviceException("XBee device is not a " + GetXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
+			if (base.XBeeProtocol != XBeeProtocol.DIGI_MESH)
+				throw new XBeeDeviceException("XBee device is not a " + XBeeProtocol.GetDescription() + " device, it is a " + base.XBeeProtocol.GetDescription() + " device.");
 		}
 
 		public override XBeeNetwork GetNetwork()
@@ -112,9 +112,12 @@ namespace Kveer.XBeeApi
 			return network;
 		}
 
-		public override XBeeProtocol GetXBeeProtocol()
+		public override XBeeProtocol XBeeProtocol
 		{
-			return XBeeProtocol.DIGI_MESH;
+			get
+			{
+				return XBeeProtocol.DIGI_MESH;
+			}
 		}
 	}
 }

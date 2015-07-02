@@ -8,11 +8,9 @@ namespace Kveer.XBeeApi
 		// Constants.
 		public static string CURRENT_VERSION = typeof(Version).Assembly.GetName().Version.ToString();
 
-		/**
-		 * Returns the current version of the XBee Java Library.
-		 * 
-		 * @return The current version of the XBee Java Library.
-		 */
+		/// <summary>
+		/// Gets the current version of the XBee C# Library
+		/// </summary>
 		public static string CurrentVersion
 		{
 			get

@@ -524,7 +524,7 @@ namespace Kveer.XBeeApi
 			logger.DebugFormat(ToString() + "Sending data asynchronously to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
 
 			XBeePacket xbeePacket;
-			switch (GetXBeeProtocol())
+			switch (XBeeProtocol)
 			{
 				case XBeeProtocol.RAW_802_15_4:
 					xbeePacket = new TX64Packet(GetNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
@@ -663,7 +663,7 @@ namespace Kveer.XBeeApi
 			logger.DebugFormat(ToString() + "Sending data to {0} >> {1}.", address, HexUtils.PrettyHexString(data));
 
 			XBeePacket xbeePacket;
-			switch (GetXBeeProtocol())
+			switch (XBeeProtocol)
 			{
 				case XBeeProtocol.RAW_802_15_4:
 					xbeePacket = new TX64Packet(GetNextFrameID(), address, (byte)XBeeTransmitOptions.NONE, data);
@@ -768,7 +768,7 @@ namespace Kveer.XBeeApi
 			if (xbeeDevice == null)
 				throw new ArgumentNullException("Remote XBee device cannot be null");
 
-			switch (GetXBeeProtocol())
+			switch (XBeeProtocol)
 			{
 				case XBeeProtocol.ZIGBEE:
 				case XBeeProtocol.DIGI_POINT:

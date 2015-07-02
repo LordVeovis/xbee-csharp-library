@@ -56,7 +56,7 @@ namespace Kveer.XBeeApi
 		{
 
 			// Verify the local device has DigiMesh protocol.
-			if (localXBeeDevice.GetXBeeProtocol() != XBeeProtocol.DIGI_MESH)
+			if (localXBeeDevice.XBeeProtocol != XBeeProtocol.DIGI_MESH)
 				throw new ArgumentException("The protocol of the local XBee device is not " + XBeeProtocol.DIGI_MESH.GetDescription() + ".");
 		}
 
@@ -84,13 +84,16 @@ namespace Kveer.XBeeApi
 		{
 
 			// Verify the local device has DigiMesh protocol.
-			if (localXBeeDevice.GetXBeeProtocol() != XBeeProtocol.DIGI_MESH)
+			if (localXBeeDevice.XBeeProtocol != Models.XBeeProtocol.DIGI_MESH)
 				throw new ArgumentException("The protocol of the local XBee device is not " + XBeeProtocol.DIGI_MESH.GetDescription() + ".");
 		}
 
-		public override XBeeProtocol GetXBeeProtocol()
+		public override XBeeProtocol XBeeProtocol
 		{
-			return XBeeProtocol.DIGI_MESH;
+			get
+			{
+				return XBeeProtocol.DIGI_MESH;
+			}
 		}
 	}
 }

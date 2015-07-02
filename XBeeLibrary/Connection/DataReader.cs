@@ -523,7 +523,7 @@ namespace Kveer.XBeeApi.Connection
 		{
 			RemoteXBeeDevice device = null;
 
-			switch (xbeeDevice.GetXBeeProtocol())
+			switch (xbeeDevice.XBeeProtocol)
 			{
 				case XBeeProtocol.ZIGBEE:
 					device = new RemoteZigBeeDevice(xbeeDevice, addr64, addr16, ni);
@@ -751,14 +751,9 @@ namespace Kveer.XBeeApi.Connection
 			}
 		}
 
-		/**
-		 * Returns whether this Data reader is running or not.
-		 * 
-		 * @return {@code true} if the Data reader is running, {@code false} 
-		 *         otherwise.
-		 * 
-		 * @see #stopReader()
-		 */
+		/// <summary>
+		/// Indicates whether the data reader is running or not.
+		/// </summary>
 		public bool IsRunning
 		{
 			get
@@ -767,11 +762,9 @@ namespace Kveer.XBeeApi.Connection
 			}
 		}
 
-		/**
-		 * Stops the Data reader thread.
-		 * 
-		 * @see #isRunning()
-		 */
+		/// <summary>
+		/// Stops the data reader thread.
+		/// </summary>
 		public void StopReader()
 		{
 			running = false;

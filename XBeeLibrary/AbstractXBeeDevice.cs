@@ -68,8 +68,6 @@ namespace Kveer.XBeeApi
 
 		protected DataReader dataReader = null;
 
-		protected XBeeProtocol xbeeProtocol = XBeeProtocol.UNKNOWN;
-
 		protected OperatingMode operatingMode = OperatingMode.UNKNOWN;
 
 		protected XBee16BitAddress xbee16BitAddress = XBee16BitAddress.UNKNOWN_ADDRESS;
@@ -188,6 +186,7 @@ namespace Kveer.XBeeApi
 		{
 			Contract.Requires<ArgumentNullException>(connectionInterface != null, "ConnectionInterface cannot be null.");
 
+			XBeeProtocol = XBeeProtocol.UNKNOWN;
 			this.connectionInterface = connectionInterface;
 			this.logger = LogManager.GetLogger(this.GetType());
 			logger.DebugFormat(ToString() + "Using the connection interface {0}.",
@@ -257,6 +256,7 @@ namespace Kveer.XBeeApi
 			if (localXBeeDevice.IsRemote)
 				throw new ArgumentException("The given local XBee device is remote.");
 
+			XBeeProtocol = XBeeProtocol.UNKNOWN;
 			this.localXBeeDevice = localXBeeDevice;
 			this.connectionInterface = localXBeeDevice.GetConnectionInterface();
 			this.xbee64BitAddress = addr64;
@@ -346,12 +346,12 @@ namespace Kveer.XBeeApi
 			firmwareVersion = HexUtils.ByteArrayToHexString(response);
 
 			// Obtain the device protocol.
-			xbeeProtocol = XBeeProtocol.UNKNOWN.DetermineProtocol(hardwareVersion, firmwareVersion);
+			XBeeProtocol = XBeeProtocol.UNKNOWN.DetermineProtocol(hardwareVersion, firmwareVersion);
 
 			// Get the 16-bit address. This must be done after obtaining the protocol because 
 			// DigiMesh and Point-to-Multipoint protocols don't have 16-bit addresses.
-			if (GetXBeeProtocol() != XBeeProtocol.DIGI_MESH
-					&& GetXBeeProtocol() != XBeeProtocol.DIGI_POINT)
+			if (XBeeProtocol != XBeeProtocol.DIGI_MESH
+					&& XBeeProtocol != XBeeProtocol.DIGI_POINT)
 			{
 				response = GetParameter("MY");
 				xbee16BitAddress = new XBee16BitAddress(response);
@@ -405,19 +405,11 @@ namespace Kveer.XBeeApi
 			return operatingMode;
 		}
 
-		/**
-		 * Returns the XBee Protocol of this XBee device.
-		 * 
-		 * <p>To refresh this value use the {@link #readDeviceInfo()} method.</p>
-		 * 
-		 * @return The XBee device protocol.
-		 * 
-		 * @see com.digi.xbee.api.models.XBeeProtocol
-		 */
-		public virtual XBeeProtocol GetXBeeProtocol()
-		{
-			return xbeeProtocol;
-		}
+		/// <summary>
+		/// Gets the XBee protocol of this XBee device.
+		/// </summary>
+		/// <remarks>To refresh this value, use the <see cref="ReadDeviceInfo"/> method.</remarks>
+		public virtual XBeeProtocol XBeeProtocol { get; protected set; }
 
 		/// <summary>
 		/// Gets or sets the node identifier of thix XBee device.
@@ -1800,7 +1792,7 @@ namespace Kveer.XBeeApi
 
 			// The response to the IS command in local 802.15.4 devices is empty, 
 			// so we have to create a packet listener to receive the IO sample.
-			if (!IsRemote && GetXBeeProtocol() == XBeeProtocol.RAW_802_15_4)
+			if (!IsRemote && XBeeProtocol == XBeeProtocol.RAW_802_15_4)
 			{
 				ExecuteParameter("IS");
 				samplePayload = receiveRaw802IOPacket();
@@ -2125,7 +2117,7 @@ namespace Kveer.XBeeApi
 		 * @see #setPANID(byte[])
 		 */
 		public byte[] GetPANID()/*throws TimeoutException, XBeeException */{
-			switch (GetXBeeProtocol())
+			switch (XBeeProtocol)
 			{
 				case XBeeProtocol.ZIGBEE:
 					return GetParameter("OP");

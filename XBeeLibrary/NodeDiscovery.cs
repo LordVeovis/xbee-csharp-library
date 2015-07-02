@@ -178,8 +178,8 @@ namespace Kveer.XBeeApi
 		 * @throws InterfaceNotOpenException if the device is not open.
 		 * @throws ArgumentNullException if {@code listeners == null}.
 		 * 
-		 * @see #isRunning()
-		 * @see #stopDiscoveryProcess()
+		 * @see #IsRunning()
+		 * @see #StopDiscoveryProcess()
 		 */
 		public void startDiscoveryProcess(IList<IDiscoveryListener> listeners)
 		{
@@ -211,26 +211,25 @@ namespace Kveer.XBeeApi
 		/**
 		 * Stops the discovery process if it is running.
 		 * 
-		 * @see #isRunning()
+		 * @see #IsRunning()
 		 * @see #startDiscoveryProcess(List)
 		 */
-		public void stopDiscoveryProcess()
+		public void StopDiscoveryProcess()
 		{
 			discovering = false;
 		}
 
-		/**
-		 * Retrieves whether the discovery process is running.
-		 * 
-		 * @return {@code true} if the discovery process is running, {@code false} 
-		 *         otherwise.
-		 * 
-		 * @see #startDiscoveryProcess(List)
-		 * @see #stopDiscoveryProcess()
-		 */
-		public bool isRunning()
+		/// <summary>
+		/// Indicates whether the discovery process is running.
+		/// </summary>
+		/// <see cref="StartDiscoveryProcess"/>
+		/// <see cref="StopDiscoveryProcess"/>
+		public bool IsRunning
 		{
-			return running;
+			get
+			{
+				return running;
+			}
 		}
 
 		/**
@@ -292,7 +291,7 @@ namespace Kveer.XBeeApi
 							_node.deviceList.Add(rdevice);
 						}
 						// If the local device is 802.15.4 wait until the 'end' command is received.
-						if (_node.xbeeDevice.GetXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
+						if (_node.xbeeDevice.XBeeProtocol != XBeeProtocol.RAW_802_15_4)
 							_node.discovering = false;
 					}
 				}
@@ -327,12 +326,12 @@ namespace Kveer.XBeeApi
 
 				// In 802.15.4 devices, the discovery finishes when the 'end' command 
 				// is received, so it's not necessary to calculate the timeout.
-				if (xbeeDevice.GetXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
+				if (xbeeDevice.XBeeProtocol != XBeeProtocol.RAW_802_15_4)
 					deadLine += CalculateTimeout(listeners);
 
 				sendNodeDiscoverCommand(id);
 
-				if (xbeeDevice.GetXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
+				if (xbeeDevice.XBeeProtocol != XBeeProtocol.RAW_802_15_4)
 				{
 					// Wait for scan timeout.
 					while (discovering)
@@ -411,17 +410,17 @@ namespace Kveer.XBeeApi
 				// In DigiMesh/DigiPoint the network discovery timeout is NT + the 
 				// network propagation time. It means that if the user sends an AT 
 				// command just after NT ms, s/he will receive a timeout exception. 
-				if (xbeeDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_MESH)
+				if (xbeeDevice.XBeeProtocol == XBeeProtocol.DIGI_MESH)
 				{
 					timeout += 3000;
 				}
-				else if (xbeeDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_POINT)
+				else if (xbeeDevice.XBeeProtocol == XBeeProtocol.DIGI_POINT)
 				{
 					timeout += 8000;
 				}
 			}
 
-			if (xbeeDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_MESH)
+			if (xbeeDevice.XBeeProtocol == XBeeProtocol.DIGI_MESH)
 			{
 				try
 				{
@@ -513,7 +512,7 @@ namespace Kveer.XBeeApi
 				addr64 = new XBee64BitAddress(await ByteUtils.ReadBytes(8, inputStream));
 
 
-				switch (localDevice.GetXBeeProtocol())
+				switch (localDevice.XBeeProtocol)
 				{
 					case XBeeProtocol.ZIGBEE:
 					case XBeeProtocol.DIGI_MESH:
@@ -537,7 +536,7 @@ namespace Kveer.XBeeApi
 						manufacturerID = await ByteUtils.ReadBytes(2, inputStream);
 
 						logger.DebugFormat("{0}Discovered {1} device: 16-bit[{2}], 64-bit[{3}], id[{4}], parent[{5}], profile[{6}], manufacturer[{7}].",
-								xbeeDevice.ToString(), localDevice.GetXBeeProtocol().GetDescription(), addr16,
+								xbeeDevice.ToString(), localDevice.XBeeProtocol.GetDescription(), addr16,
 								addr64, id, parentAddress, HexUtils.ByteArrayToHexString(profileID),
 								HexUtils.ByteArrayToHexString(manufacturerID));
 
@@ -549,18 +548,18 @@ namespace Kveer.XBeeApi
 						id = ByteUtils.ReadString(inputStream);
 
 						logger.DebugFormat("{0}Discovered {1} device: 16-bit[{2}], 64-bit[{3}], id[{4}], rssi[{5}].",
-								xbeeDevice.ToString(), localDevice.GetXBeeProtocol().GetDescription(), addr16, addr64, id, signalStrength);
+								xbeeDevice.ToString(), localDevice.XBeeProtocol.GetDescription(), addr16, addr64, id, signalStrength);
 
 						break;
 					case XBeeProtocol.UNKNOWN:
 					default:
 						logger.DebugFormat("{0}Discovered {1} device: 16-bit[{2}], 64-bit[{3}].",
-								xbeeDevice.ToString(), localDevice.GetXBeeProtocol().GetDescription(), addr16, addr64);
+								xbeeDevice.ToString(), localDevice.XBeeProtocol.GetDescription(), addr16, addr64);
 						break;
 				}
 
 				// Create device and fill with parameters.
-				switch (localDevice.GetXBeeProtocol())
+				switch (localDevice.XBeeProtocol)
 				{
 					case XBeeProtocol.ZIGBEE:
 						device = new RemoteZigBeeDevice(localDevice, addr64, addr16, id/*, role*/);

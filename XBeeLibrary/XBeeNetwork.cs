@@ -29,15 +29,10 @@ namespace Kveer.XBeeApi
 
 		protected ILog logger;
 
-		/**
-		 * Instantiates a new {@code XBeeNetwork} object.
-		 * 
-		 * @param device Local XBee device to get the network from.
-		 * 
-		 * @throws ArgumentNullException if {@code device == null}.
-		 * 
-		 * @see XBeeDevice
-		 */
+		/// <summary>
+		/// Initializes a new instance of <see cref="XBeeNetwork"/>.
+		/// </summary>
+		/// <param name="device">A local XBee device to get the network from.</param>
 		public XBeeNetwork(XBeeDevice device)
 		{
 			if (device == null)
@@ -191,11 +186,11 @@ namespace Kveer.XBeeApi
 		 * @throws InterfaceNotOpenException if the device is not open.
 		 * 
 		 * @see #addDiscoveryListener(IDiscoveryListener)
-		 * @see #stopDiscoveryProcess()
+		 * @see #StopDiscoveryProcess()
 		 */
 		public void startDiscoveryProcess()
 		{
-			if (isDiscoveryRunning())
+			if (IsDiscoveryRunning)
 				throw new InvalidOperationException("The discovery process is already running.");
 
 			lock (discoveryListeners)
@@ -212,27 +207,25 @@ namespace Kveer.XBeeApi
 		 * any parameter during the discovery process you will receive a timeout 
 		 * exception.</p>
 		 * 
-		 * @see #isDiscoveryRunning()
+		 * @see #IsDiscoveryRunning()
 		 * @see #removeDiscoveryListener(IDiscoveryListener)
 		 * @see #startDiscoveryProcess()
 		 */
-		public void stopDiscoveryProcess()
+		public void StopDiscoveryProcess()
 		{
-			nodeDiscovery.stopDiscoveryProcess();
+			nodeDiscovery.StopDiscoveryProcess();
 		}
 
-		/**
-		 * Retrieves whether the discovery process is running or not.
-		 * 
-		 * @return {@code true} if the discovery process is running, {@code false} 
-		 *         otherwise.
-		 * 
-		 * @see #startDiscoveryProcess()
-		 * @see #stopDiscoveryProcess()
-		 */
-		public bool isDiscoveryRunning()
+		/// <summary>
+		/// Indicates whether the discovery process is running or not.
+		/// </summary>
+		/// <returns>true if the discovery process is running, false otherwise.</returns>
+		public bool IsDiscoveryRunning
 		{
-			return nodeDiscovery.isRunning();
+			get
+			{
+				return nodeDiscovery.IsRunning;
+			}
 		}
 
 		/**
@@ -275,7 +268,7 @@ namespace Kveer.XBeeApi
 			if (options == null)
 				throw new ArgumentNullException("Options cannot be null.");
 
-			int value = DiscoveryOptions.APPEND_DD.CalculateDiscoveryValue(localDevice.GetXBeeProtocol(), options);
+			int value = DiscoveryOptions.APPEND_DD.CalculateDiscoveryValue(localDevice.XBeeProtocol, options);
 			localDevice.SetParameter("NO", ByteUtils.IntToByteArray(value));
 		}
 
@@ -428,9 +421,9 @@ namespace Kveer.XBeeApi
 		 * @throws OperationNotSupportedException if the protocol of the local XBee device is DigiMesh or Point-to-Multipoint.
 		 */
 		public RemoteXBeeDevice GetDevice(XBee16BitAddress address)/*throws OperationNotSupportedException */{
-			if (localDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_MESH)
+			if (localDevice.XBeeProtocol == XBeeProtocol.DIGI_MESH)
 				throw new OperationNotSupportedException("DigiMesh protocol does not support 16-bit addressing.");
-			if (localDevice.GetXBeeProtocol() == XBeeProtocol.DIGI_POINT)
+			if (localDevice.XBeeProtocol == XBeeProtocol.DIGI_POINT)
 				throw new OperationNotSupportedException("Point-to-Multipoint protocol does not support 16-bit addressing.");
 			if (address == null)
 				throw new ArgumentNullException("16-bit address cannot be null.");
@@ -756,7 +749,7 @@ namespace Kveer.XBeeApi
 
 			XBee16BitAddress address = null;
 
-			switch (device.GetXBeeProtocol())
+			switch (device.XBeeProtocol)
 			{
 				case XBeeProtocol.RAW_802_15_4:
 					address = ((RemoteRaw802Device)device).Get16BitAddress();

@@ -13,16 +13,11 @@ namespace Kveer.XBeeApi
 	 */
 	public class Raw802Network : XBeeNetwork
 	{
-
-		/**
-		 * Instantiates a new 802.15.4 Network object.
-		 * 
-		 * @param device Local 802.15.4 device to get the network from.
-		 * 
-		 * @throws ArgumentNullException if {@code device == null}.
-		 * 
-		 * @see Raw802Device
-		 */
+		/// <summary>
+		/// Initializes a new instance of <see cref="Raw802Network"/> to represents a 802.15.4 network.
+		/// </summary>
+		/// <param name="device">A local 802.15.4 device to get the network from.</param>
+		/// <exception cref="ArgumentNullException">if <paramref name="device"/> is null.</exception>
 		public Raw802Network(Raw802Device device)
 			: base(device)
 		{

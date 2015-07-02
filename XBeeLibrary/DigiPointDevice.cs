@@ -92,10 +92,12 @@ namespace Kveer.XBeeApi
 
 		public override void Open()/*throws XBeeException */{
 			base.Open();
+
 			if (IsRemote)
 				return;
-			if (xbeeProtocol != XBeeProtocol.DIGI_POINT)
-				throw new XBeeDeviceException("XBee device is not a " + GetXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
+
+			if (base.XBeeProtocol != XBeeProtocol.DIGI_POINT)
+				throw new XBeeDeviceException("XBee device is not a " + XBeeProtocol.GetDescription() + " device, it is a " + base.XBeeProtocol.GetDescription() + " device.");
 		}
 
 		/*
@@ -113,14 +115,12 @@ namespace Kveer.XBeeApi
 			return network;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.digi.xbee.api.XBeeDevice#getXBeeProtocol()
-		 */
-		//@Override
-		public override XBeeProtocol GetXBeeProtocol()
+		public override XBeeProtocol XBeeProtocol
 		{
-			return XBeeProtocol.DIGI_POINT;
+			get
+			{
+				return XBeeProtocol.DIGI_POINT;
+			}
 		}
 	}
 }

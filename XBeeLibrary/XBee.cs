@@ -4,9 +4,9 @@ using System;
 
 namespace Kveer.XBeeApi
 {
-	/**
-	 * Helper class used to create a serial port connection interface.
-	 */
+	/// <summary>
+	/// Helper class used to create a serial port connection interface.
+	/// </summary>
 	public class XBee
 	{
 		/**

@@ -55,7 +55,7 @@ namespace Kveer.XBeeApi
 		{
 
 			// Verify the local device has ZigBee protocol.
-			if (localXBeeDevice.GetXBeeProtocol() != XBeeProtocol.ZIGBEE)
+			if (localXBeeDevice.XBeeProtocol != XBeeProtocol.ZIGBEE)
 				throw new ArgumentException("The protocol of the local XBee device is not " + XBeeProtocol.ZIGBEE.GetDescription() + ".");
 		}
 
@@ -87,13 +87,16 @@ namespace Kveer.XBeeApi
 		{
 
 			// Verify the local device has ZigBee protocol.
-			if (localXBeeDevice.GetXBeeProtocol() != XBeeProtocol.ZIGBEE)
+			if (localXBeeDevice.XBeeProtocol != XBeeProtocol.ZIGBEE)
 				throw new ArgumentException("The protocol of the local XBee device is not " + XBeeProtocol.ZIGBEE.GetDescription() + ".");
 		}
 
-		public override XBeeProtocol GetXBeeProtocol()
+		public override XBeeProtocol XBeeProtocol
 		{
-			return XBeeProtocol.ZIGBEE;
+			get
+			{
+				return XBeeProtocol.ZIGBEE;
+			}
 		}
 	}
 }

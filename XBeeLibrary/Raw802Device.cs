@@ -103,8 +103,9 @@ namespace Kveer.XBeeApi
 
 			if (IsRemote)
 				return;
-			if (xbeeProtocol != XBeeProtocol.RAW_802_15_4)
-				throw new XBeeDeviceException("XBee device is not a " + GetXBeeProtocol().GetDescription() + " device, it is a " + xbeeProtocol.GetDescription() + " device.");
+
+			if (base.XBeeProtocol != XBeeProtocol.RAW_802_15_4)
+				throw new XBeeDeviceException("XBee device is not a " + XBeeProtocol.GetDescription() + " device, it is a " + base.XBeeProtocol.GetDescription() + " device.");
 		}
 
 		/*
@@ -119,17 +120,16 @@ namespace Kveer.XBeeApi
 
 			if (network == null)
 				network = new Raw802Network(this);
+
 			return network;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.digi.xbee.api.XBeeDevice#getXBeeProtocol()
-		 */
-		//@Override
-		public override XBeeProtocol GetXBeeProtocol()
+		public override XBeeProtocol XBeeProtocol
 		{
-			return XBeeProtocol.RAW_802_15_4;
+			get
+			{
+				return XBeeProtocol.RAW_802_15_4;
+			}
 		}
 
 		/**

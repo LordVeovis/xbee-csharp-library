@@ -62,7 +62,7 @@ namespace Kveer.XBeeApi
 		{
 
 			// Verify the local device has 802.15.4 protocol.
-			if (localXBeeDevice.GetXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
+			if (localXBeeDevice.XBeeProtocol != XBeeProtocol.RAW_802_15_4)
 				throw new ArgumentException("The protocol of the local XBee device is not " + XBeeProtocol.RAW_802_15_4.GetDescription() + ".");
 		}
 
@@ -110,7 +110,7 @@ namespace Kveer.XBeeApi
 		{
 
 			// Verify the local device has 802.15.4 protocol.
-			if (localXBeeDevice.GetXBeeProtocol() != XBeeProtocol.RAW_802_15_4)
+			if (localXBeeDevice.XBeeProtocol != XBeeProtocol.RAW_802_15_4)
 				throw new ArgumentException("The protocol of the local XBee device is not " + XBeeProtocol.RAW_802_15_4.GetDescription() + ".");
 
 			this.xbee16BitAddress = addr16;
@@ -129,9 +129,12 @@ namespace Kveer.XBeeApi
 		}
 
 
-		public override XBeeProtocol GetXBeeProtocol()
+		public override XBeeProtocol XBeeProtocol
 		{
-			return XBeeProtocol.RAW_802_15_4;
+			get
+			{
+				return XBeeProtocol.RAW_802_15_4;
+			}
 		}
 	}
 }
