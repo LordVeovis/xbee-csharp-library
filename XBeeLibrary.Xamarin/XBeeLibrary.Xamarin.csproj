@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>XBeeLibrary.Xamarin</PackageId>
+    <RootNamespace>XBeeLibrary.Xamarin</RootNamespace>
+    <AssemblyName>XBeeLibrary.Xamarin</AssemblyName>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <Company>Digi International Inc.</Company>
+    <Copyright>Copyright 2019, Digi International Inc. All rights reserved.</Copyright>
+    <Product>XBee Library for Xamarin</Product>
+    <Title>XBee Library for Xamarin</Title>
+    <Authors>Digi International Inc.</Authors>
+    <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>http://www.digi.com/resources/documentation/digidocs/90002359/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/digidotcom/xbee-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIconUrl>https://raw.githubusercontent.com/digidotcom/xbee-csharp/master/nuget_icon.png</PackageIconUrl>
+    <Description>C# library for Xamarin to interact with Digi International's XBee radio frequency modules from mobile devices.</Description>
+    <PackageTags>xbee, library, xamarin, digi-xbee, digi, zigbee, bluetooth, rf</PackageTags>
+    <PackageReleaseNotes>
+      <![CDATA[
+        - First release. Everything is new.
+      ]]>
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="release_notes.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Common.Logging" Version="3.4.1" />
+    <PackageReference Include="Plugin.BLE" Version="1.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XBeeLibrary.Core\XBeeLibrary.Core.csproj" />
+  </ItemGroup>
+
+</Project>

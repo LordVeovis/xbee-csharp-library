@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:BleConfigurationSample"
+             x:Class="BleConfigurationSample.MainPage"
+             Title="XBee BLE Configuration Sample"
+             Padding="10,15,5,10">
+
+    <StackLayout Spacing="10">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+            <Label Text="Select your XBee device" HorizontalOptions="StartAndExpand" VerticalOptions="Center" StyleClass="medium-label"/>
+            <ActivityIndicator IsVisible="{Binding IsScanning}" IsRunning="{Binding IsScanning}" VerticalOptions="End" HeightRequest="25"/>
+        </StackLayout>
+        <ListView ItemsSource="{Binding Devices}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+                  HasUnevenRows="true" ItemSelected="OnItemSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="7,10,7,10" Spacing="0">
+                            <Label Text="{Binding Name}" Font="Bold,18" />
+                            <StackLayout Orientation="Horizontal" Spacing="0">
+                                <Label Text="MAC: "/>
+                                <Label Text="{Binding Mac}"/>
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
+</ContentPage>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<BleMicroPythonSample:CustomContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:BleMicroPythonSample="clr-namespace:BleMicroPythonSample;assembly=BleMicroPythonSample"
+             x:Class="BleMicroPythonSample.TemperaturePage"
+             Title="XBee BLE MicroPython Sample"
+             EnableBackButtonOverride="True"
+             Padding="10">
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid x:Name="dataGrid" VerticalOptions="CenterAndExpand" Opacity="0.2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6*" />
+                    <ColumnDefinition Width="4*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="TEMPERATURE" FontSize="Large" HorizontalOptions="Center" />
+                <Label Grid.Column="0" Grid.Row="1" Text="{Binding TemperatureValue}" Font="Bold,60" TextColor="{Binding ValuesColor}" HorizontalOptions="End" Margin="0,0,20,0" />
+                <Label Grid.Column="1" Grid.Row="1" Text="ºC" FontSize="40" HorizontalOptions="Start" VerticalOptions="End" />
+                <Label Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Text="HUMIDITY" FontSize="Large" HorizontalOptions="Center" Margin="0,20,0,0" />
+                <Label Grid.Column="0" Grid.Row="3" Text="{Binding HumidityValue}" Font="Bold,60" TextColor="{Binding ValuesColor}" HorizontalOptions="End" Margin="0,0,20,0" />
+                <Label Grid.Column="1" Grid.Row="3" Text="% RH" FontSize="40" HorizontalOptions="Start" VerticalOptions="End" />
+            </Grid>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Refresh rate:" VerticalOptions="Center" />
+                <Picker x:Name="ratePicker" HorizontalOptions="FillAndExpand" VerticalOptions="Center" />
+            </StackLayout>
+            <Button x:Name="startButton" Text="Start" Clicked="StartButtonClicked" HorizontalOptions="FillAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+</BleMicroPythonSample:CustomContentPage>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<RelayConsoleSample:CustomContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:RelayConsoleSample="clr-namespace:RelayConsoleSample;assembly=RelayConsoleSample"
+             x:Class="RelayConsoleSample.RelayConsolePage"
+             Title="XBee Relay Console Sample"
+             EnableBackButtonOverride="True"
+             Padding="10">
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                <Label Text="Received User Data Relay messages" VerticalOptions="Center" HorizontalOptions="StartAndExpand" />
+                <Image Source="clear.png" WidthRequest="25" VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearLogCommand}" />
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
+            <Frame BorderColor="DarkGray" Padding="0">
+                <ListView ItemsSource="{Binding ReceivedMessages}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+                          HasUnevenRows="true" Margin="0,0,0,10" ItemSelected="OnItemSelected" />
+            </Frame>
+            <Button Text="Send User Data Relay" Clicked="SendButtonClicked" HorizontalOptions="FillAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+</RelayConsoleSample:CustomContentPage>

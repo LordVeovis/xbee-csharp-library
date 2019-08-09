@@ -1,0 +1,1104 @@
+/*************************************************/
+/***************   General Design   **************/
+/*************************************************/
+@font-face {
+  font-family: 'Open Sans';
+  src: url('../fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+#wrapper {
+  flex: 1 0 auto;
+  min-height: auto;
+}
+
+body, .controls a.navbar-brand {
+  font-family: "Open Sans", Arial, "sans serif";
+  word-break: break-word;
+  color: #717174;
+}
+
+h1, #content h1 > a.link,
+h2, h2 > a.link,
+h3, h3 > a.link,
+h4, h4 > a.link,
+h5, h5 > a.link,
+h6, h6 > a.link,
+#toctitle, #toctitle > a.link,
+.sidebarblock > .content > .title,
+.sidebarblock > .content > .title > a.link {
+  color: #84C361;
+}
+
+.table-striped {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table-striped > thead > tr > th {
+  background-color: #717474;
+  font-weight: normal;
+  color: white;
+}
+
+.table-striped.tableblock td > p,
+.table-striped.tableblock td > p:last-child {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd),
+.table-striped > tbody > tr:nth-of-type(even) {
+  background: transparent;
+}
+
+.table-bordered > thead > tr > td,
+.table-bordered > thead > tr > th {
+  border-bottom-width: 1px;
+}
+.table-bordered, .table-bordered > tbody > tr > td,
+.table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td,
+.table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td,
+.table-bordered > thead > tr > th {
+  border: 1px solid #DEDEDE;
+}
+
+.table-condensed>tbody>tr>td, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>td, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>thead>tr>th {
+  padding: 8px;
+}
+
+h1[id], h2[id], h3[id], h4[id], h5[id], h6[id], dt[id] {
+  padding-top: 10px;
+}
+
+.h1,h1 {
+  font-size: 3.2em;
+}
+.h2,h2 {
+  font-size: 2.8em;
+}
+.h3,h3 {
+  font-size: 2.2em;
+}
+.h4,h4 {
+  font-size: 1.8em;
+}
+.h5,h5 {
+  font-size: 1.4em;
+}
+.h6,h6 {
+  font-size: 1em;
+}
+
+h4, .h4, h5, .h5, h6, .h6 {
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+.inheritance h5, .inheritedMembers h5, article h4{
+  padding-bottom: 8px;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+a:link, a:visited, a:active {
+  text-decoration: none;
+  outline: none !important;
+}
+
+#tg-sb-content a:link, #tg-sb-content a:visited, #tg-sb-content a:active {
+  color: #0074A2;
+}
+
+#tg-sb-content a:hover, footer .links a:hover, #topic-platform a:hover {
+  color: #00B7FF;
+}
+
+p, blockquote, dt, td.content, span.alt,
+.admonitionblock > table td.content,
+p.lead, .paragraph.lead > p,
+#preamble > .sectionbody > .paragraph:first-of-type p {
+  font-size: 14px;
+}
+
+p, .admonitionblock > table td.content,
+p.lead, .paragraph.lead > p,
+#preamble > .sectionbody > .paragraph:first-of-type p {
+  line-height: 26px;
+}
+
+.paragraph.lead > p,
+#preamble > .sectionbody > .paragraph:first-of-type p {
+  color: inherit;
+}
+
+.nav li a {
+  line-height: 24px;
+}
+
+.nav > li > ul > li > a {
+  font-size: 12px;
+  line-height: 22px;
+}
+
+.scroll-line {
+  top: 0px;
+  position: fixed;
+  height: 4px;
+  background: #84C361;
+  width: 0%;
+  z-index: 2000;
+}
+
+code, kbd {
+  font-size: 100%;
+}
+
+/********************************************************/
+/*** Note, Tip, Warning, Caution and Important blocks ***/
+/********************************************************/
+.admonitionblock > table {
+  border-collapse: collapse;
+  border: solid;
+  border-color: #EEEEEE;
+  border-width: 1px;
+  width: 100%;
+}
+
+.admonitionblock > table thead > tr > th,
+.admonitionblock > table > tbody > tr > th,
+.admonitionblock > table > tfoot > tr > th,
+.admonitionblock > table > thead > tr > td,
+.admonitionblock > table > tbody > tr > td,
+.admonitionblock > table > tfoot > tr > td {
+  border-top: none;
+}
+
+.admonitionblock > table > tbody > tr {
+  background-color: #FFFFFF;
+  border-left-style: solid;
+  border-left-width: 6px;
+}
+
+.admonitionblock > table td.icon {
+  font-size: 20px;
+  padding: 10px 15px !important;
+  text-align: left;
+  width: 60px;
+}
+
+.admonitionblock > table td.content {
+  padding-left: 0px;
+}
+
+/* Note Block */
+.admonitionblock td.icon .icon-note:before {
+  content: "\F05A";
+  text-shadow: none;
+  color: #00B7FF;
+}
+.admonitionblock.note > table > tbody > tr {
+  border-left-color: #00B7FF;
+}
+
+/* Tip Block */
+.admonitionblock td.icon .icon-tip:before {
+  content: "\F058";
+  text-shadow: none;
+  color: #669900;
+}
+.admonitionblock.tip > table > tbody > tr {
+  border-left-color: #669900;
+}
+
+/* Warning Block */
+.admonitionblock td.icon .icon-warning:before {
+  content: "\F06A";
+  text-shadow: none;
+  color: #E67300;
+}
+.admonitionblock.warning > table > tbody > tr {
+  border-left-color: #E67300;
+}
+
+/* Caution Block */
+.admonitionblock td.icon .icon-caution:before {
+  content: "\F071";
+  text-shadow: none;
+  color: #D14124;
+}
+.admonitionblock.caution > table > tbody > tr {
+  border-left-color: #D14124;
+}
+
+/* Important Block */
+.admonitionblock td.icon .icon-important:before {
+  content: "\F024";
+  text-shadow: none;
+  color: #CC0000;
+}
+.admonitionblock.important > table > tbody > tr {
+  border-left-color: #CC0000;
+}
+
+/*************************************************/
+/****************   Top Banner   *****************/
+/*************************************************/
+.banner {
+  background-color: #717174;
+  z-index: 1000;
+}
+
+#banner-digi, #banner-digi img {
+  height: 70px;
+}
+
+#banner-digi img {
+  float: left;
+  padding: 15px 0px;
+  cursor: pointer;
+}
+
+#banner-text {
+  color: #FFFFFF;
+  font-weight: bold;
+  font-size: 20px;
+  padding-top: 34px;
+  float: left;
+  margin-bottom: 0px;
+}
+
+/*************************************************/
+/******************   Footer   *******************/
+/*************************************************/
+footer {
+  clear: both;
+  background-color: #717174;
+  margin: 0px 0px 0px 0px;
+  height: 98px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.footer {
+  background-color: #717174;
+  border-top: 0px;
+  padding: 0px;
+}
+
+footer .row {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+footer .links {
+  column-count: 3;
+  -webkit-column-count: 3;
+  text-align: left;
+  padding: 20px 0px;
+  padding-left: 20px;
+}
+
+footer .links a {
+  display: inline-block;
+  width: 120%;
+  padding: 4px 5px;
+  color: white;
+  font-size: 14px;
+  line-height: 1.5em;
+}
+
+footer .links a[href^="http://"]:after,
+footer .links a[href^="https://"]:after {
+  content: none;
+}
+
+footer .copyright {
+  font-size: 15px;
+  color: white;
+  padding: 25px 0px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+footer .copyright-info {
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+footer .footer-icon {
+  padding-left: 20px;
+  padding-top: 8px;
+}
+
+footer .footer-icon img {
+  height: 30px;
+}
+
+.scrollup {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  display: none;
+  background: #84C361;
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;
+  text-align: center;
+  z-index: 100;
+}
+
+@media (max-width: 576px) {
+  .scrollup {
+      width: 40px;
+      height: 40px;
+      bottom: 20px;
+      right: 20px;
+  }
+}
+
+.scrollup:focus {
+  outline: 0;
+}
+
+.scrollup:hover {
+  opacity: 0.8;
+}
+
+.scrollup img {
+  margin-top: 14px;
+}
+
+@media (max-width: 576px) {
+  .scrollup img {
+      margin-top: 11px;
+      width: 18px;
+      height: 18px;
+  }
+}
+
+/*************************************************/
+/**************   Navigation bar   ***************/
+/*************************************************/
+.navbar {
+  min-height: 40px;
+}
+
+.navbar-default {
+  background-color: #DDDDDD;
+  border: none;
+}
+
+.navbar-default .navbar-toggle:focus{
+  background-color: transparent;
+}
+
+.navbar-default .navbar-toggle:active,
+.navbar-default .navbar-toggle:hover {
+  background-color: #84C361;
+}
+
+.navbar-default .navbar-nav>li>a,
+.navbar-default .navbar-brand {
+  color: #717174;
+}
+
+.navbar-default .navbar-toggle {
+  border-color: #717174;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #717174;
+}
+
+.navbar-toggle {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.navbar-brand {
+  height: 40px;
+  padding: 10px 15px;
+}
+
+.navbar-default .navbar-nav > li > a {
+  margin-top: 0px;
+  padding: 8px 10px;
+}
+
+.navbar-default .navbar-nav > li > a:visited,
+.navbar-default .navbar-nav > li > a:active {
+  color: #717174;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color: #00B7FF;
+}
+
+#tg-sb-link {
+  margin-left: -5px;
+  padding-top: 8px;
+  height: 40px;
+}
+
+@media (max-width: 1000px){
+  .navbar-nav>li {
+    float: left;
+  }
+
+  .navbar-nav {
+      float: right !important;
+  }
+
+  .navbar-left, .navbar-right {
+      float: right !important;
+  }
+
+  #search-input {
+    width: 16em;
+  }
+
+  #tg-sb-toc {
+    max-width: none !important;
+  }
+}
+
+/*************************************************/
+/*************   General Container   *************/
+/*************************************************/
+@media (min-width: 300px) {
+  /* All column types have the same with because with this resolution only the
+  content is shown. We don't know what type of column it will be assigned, so
+  we set all of them to the same value to avoid problems. This is related to
+  the javascript in the toc.html file.*/
+  .col-md-2 {
+    width: 290px;
+  }
+  .col-md-8 {
+    width: 290px;
+  }
+  .col-md-10 {
+    width: 290px;
+  }
+  .col-md-12 {
+    width: 290px;
+  }
+
+  #banner-preliminary {
+    width: 100px;
+    margin-top: 10px;
+  }
+}
+
+@media (min-width: 400px) {
+  /* All column types have the same with because with this resolution only the
+  content is shown. We don't know what type of column it will be assigned, so
+  we set all of them to the same value to avoid problems. This is related to
+  the javascript in the toc.html file.*/
+  .col-md-2 {
+    width: 380px;
+  }
+  .col-md-8 {
+    width: 380px;
+  }
+  .col-md-10 {
+    width: 380px;
+  }
+  .col-md-12 {
+    width: 380px;
+  }
+}
+
+@media (min-width: 470px) {
+  /* All column types have the same with because with this resolution only the
+  content is shown. We don't know what type of column it will be assigned, so
+  we set all of them to the same value to avoid problems. This is related to
+  the javascript in the toc.html file.*/
+  .col-md-2 {
+    width: 450px;
+  }
+  .col-md-8 {
+    width: 450px;
+  }
+  .col-md-10 {
+    width: 450px;
+  }
+  .col-md-12 {
+    width: 450px;
+  }
+  #tg-sb-content .tab-panel .nav-tabs > li > a {
+    width: 125px;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .container {
+    width: auto;
+  }
+  /* All column types have the same with because with this resolution only the
+  content is shown. We don't know what type of column it will be assigned, so
+  we set all of them to the same value to avoid problems. This is related to
+  the javascript in the toc.html file.*/
+  .col-md-2 {
+    width: 100%;
+  }
+  .col-md-8 {
+    width: 100%;
+  }
+  .col-md-10 {
+    width: 100%;
+  }
+  .col-md-12 {
+    width: 100%;
+  }
+  #tg-sb-content .tab-panel .nav-tabs > li > a {
+    width: 230px;
+  }
+  #tg-sb-content {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .article .grid-right {
+    margin-right: 15px;
+    margin-left: 15px;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .aa-input-search {
+    width: 262px;
+  }
+  .aa-dropdown-menu {
+    width: 360px;
+  }
+  .article .grid-right {
+    margin-right: -15px;
+    margin-left: -15px;
+  }
+  #tg-sb-content {
+    padding-left: 40px;
+    padding-right: 0px;
+  }
+}
+@media (min-width: 993px) {
+  .container {
+    width: 940px;
+  }
+  .col-md-8 {
+    width: 560px;
+  }
+  .col-md-2 {
+    width: 185px;
+  }
+}
+
+@media (min-width: 1000px) {
+  .container {
+    width: 950px;
+  }
+  .col-md-8 {
+    width: 560px;
+  }
+  .col-md-2 {
+    width: 190px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .container {
+    width: 1050px;
+  }
+  .col-md-8 {
+    width: 610px;
+  }
+  .col-md-2 {
+    width: 210px;
+  }
+}
+
+/* Extra large devices */
+@media (min-width: 1200px) {
+  .container {
+    width: 1150px;
+  }
+  .col-md-8 {
+    width: 640px;
+  }
+  .col-md-2 {
+    width: 250px;
+  }
+}
+
+/* Extra extra large devices (large desktops, 1500px and up) */
+@media (min-width: 1500px) {
+  .container {
+    width: 1450px;
+  }
+  .col-md-8 {
+    width: 870px;
+  }
+  .col-md-2 {
+    width: 275px;
+  }
+}
+
+.container {
+  max-width: 1800px;
+}
+
+.article {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/*************************************************/
+/******************   Sidebar   ******************/
+/*************************************************/
+#tg-sb-sidebar, #tg-sb-toc {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+#tg-sb-toc {
+  float: right;
+}
+
+ul#toc {
+  border-right: 5px solid #DDDDDD;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 10px;
+}
+
+.nav li {
+  margin: 0px;
+}
+
+/* First level (main folders)*/
+.nav li.level1 a {
+  padding-left: 10px;
+  margin: 0px;
+  background-color: transparent;
+  border: 0px;
+}
+
+/* Rest of levels (even the nested ones)*/
+.nav li.level1 .nav ul li {
+  padding-left: 20px;
+  margin: 0px;
+  background-color: transparent;
+  border: 0px;
+}
+
+.nav li a:hover, .nav li a.active:hover {
+  background-color: #717174;
+  color: white;
+}
+
+.nav li a {
+  font-size: 14px;
+  padding-left: 10px;
+}
+
+.nav li a.sb-subsection {
+  background-color: transparent;
+  font-size: 12px;
+  border: 0px;
+  padding-left: 20px;
+}
+
+.nav .navbar-nav .navbar-right {
+  border: 0px;
+}
+
+.nav li.active > a > span:after,
+.nav li > a > span:after {
+  color: #717174;
+}
+
+.nav li.active > a:hover > span:after,
+.nav li > a:hover > span:after {
+  color: white;
+}
+
+.sidenav, .fixed_header, .toc {
+  background-color: transparent;
+}
+
+.sidefilter {
+  position: relative;
+  margin-top: 20px;
+  width: auto;
+  top: 0px;
+  background-color: #EEEEEE;
+  padding: 8px;
+  border-left: 0px solid #EEEEEE;
+  border-right: 0px solid #EEEEEE;
+}
+
+.sidetoc {
+  position: relative;
+  top: 0px;
+  bottom: 0;
+  width: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: white;
+  border-left: 0px solid white;
+  border-right: 0px solid white;
+}
+
+.sidetoc.shiftup {
+  bottom: 170px;
+}
+
+body .toc {
+  background-color: transparent;
+}
+
+#tg-sb-sidebar > a {
+  background: #EEEEEE;
+  border: 1px solid #CCCCCC;
+  padding: 15px;
+  color: #717174;
+  font-size: 18px;
+  margin: 0px;
+}
+
+
+.toc {
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 10px;
+}
+
+
+.toc .nav li a {
+  color: #717174;
+  font-size: 13px;
+}
+
+.toc .level1 > li > a {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.toc .nav > li.active > a,
+.toc .nav li a.active {
+  color: #333;
+  font-weight: bold;
+}
+
+.toc .nav > li > a {
+  margin-left: 20px;
+}
+
+.toc .nav li a {
+  padding: 5px 8px;
+  text-align: left;
+}
+
+.toc .level1 > li {
+  margin-top: 0px;
+}
+
+.toc .level2 {
+  margin: 0px 0px 0px 15px;
+}
+
+.expand-stub {
+  line-height: 32px;
+  color: #717174;
+  left: 0px;
+}
+
+.toc .nav > li > .expand-stub::before,
+.toc .nav > li.active > .expand-stub::before {
+  content: "\25be";
+}
+
+.toc .nav > li.active > .expand-stub::before,
+.toc .nav > li.in > .expand-stub::before,
+.toc .nav > li.in.active > .expand-stub::before,
+.toc .nav > li.filtered > .expand-stub::before {
+  content: "\25b4";
+}
+
+@media only screen and (max-width: 768px) {
+  .in .toc .nav > li, .in .toc .nav > li > a {
+    display: block;
+  }
+  .in .toc li:after {
+    content: "";
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  .in .toc .nav > li > a {
+    margin-left: 20px;
+  }
+  body .in .toc {
+    background-color: #EEEEEE;
+    text-align: left;
+    padding: 0px;
+  }
+  .article {
+    margin-top: 0px !important;
+  }
+  .in .toc ul {
+    font-size: 13px;
+    margin: 0px 0px 0px 15px;
+  }
+  .in .sidefilter {
+    position: inherit;
+    width: 100%;
+    margin-top: 15px;
+  }
+  .in .sidetoc {
+    position: inherit;
+    width: 100%;
+    margin-top: 0px;
+  }
+  .in .toc .nav .level2 {
+    margin: 0px 0px 0px 15px;
+  }
+  .sidenav {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
+
+/*************************************************/
+/*************   Table of Contents   *************/
+/*************************************************/
+.sb-toc-title {
+  color: #8D8D8D;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 0px;
+  font-size: 20px;
+}
+
+.sb-toc-title > a {
+  color: #8D8D8D;
+}
+
+.sb-toc-title > a:hover {
+  color: #717174;
+}
+
+#affix {
+  border-bottom: 0px solid transparent;
+  padding: 10px 5px;
+}
+
+#affix ul li {
+  margin: 0px;
+  font-size: 90%;
+  list-style: none;
+}
+
+#affix ul {
+  background-color: transparent;
+  margin-bottom: 0px;
+  padding: 0px;
+  margin-left: 10px;
+}
+
+#affix > ul::before {
+  content: none;
+}
+
+#affix > .nav li > a {
+  color: #333;
+  border-left: 5px solid #DDDDDD;
+  background-color: transparent;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#affix > .nav li > a:hover {
+  border-left: 5px solid #717174;
+}
+
+#affix > .nav > li.active > a {
+  border-left: 5px solid #84C361;
+  font-weight: bold;
+}
+
+#affix > .nav > li.active > a:hover {
+  border-left: 5px solid #717174;
+  font-weight: bold;
+}
+
+#affix > .nav li > a:active {
+  text-decoration: none;
+}
+
+#affix > .nav ul li a {
+  border-top: 0px;
+}
+
+#affix ul li ul li::before {
+  content: none;
+}
+
+#affix ul li ul {
+  padding-left: 0px;
+}
+
+#affix ul li ul li a {
+  padding-left: 25px;
+}
+
+#affix ul li ul li.active a {
+  border-left: 5px solid #717174;
+  font-weight: bold;
+}
+
+#affix ul li ul, #affix ul li ul li {
+  margin: 0px;
+}
+
+.toc > ul.level1,
+.affix > ul.level1 {
+  overflow: auto;
+  max-height: 60vh;
+}
+
+/*************************************************/
+/***********   Menu navigation TOC  **************/
+/*************************************************/
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+  border-color: #646466 !important;
+  background-color: #DDDDDD;
+  overflow: hidden;
+}
+
+#toc .nav li > a.super-active {
+  background: rgba(132, 195, 97, .25);
+}
+
+.toc .nav li a:hover,
+.toc .nav li a:focus,
+.toc .nav li.active a:hover,
+.toc .nav li.active a:focus,
+.toc .nav li a.super-active:hover,
+.toc .nav li a.super-active:focus,
+.toc .nav li.active a.super-active:hover,
+.toc .nav li.active a.super-active:focus,
+#toc .nav li > a.super-active:hover,
+#toc .nav li > a.super-active:focus {
+  background: #717174;
+  color: #FFFFFF;
+}
+
+.nav li.active > a {
+  border-color: white;
+}
+
+.nav li.level1 {
+  background-color: #DDDDDD;
+  color: #646466;
+  font-size: 24px;
+  border: 0px;
+  padding: 5px 0px;
+  padding-left: 40px;
+}
+
+/*************************************************/
+/**************   Navigation bar   ***************/
+/*************************************************/
+.navbar-collapse {
+  margin: 0px;
+  padding: 0px;
+}
+
+.navbar-default {
+  border: 0px;
+}
+
+.navbar-brand > img {
+  width: 24px;
+  height: 24px;
+}
+
+.controls .control-icon-selected {
+  background-color: #84C361;
+  height: 5px;
+  margin-top: 3px;
+  margin-left: -10px;
+  margin-right: -10px;
+  vertical-align: bottom;
+}
+
+.controls > a {
+  float: left;
+  padding: 8px 10px;
+  outline 0;
+}
+
+.controls a.navbar-brand {
+  font-size: 16px;
+}
+
+.controls {
+  margin-right: 10px;
+  margin-left: 10px;
+  height: 40px;
+  float: left;
+}
+
+@media (max-width: 768px) {
+  .controls {
+    margin-left: 0px;
+  }
+}
+
+.controls a:link, .controls a:visited, .controls a:active {
+  color: #717174;
+}
+
+.controls a:hover, .controls a.navbar-brand:hover {
+  color: #00B7FF;
+}
+
+#search {
+  margin: 10px 10px;
+}
+
+/*************************************************/
+/*****   Genaral purpose show/hide classes  ******/
+/*************************************************/
+.display-on {
+  display: block;
+}
+.display-off {
+  display: none;
+}
+
+/********************************************************/
+/*****************   Extra stuff Xamarin   **************/
+/********************************************************/
+header {
+  position: relative;
+}
+
+.inheritance div,
+.inheritedMembers div,
+.seealso div {
+  padding: 4px;
+}
+
+.affix > ul > li > a:before,
+.affix ul ul > li > a:before {
+  content: "";
+}

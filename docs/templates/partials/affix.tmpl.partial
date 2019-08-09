@@ -1,0 +1,7 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+<div id="tg-sb-toc" class="hidden-sm col-md-2" role="complementary">
+  <div class="affix-container">
+    <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix"></nav>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>XBeeLibrary.Core</PackageId>
+    <RootNamespace>XBeeLibrary.Core</RootNamespace>
+    <AssemblyName>XBeeLibrary.Core</AssemblyName>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <Company>Digi International Inc.</Company>
+    <Copyright>Copyright 2019, Digi International Inc. All rights reserved.</Copyright>
+    <Product>XBee Library Core</Product>
+    <Title>XBee Library Core</Title>
+    <Authors>Digi International Inc.</Authors>
+    <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>http://www.digi.com/resources/documentation/digidocs/90002359/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/digidotcom/xbee-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIconUrl>https://raw.githubusercontent.com/digidotcom/xbee-csharp/master/nuget_icon.png</PackageIconUrl>
+    <Description>C# library to interact with Digi International's XBee radio frequency modules from mobile devices.</Description>
+    <PackageTags>xbee, library, csharp, digi-xbee, digi, zigbee, bluetooth, rf</PackageTags>
+    <PackageReleaseNotes>
+      <![CDATA[
+        - First release. Everything is new.
+      ]]>
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="libs\SRP.dll" Pack="true" PackagePath="lib\netstandard2.0" />
+    <None Include="release_notes.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Common.Logging" Version="3.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SRP">
+      <HintPath>libs\SRP.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,54 @@
+﻿                             XBee Library for Xamarin
+                               XBeeLibrary.Xamarin
+
+                                  Release Notes
+                                   Build 1.0.0
+                                 9 August, 2019
+ 
+                      Copyright 2019, Digi International Inc.
+                               http://www.digi.com
+ 
+ Introduction
+-------------------------------------------------------------------------------
+
+ This document provides the latest release information for the XBee Library for
+ Xamarin, which allows customers to easily develop Xamarin applications that
+ communicate with XBee modules over Bluetooth Low Energy.
+
+ XBee Library for Xamarin v1.0.0, August 2019
+-------------------------------------------------------------------------------
+  1. Supported Hardware:
+      * XBee modules:
+        * XBee/XBee-PRO RF Module Family
+          * XBee 3 (Zigbee 3, DigiMesh 2.4, 802.15.4 and Cellular)
+
+ 2. Changes with respect to previous version:
+      * Library features (most of them are inherit from the XBee C# Library):
+        * Support for Zigbee, 802.15.4, DigiMesh and Cellular XBee 3 devices.
+        * Support for communicating with XBee devices over Bluetooth Low Energy.
+        * Configuration of local XBee devices:
+          * Configure common parameters with specific setters and getters.
+          * Configure any other parameter with generic methods.
+          * Execute AT commands.
+          * Apply configuration changes.
+          * Write configuration changes.
+        * IO lines management:
+          * Configure IO lines.
+          * Set IO line value.
+          * Read IO line value.
+        * Support for User Data Relay frames, allowing the communication between
+          different interfaces (Serial, Bluetooth Low Energy and MicroPython).
+
+      * Xamarin application examples demonstrating some API specific features.
+        * Configure XBee devices over Bluetooth Low Energy.
+        * Send and receive data over Bluetooth Low Energy to a micro-controller
+          connected to the XBee serial interface.
+        * Send and receive data over Bluetooth Low Energy to the XBee
+          MicroPython interface.
+        * Communicate with XBee devices over Bluetooth Low Energy and send data
+          to other XBee interfaces.
+
+      * Comprehensive online documentation including:
+        * Getting Started Guide.
+        * Users Guide.
+        * API Reference Manual.

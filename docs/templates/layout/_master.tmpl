@@ -1,0 +1,117 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+{{!include(/^styles/.*/)}}
+{{!include(/^fonts/.*/)}}
+{{!include(favicon.ico)}}
+{{!include(logo.svg)}}
+{{!include(search-stopwords.json)}}
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  {{>partials/head}}
+  <script src="../styles/sticky-sidebar.js"></script>
+  <script src="../styles/jquery-3.4.1.min.js"></script>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <div id="banner-digi" class="banner">
+        <div class="container">
+          <a href="index.html">
+            <div id="banner-link" onmouseover="bannerLinkWhite()" onmouseout="bannerLinkNormal()">
+              <img id="banner-logo" src="../images/Digi_logo_banner.png">
+              <p id="banner-text">XBee C# library API reference</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <header>
+        {{^_disableBreadcrumb}}
+        {{>partials/breadcrumb}}
+        {{/_disableBreadcrumb}}
+      </header>
+      {{#_enableSearch}}
+      <div class="container body-content">
+        {{>partials/searchResults}}
+      </div>
+      {{/_enableSearch}}
+      <div id="main-container" role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+        {{^_disableToc}}
+          <div class="article row grid-right">
+          {{>partials/toc}}
+          {{/_disableToc}}
+        {{#_disableToc}}
+        {{/_disableToc}}
+          {{#_disableAffix}}
+          <div class="col-md-12">
+          {{/_disableAffix}}
+          {{^_disableAffix}}
+          <div id="tg-sb-content" class="col-md-8">
+          {{/_disableAffix}}
+            <article class="content wrap" id="_content" data-uid="{{uid}}">
+                {{!body}}
+            </article>
+          </div>
+          {{^_disableAffix}}
+          {{>partials/affix}}
+          {{/_disableAffix}}
+          </div>
+          </div>
+        </div>
+        </div>
+        {{^_disableFooter}}
+        <footer>
+          <div class="container">
+            <div class="row">
+              <div class="footer col-lg-12">
+                <div class="links col-sm-6">
+                  <a href="http://www.digi.com/products" target="_blank">Product page</a>
+                  <a href="https://www.digi.com/support/supporttype?type=documentation" target="_blank">More documentation</a>
+                  <a href="https://www.digi.com/" target="_blank">Official site</a>
+                  <a href="https://www.digi.com/about-digi" target="_blank">About Digi</a>
+                  <a href="https://www.digi.com/contactus" target="_blank">Contact us</a>
+                  <a href="https://www.digi.com/support" target="_blank">Support</a>
+                </div>
+                <div class="copyright col-sm-6">
+                  <div class="copyright-info">
+                    ©2019 Digi International Inc. All rights reserved.
+                  </div>
+                  <div class="footer-icon">
+                    <img src="../images/Digi_logo_banner.png" alt="Digi International Inc." class="logo">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+        {{/_disableFooter}}
+        <script>
+          $(document).ready(function() {
+            // Make the navigation sidebar panel sticky at the top.
+            var sidebar = new StickySidebar('#tg-sb-sidebar', {
+              containerSelector: '#main-container',
+              innerWrapperSelector: '.sidetoggle',
+              topSpacing: 10,
+              bottomSpacing: 10,
+              minWidth: 991,
+              resizeSensor: false
+            });
+            var toc = new StickySidebar('#tg-sb-toc', {
+              containerSelector: '#main-container',
+              innerWrapperSelector: '.affix-container',
+              topSpacing: 10,
+              bottomSpacing: 10,
+              minWidth: 991,
+              resizeSensor: false
+            });
+          });
+        </script>
+        <script>
+          $( document ).ready(function() {
+            setTimeout(function() {
+              // Decorate the most inner element in the sidebar.
+              $('#toc .active').last().addClass('super-active');
+            }, 300);
+          });
+        </script>
+      {{>partials/scripts}}
+  </body>
+</html>

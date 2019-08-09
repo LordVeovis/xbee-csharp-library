@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<BleConfigurationSample:CustomContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:BleConfigurationSample="clr-namespace:BleConfigurationSample;assembly=BleConfigurationSample"
+             x:Class="BleConfigurationSample.ConfigurationPage"
+             Title="XBee BLE Configuration Sample"
+             EnableBackButtonOverride="True"
+             Padding="10">
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid ColumnSpacing="10" VerticalOptions="StartAndExpand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Text="SH" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Grid.Column="1" Grid.Row="0" Text="Serial Number High" VerticalOptions="Center" />
+                <Entry Grid.Column="2" Grid.Row="0" Text="{Binding ShValue}" IsEnabled="False" VerticalOptions="Center" />
+                <Label Grid.Column="0" Grid.Row="1" Text="SL" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Grid.Column="1" Grid.Row="1" Text="Serial Number Low" VerticalOptions="Center" />
+                <Entry Grid.Column="2" Grid.Row="1" Text="{Binding SlValue}" IsEnabled="False" VerticalOptions="Center" />
+                <Label Grid.Column="0" Grid.Row="2" Text="BL" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Grid.Column="1" Grid.Row="2" Text="Bluetooth MAC Address" VerticalOptions="Center" />
+                <Entry Grid.Column="2" Grid.Row="2" Text="{Binding BlValue}" IsEnabled="False" VerticalOptions="Center" />
+                <Label Grid.Column="0" Grid.Row="3" Text="NI" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Grid.Column="1" Grid.Row="3" Text="Node Identifier" VerticalOptions="Center" />
+                <Entry Grid.Column="2" Grid.Row="3" Text="{Binding NiValue}" VerticalOptions="Center" />
+                <Label Grid.Column="0" Grid.Row="4" Text="AP" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Grid.Column="1" Grid.Row="4" Text="API Enable" VerticalOptions="Center" />
+                <Picker Grid.Column="2" Grid.Row="4" x:Name="apPicker" SelectedIndex="{Binding ApValue}" VerticalOptions="Center" />
+                <Label Grid.Column="0" Grid.Row="5" Text="D9" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Grid.Column="1" Grid.Row="5" Text="DIO9" VerticalOptions="Center" />
+                <Picker Grid.Column="2" Grid.Row="5" x:Name="d9Picker" SelectedIndex="{Binding D9Value}" VerticalOptions="Center" />
+                <Label Grid.Column="0" Grid.Row="6" Text="VR" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Grid.Column="1" Grid.Row="6" Text="Firmware Version" VerticalOptions="Center" />
+                <Entry Grid.Column="2" Grid.Row="6" Text="{Binding VrValue}" IsEnabled="False" VerticalOptions="Center" />
+                <Label Grid.Column="0" Grid.Row="7" Text="HV" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Grid.Column="1" Grid.Row="7" Text="Hardware Version" VerticalOptions="Center" />
+                <Entry Grid.Column="2" Grid.Row="7" Text="{Binding HvValue}" IsEnabled="False" VerticalOptions="Center" />
+            </Grid>
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Read" Clicked="ReadButtonClicked" HorizontalOptions="FillAndExpand" />
+                <Button Text="Write" Clicked="WriteButtonClicked" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</BleConfigurationSample:CustomContentPage>

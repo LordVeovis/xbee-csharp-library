@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+             x:Class="RelayConsoleSample.SendRelayMessagePage">
+    <ContentPage.Content>
+        <Frame VerticalOptions="Center" HorizontalOptions="Center" Padding="0" BackgroundColor="White">
+            <StackLayout Spacing="0" WidthRequest="300">
+                <StackLayout Padding="15">
+                    <Label Text="Send User Data Relay" Font="Bold,20" Margin="0,0,0,10" />
+                    <Label Text="Destination interface:" />
+                    <Picker x:Name="interfacePicker" />
+                    <Label Text="Data:" />
+                    <Editor x:Name="dataEditor" Margin="0,0,0,10" />
+                </StackLayout>
+                <BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" BackgroundColor="DarkGray"/>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Button Text="Send" HorizontalOptions="FillAndExpand" Clicked="OnSendButtonClicked" BorderColor="Transparent" BackgroundColor="Transparent" />
+                    <BoxView WidthRequest="1" HorizontalOptions="Center" VerticalOptions="FillAndExpand" BackgroundColor="DarkGray"/>
+                    <Button Text="Cancel" HorizontalOptions="FillAndExpand" Clicked="OnCancelButtonClicked" BorderColor="Transparent" BackgroundColor="Transparent" />
+                </StackLayout>
+            </StackLayout>
+        </Frame>
+    </ContentPage.Content>
+</pages:PopupPage>
