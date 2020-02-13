@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019, Digi International Inc.
+ * Copyright 2019, 2020, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -492,7 +492,8 @@ namespace XBeeLibrary.Core.Models
 					if (remoteXBeeDevice.XBee64BitAddr != null 
 						&& ((ReceivePacket)xbeePacket).SourceAddress64.Equals(remoteXBeeDevice.XBee64BitAddr))
 						return true;
-					if (remoteXBeeDevice.XBee16BitAddr != null 
+					if (remoteXBeeDevice.XBee16BitAddr != null
+						&& !remoteXBeeDevice.XBee16BitAddr.Equals(XBee16BitAddress.UNKNOWN_ADDRESS)
 						&& ((ReceivePacket)xbeePacket).SourceAddress16.Equals(remoteXBeeDevice.XBee16BitAddr))
 						return true;
 					break;
@@ -500,7 +501,8 @@ namespace XBeeLibrary.Core.Models
 					if (remoteXBeeDevice.XBee64BitAddr != null 
 						&& ((RemoteATCommandResponsePacket)xbeePacket).SourceAddress64.Equals(remoteXBeeDevice.XBee64BitAddr))
 						return true;
-					if (remoteXBeeDevice.XBee16BitAddr != null 
+					if (remoteXBeeDevice.XBee16BitAddr != null
+						&& !remoteXBeeDevice.XBee16BitAddr.Equals(XBee16BitAddress.UNKNOWN_ADDRESS)
 						&& ((RemoteATCommandResponsePacket)xbeePacket).SourceAddress16.Equals(remoteXBeeDevice.XBee16BitAddr))
 						return true;
 					break;
