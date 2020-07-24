@@ -80,20 +80,6 @@ namespace XBeeLibrary.Core
 		public XBeeIMEIAddress IMEIAddress { get; private set; }
 
 		/// <summary>
-		/// The 64-bit address of this XBee device. This is not supported in Cellular 
-		/// devices, so it always returns <c>null</c>.
-		/// </summary>
-		/// <seealso cref="XBee64BitAddress"/>
-		public override XBee64BitAddress XBee64BitAddr
-		{
-			get
-			{
-				// Cellular protocol does not have 64-bit address.
-				return null;
-			}
-		}
-
-		/// <summary>
 		/// The node identifier of this XBee device. This is not supported in Cellular 
 		/// devices, so it always returns <c>null</c>.
 		/// </summary>
