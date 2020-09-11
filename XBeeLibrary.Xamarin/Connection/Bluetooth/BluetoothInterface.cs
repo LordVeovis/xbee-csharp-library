@@ -19,6 +19,9 @@ using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -43,6 +46,8 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		private static readonly int LENGTH_COUNTER = 16;
 
 		private static readonly int BT_CONNECT_RETRIES = 3;
+
+		private static readonly int REQUESTED_MTU = 256;
 
 		private static readonly string ERROR_INVALID_MAC = "Invalid MAC address, it has to follow the format 00112233AABB or 00:11:22:33:AA:BB";
 		private static readonly string ERROR_CONNECTION = "Could not connect to the XBee BLE device";
@@ -77,6 +82,8 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 
 		private CounterModeCryptoTransform encryptor;
 		private CounterModeCryptoTransform decryptor;
+
+		private int mtu;
 
 		/// <summary>
 		/// Class constructor. Instantiates a new <see cref="BluetoothInterface"/> object.
@@ -173,6 +180,10 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 					// Check if device is connected.
 					if (!IsOpen)
 						throw new Exception();
+
+					// Request a larger MTU.
+					mtu = await device.RequestMtuAsync(REQUESTED_MTU);
+					Console.WriteLine("----- MTU: " + mtu);
 
 					// Get the TX and RX characteristics.
 					IService service = await device.GetServiceAsync(Guid.Parse(SERVICE_GUID));
@@ -367,11 +378,17 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 				{
 					try
 					{
-						byte[] dataToWrite = new byte[length];
-						Array.Copy(data, offset, dataToWrite, 0, length);
+						byte[] buffer = new byte[length];
+						Array.Copy(data, offset, buffer, 0, length);
 
-						// Write the data in the TX characteristic.
-						dataWritten = await txCharacteristic.WriteAsync(encrypt ? encryptor.TransformFinalBlock(dataToWrite, 0, dataToWrite.Length) : dataToWrite);
+						byte[] dataToWrite = encrypt ? encryptor.TransformFinalBlock(buffer, 0, buffer.Length) : buffer;
+
+						// Split the data in chunks with a max length of the current MTU.
+						foreach (byte[] chunk in GetChunks(dataToWrite))
+						{
+							// Write the chunk in the TX characteristic.
+							dataWritten = await txCharacteristic.WriteAsync(chunk);
+						}
 					}
 					finally
 					{
@@ -473,6 +490,37 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 			byte[] countBytes = ByteUtils.IntToByteArray(count);
 			Array.Copy(countBytes, 0, counter, nonce.Length, countBytes.Length);
 			return counter;
+		}
+
+		/// <summary>
+		/// Returns a list with the data chunks of the given byte array. The
+		/// maximum length of each chunk is the negotiated MTU.
+		/// </summary>
+		/// <param name="data">Data to get the chunks from.</param>
+		/// <returns>A list with the data chunks.</returns>
+		private List<byte[]> GetChunks(byte[] data)
+		{
+			List<byte[]> chunks = new List<byte[]>();
+
+			if (data.Length <= mtu)
+			{
+				chunks.Add(data);
+			}
+			else
+			{
+				int i = 0;
+				while (i < data.Length)
+				{
+					int remainingLength = data.Length - i;
+					int bufferLength = remainingLength < mtu ? remainingLength : mtu;
+					byte[] buffer = new byte[bufferLength];
+					Array.Copy(data, i, buffer, 0, bufferLength);
+					chunks.Add(buffer);
+					i += bufferLength;
+				}
+			}
+
+			return chunks;
 		}
 	}
 }
