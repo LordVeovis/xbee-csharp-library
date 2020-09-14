@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019, Digi International Inc.
+ * Copyright 2019, 2020, Digi International Inc.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -427,6 +427,7 @@ namespace XBeeLibrary.Xamarin
 		/// <param name="destinationInterface">Destination XBee local interface.</param>
 		/// <param name="data">Data to send.</param>
 		/// <exception cref="ArgumentException">If the destination interface is unknown.</exception>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the User
 		/// Data Relay.</exception>
 		/// <seealso cref="XBeeLocalInterface"/>
@@ -441,6 +442,7 @@ namespace XBeeLibrary.Xamarin
 		/// Sends the given data to the XBee MicroPython interface in a User Data Relay frame.
 		/// </summary>
 		/// <param name="data">Data to send.</param>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the
 		/// MicroPython data.</exception>
 		/// <seealso cref="SendSerialData(byte[])"/>
@@ -454,6 +456,7 @@ namespace XBeeLibrary.Xamarin
 		/// Sends the given data to the XBee serial interface in a User Data Relay frame.
 		/// </summary>
 		/// <param name="data">Data to send.</param>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the serial
 		/// data.</exception>
 		/// <seealso cref="SendMicroPythonData(byte[])"/>

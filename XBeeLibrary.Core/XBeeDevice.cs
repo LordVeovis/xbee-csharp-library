@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019, Digi International Inc.
+ * Copyright 2019, 2020, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -542,6 +542,7 @@ namespace XBeeLibrary.Core
 		/// <param name="destinationInterface">Destination XBee local interface.</param>
 		/// <param name="data">Data to send.</param>
 		/// <exception cref="ArgumentException">If the destination interface is unknown.</exception>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the User
 		/// Data Relay.</exception>
 		/// <seealso cref="XBeeLocalInterface"/>
@@ -556,6 +557,7 @@ namespace XBeeLibrary.Core
 		/// Sends the given data to the XBee Bluetooth interface in a User Data Relay frame.
 		/// </summary>
 		/// <param name="data">Data to send.</param>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the Bluetooth
 		/// data.</exception>
 		/// <seealso cref="SendMicroPythonData(byte[])"/>
@@ -569,6 +571,7 @@ namespace XBeeLibrary.Core
 		/// Sends the given data to the XBee MicroPython interface in a User Data Relay frame.
 		/// </summary>
 		/// <param name="data">Data to send.</param>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the
 		/// MicroPython data.</exception>
 		/// <seealso cref="SendBluetoothData(byte[])"/>
