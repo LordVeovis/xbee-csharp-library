@@ -42,15 +42,29 @@ namespace XBeeLibrary.Xamarin
 		/// <summary>
 		/// Retrieves a bluetooth connection interface for the device with the provided GUID.
 		/// </summary>
-		/// <param name="deviceAddress">The address of the Bluetooth device. It must follow the
-		/// format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c>.</param>
+		/// <param name="deviceAddress">The address or GUID of the Bluetooth device. It must follow the
+		/// format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c> for the address or
+		/// <c>01234567-0123-0123-0123-0123456789AB</c> for the GUID.</param>
 		/// <returns>The connection interface of the Bluetooth device.</returns>
 		/// <exception cref="ArgumentException">If <paramref name="deviceAddress"/> does not follow
-		/// the format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c>.</exception>
+		/// the format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c> or
+		/// <c>01234567-0123-0123-0123-0123456789AB</c>.</exception>
 		/// <seealso cref="IConnectionInterface"/>
 		public static IConnectionInterface CreateConnectionInterface(string deviceAddress)
 		{
 			IConnectionInterface connectionInterface = new BluetoothInterface(deviceAddress);
+			return connectionInterface;
+		}
+
+		/// <summary>
+		/// Retrieves a bluetooth connection interface for the device with the provided GUID.
+		/// </summary>
+		/// <param name="deviceGuid">The Bluetooth device GUID.</param>
+		/// <seealso cref="Guid"/>
+		/// <seealso cref="IConnectionInterface"/>
+		public static IConnectionInterface CreateConnectionInterface(Guid deviceGuid)
+		{
+			IConnectionInterface connectionInterface = new BluetoothInterface(deviceGuid);
 			return connectionInterface;
 		}
 	}

@@ -49,7 +49,8 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 
 		private static readonly int REQUESTED_MTU = 256;
 
-		private static readonly string ERROR_INVALID_MAC = "Invalid MAC address, it has to follow the format 00112233AABB or 00:11:22:33:AA:BB";
+		private static readonly string ERROR_INVALID_MAC_GUID = "Invalid MAC address or GUID, it has to follow the format 00112233AABB or " +
+			"00:11:22:33:AA:BB for the MAC address or 01234567-0123-0123-0123-0123456789AB for the GUID";
 		private static readonly string ERROR_CONNECTION = "Could not connect to the XBee BLE device";
 		private static readonly string ERROR_CONNECTION_CANCELED = ERROR_CONNECTION + " > Connection canceled";
 		private static readonly string ERROR_DISCONNECTION = "Could not disconnect the XBee BLE device";
@@ -62,6 +63,7 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		private static readonly string RX_CHAR_GUID = "F9279EE9-2CD0-410C-81CC-ADF11E4E5AEA";
 
 		private static readonly string MAC_REGEX = "^([0-9A-Fa-f]{12})|([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$";
+		private static readonly string GUID_REGEX = "^[0-9A-Fa-f]{8}-([0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$";
 		private static readonly string MAC_GUID = "00000000-0000-0000-0000-{0}";
 
 		// Variables.
@@ -110,16 +112,32 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		/// Class constructor. Instantiates a new <see cref="BluetoothInterface"/> object with the given 
 		/// Bluetooth device GUID.
 		/// </summary>
-		/// <param name="deviceAddress">The address of the Bluetooth device. It must follow the
-		/// format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c>.</param>
+		/// <param name="deviceAddress">The address or GUID of the Bluetooth device. It must follow the
+		/// format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c> for the address or
+		/// <c>01234567-0123-0123-0123-0123456789AB</c> for the GUID.</param>
 		/// <exception cref="ArgumentException">If <paramref name="deviceAddress"/> does not follow
-		/// the format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c>.</exception>
+		/// the format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c> or
+		/// <c>01234567-0123-0123-0123-0123456789AB</c>.</exception>
 		public BluetoothInterface(string deviceAddress) : this()
 		{
-			if (!Regex.IsMatch(deviceAddress, MAC_REGEX))
-				throw new ArgumentException(ERROR_INVALID_MAC);
+			if (!Regex.IsMatch(deviceAddress, MAC_REGEX) && !Regex.IsMatch(deviceAddress, GUID_REGEX))
+				throw new ArgumentException(ERROR_INVALID_MAC_GUID);
 
-			deviceGuid = Guid.Parse(string.Format(MAC_GUID, deviceAddress.Replace(":", "")));
+			if (Regex.IsMatch(deviceAddress, MAC_REGEX))
+				deviceGuid = Guid.Parse(string.Format(MAC_GUID, deviceAddress.Replace(":", "")));
+			else
+				deviceGuid = new Guid(deviceAddress);
+		}
+
+		/// <summary>
+		/// Class constructor. Instantiates a new <see cref="BluetoothInterface"/> object with the given 
+		/// Bluetooth device GUID.
+		/// </summary>
+		/// <param name="deviceGuid">The Bluetooth device GUID.</param>
+		/// <seealso cref="Guid"/>
+		public BluetoothInterface(Guid deviceGuid) : this()
+		{
+			this.deviceGuid = deviceGuid;
 		}
 
 		// Properties.
