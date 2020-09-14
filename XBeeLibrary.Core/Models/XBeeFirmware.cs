@@ -126,6 +126,11 @@ namespace XBeeLibrary.Core.Models
 		public string Function { get; private set; }
 
 		/// <summary>
+		/// Name of the XML definition file.
+		/// </summary>
+		public string DefinitionFileName { get; set; }
+
+		/// <summary>
 		/// Path where the XML definition file is located.
 		/// </summary>
 		public string DefinitionFileLocation { get; private set; }
