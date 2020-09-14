@@ -2076,6 +2076,7 @@ namespace XBeeLibrary.Core
 		/// <param name="destinationInterface">Destination XBee local interface.</param>
 		/// <param name="data">Data to send.</param>
 		/// <exception cref="ArgumentException">If the destination interface is unknown.</exception>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the User
 		/// Data Relay.</exception>
 		/// <seealso cref="XBeeLocalInterface"/>
@@ -2086,6 +2087,8 @@ namespace XBeeLibrary.Core
 		{
 			if (destinationInterface == XBeeLocalInterface.UNKNOWN)
 				throw new ArgumentException("Destination interface cannot be unknown.");
+			if (data.Length > 255)
+				throw new ArgumentException("Data length cannot be greater than 255 bytes.");
 
 			// Check if device is remote.
 			if (IsRemote)
@@ -2103,6 +2106,7 @@ namespace XBeeLibrary.Core
 		/// Sends the given data to the XBee Bluetooth interface in a User Data Relay frame.
 		/// </summary>
 		/// <param name="data">Data to send.</param>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the Bluetooth
 		/// data.</exception>
 		/// <seealso cref="SendMicroPythonData(byte[])"/>
@@ -2117,6 +2121,7 @@ namespace XBeeLibrary.Core
 		/// Sends the given data to the XBee MicroPython interface in a User Data Relay frame.
 		/// </summary>
 		/// <param name="data">Data to send.</param>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the
 		/// MicroPython data.</exception>
 		/// <seealso cref="SendBluetoothData(byte[])"/>
@@ -2131,6 +2136,7 @@ namespace XBeeLibrary.Core
 		/// Sends the given data to the XBee serial interface in a User Data Relay frame.
 		/// </summary>
 		/// <param name="data">Data to send.</param>
+		/// <exception cref="ArgumentException">If data length is greater than 255 bytes.</exception>
 		/// <exception cref="XBeeException">If there is any XBee related error sending the serial
 		/// data.</exception>
 		/// <seealso cref="SendBluetoothData(byte[])"/>
