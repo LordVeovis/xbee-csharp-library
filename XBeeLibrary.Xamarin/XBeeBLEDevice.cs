@@ -60,13 +60,32 @@ namespace XBeeLibrary.Xamarin
 		/// The Bluetooth password must be provided before calling the <see cref="Open"/> method,
 		/// either through this constructor or the <see cref="SetBluetoothPassword(string)"/> method.
 		/// </remarks>
-		/// <param name="deviceAddress">The address of the Bluetooth device. It must follow the
-		/// format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c>.</param>
+		/// <param name="deviceAddress">The address or GUID of the Bluetooth device. It must follow the
+		/// format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c> for the address or
+		/// <c>01234567-0123-0123-0123-0123456789AB</c> for the GUID.</param>
 		/// <param name="password">Bluetooth password (can be <c>null</c>).</param>
 		/// <exception cref="ArgumentException">If <paramref name="deviceAddress"/> does not follow
-		/// the format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c>.</exception>
+		/// the format <c>00112233AABB</c> or <c>00:11:22:33:AA:BB</c> or
+		/// <c>01234567-0123-0123-0123-0123456789AB</c>.</exception>
 		public XBeeBLEDevice(string deviceAddress, string password)
 			: base(XBee.CreateConnectionInterface(deviceAddress))
+		{
+			bluetoothPassword = password;
+		}
+
+		/// <summary>
+		/// Class constructor. Instantiates a new <see cref="XBeeBLEDevice"/> object with the given 
+		/// parameters.
+		/// </summary>
+		/// <remarks>
+		/// The Bluetooth password must be provided before calling the <see cref="Open"/> method,
+		/// either through this constructor or the <see cref="SetBluetoothPassword(string)"/> method.
+		/// </remarks>
+		/// <param name="deviceGuid">The Bluetooth device GUID.</param>
+		/// <param name="password">Bluetooth password (can be <c>null</c>).</param>
+		/// <seealso cref="Guid"/>
+		public XBeeBLEDevice(Guid deviceGuid, string password)
+			: base(XBee.CreateConnectionInterface(deviceGuid))
 		{
 			bluetoothPassword = password;
 		}
