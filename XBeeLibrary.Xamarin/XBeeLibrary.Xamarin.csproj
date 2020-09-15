@@ -5,9 +5,9 @@
     <RootNamespace>XBeeLibrary.Xamarin</RootNamespace>
     <AssemblyName>XBeeLibrary.Xamarin</AssemblyName>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Company>Digi International Inc.</Company>
-    <Copyright>Copyright 2019, Digi International Inc. All rights reserved.</Copyright>
+    <Copyright>Copyright 2019, 2020, Digi International Inc. All rights reserved.</Copyright>
     <Product>XBee Library for Xamarin</Product>
     <Title>XBee Library for Xamarin</Title>
     <Authors>Digi International Inc.</Authors>
@@ -20,8 +20,15 @@
     <Description>C# library for Xamarin to interact with Digi International's XBee radio frequency modules from mobile devices.</Description>
     <PackageTags>xbee, library, xamarin, digi-xbee, digi, zigbee, bluetooth, rf</PackageTags>
     <PackageReleaseNotes>
-      <![CDATA[
-        - First release. Everything is new.
+	  <![CDATA[
+        - Limited the number of bytes that can be sent per operation to other XBee interfaces to 255 bytes.
+        - The library now splits and sends data in chunks when it exceeds the MTU size.
+        - Added more possibilities to instantiate XBeeBLEDevice classes.
+        - Updated the Plugin.BLE nuget version to 2.1.1 in the examples and library.
+        - Examples:
+          - Updated the Anddroid SDK target version to API 28.
+          - Updated the minimum iOS version to 10.2
+          - Added 2 new keys in iOS to allow the examples to use Bluetooth.
       ]]>
     </PackageReleaseNotes>
   </PropertyGroup>

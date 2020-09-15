@@ -2,10 +2,10 @@
                                  XBeeLibrary.Core
 
                                   Release Notes
-                                   Build 1.0.0
-                                 9 August, 2019
+                                   Build 1.0.1
+                               15 September, 2020
  
-                      Copyright 2019, Digi International Inc.
+                    Copyright 2019, 2020, Digi International Inc.
                                http://www.digi.com
  
  Introduction
@@ -14,6 +14,35 @@
  This document provides the latest release information for the XBee C# Library,
  which allows customers to easily develop C# applications that communicate with
  XBee modules.
+
+  XBee C# Library v1.0.1, September 2020
+-------------------------------------------------------------------------------
+  1. Supported Hardware:
+      * XBee modules:
+        * XBee/XBee-PRO RF Module Family
+          * XBee 3 (Zigbee 3, DigiMesh 2.4, 802.15.4 and Cellular)
+          * XBee Cellular
+          * XBee 802.15.4
+          * XBee-PRO 802.15.4
+          * XBee ZB
+          * XBee-PRO ZB
+          * XBee ZB SMT
+          * XBee-PRO ZB SMT
+          * XBee-PRO 900HP
+          * XBee-PRO 900
+          * XBee-PRO DigiMesh 900
+          * XBee DigiMesh 2.4
+          * XBee-PRO DigiMesh 2.4
+          * XBee-PRO 868
+          * XBee 865LP
+          * XBee 868LP
+
+ 2. Changes with respect to previous version:
+      * Limited the number of bytes that can be sent per operation to other
+        XBee interfaces to 255 bytes.
+      * Fixed an issue reading data from a specific device if the device's
+        16-bit address is unknown.
+      * Cellular devices now return their actual 64-bit address.
 
  XBee C# Library v1.0.0, August 2019
 -------------------------------------------------------------------------------

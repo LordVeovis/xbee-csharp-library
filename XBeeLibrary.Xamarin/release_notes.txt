@@ -2,10 +2,10 @@
                                XBeeLibrary.Xamarin
 
                                   Release Notes
-                                   Build 1.0.0
-                                 9 August, 2019
+                                   Build 1.0.1
+                               15 September, 2020
  
-                      Copyright 2019, Digi International Inc.
+                    Copyright 2019, 2020, Digi International Inc.
                                http://www.digi.com
  
  Introduction
@@ -14,6 +14,26 @@
  This document provides the latest release information for the XBee Library for
  Xamarin, which allows customers to easily develop Xamarin applications that
  communicate with XBee modules over Bluetooth Low Energy.
+
+ XBee Library for Xamarin v1.0.1, September 2020
+-------------------------------------------------------------------------------
+  1. Supported Hardware:
+      * XBee modules:
+        * XBee/XBee-PRO RF Module Family
+          * XBee 3 (Zigbee 3, DigiMesh 2.4, 802.15.4 and Cellular)
+
+ 2. Changes with respect to previous version:
+      * Limited the number of bytes that can be sent per operation to other
+        XBee interfaces to 255 bytes.
+      * The library now splits and sends data in chunks when it exceeds the
+        MTU size.
+      * Added more possibilities to instantiate XBeeBLEDevice classes.
+      * Updated the Plugin.BLE nuget version to 2.1.1 in the examples and
+        library.
+      * Examples:
+        * Updated the Anddroid SDK target version to API 28.
+        * Updated the minimum iOS version to 10.2
+        * Added 2 new keys in iOS to allow the examples to use Bluetooth.
 
  XBee Library for Xamarin v1.0.0, August 2019
 -------------------------------------------------------------------------------
