@@ -21,7 +21,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>8.0</string>
+	<string>10.2</string>
 	<key>CFBundleDisplayName</key>
 	<string>XBee BLE Configuration Sample</string>
 	<key>CFBundleIdentifier</key>
@@ -34,5 +34,9 @@
 	<string>BleConfigurationSample</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Example app needs Bluetooth access to discover nearby XBee devices.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Example app needs Bluetooth access to discover nearby XBee devices.</string>
 </dict>
 </plist>
