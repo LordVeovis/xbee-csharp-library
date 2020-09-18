@@ -52,7 +52,7 @@ namespace RelayConsoleSample
 		public void OnSendButtonClicked(object sender, ClickedEventArgs e)
 		{
 			DestinationInterface = (XBeeLocalInterface) interfacePicker.SelectedItem;
-			Data = dataEditor.Text;
+			Data = dataEntry.Text;
 			
 			ClosePopup();
 		}

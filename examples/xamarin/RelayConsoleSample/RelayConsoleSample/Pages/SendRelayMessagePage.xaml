@@ -11,7 +11,7 @@
                     <Label Text="Destination interface:" />
                     <Picker x:Name="interfacePicker" />
                     <Label Text="Data:" />
-                    <Editor x:Name="dataEditor" Margin="0,0,0,10" />
+                    <Entry x:Name="dataEntry" Margin="0,0,0,10" />
                 </StackLayout>
                 <BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" BackgroundColor="DarkGray"/>
                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
