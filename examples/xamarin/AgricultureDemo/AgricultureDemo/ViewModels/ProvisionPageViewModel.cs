@@ -46,6 +46,8 @@ namespace AgricultureDemo
 		private static readonly int ASSOCIATION_TIMEOUT = 60000;
 		private static readonly int RESPONSE_TIMEOUT = 10000;
 
+		private static readonly string STATION_IDENTIFIER = "ST_{0}";
+
 		private static readonly string DRM_GROUP = "agri-{0}";
 
 		// Variables.
@@ -268,26 +270,24 @@ namespace AgricultureDemo
 		/// </returns>
 		public bool IsValidHex(string newValue, int maxLength)
 		{
-			bool isValid = true;
+			if (string.IsNullOrEmpty(newValue))
+				return true;
 
-			if (newValue.Length > 1)
+			// Check the length.
+			if (newValue.Length > maxLength)
+				return false;
+
+			// Check the hex format.
+			try
 			{
-				// Check the length.
-				if (newValue.Length > maxLength)
-					isValid = false;
-
-				// Check the hex format.
-				try
-				{
-					int.Parse(newValue, System.Globalization.NumberStyles.HexNumber);
-				}
-				catch (FormatException)
-				{
-					isValid = false;
-				}
+				int.Parse(newValue, System.Globalization.NumberStyles.HexNumber);
+			}
+			catch (FormatException)
+			{
+				return false;
 			}
 
-			return isValid;
+			return true;
 		}
 
 		/// <summary>
@@ -306,13 +306,18 @@ namespace AgricultureDemo
 		{
 			Task.Run(async () =>
 			{
-				ShowLoadingDialog("Provisining device...");
+				ShowLoadingDialog("Provisioning device...");
+
+				string devName = DeviceId;
+				// If the device is an irrigation station, format its device ID.
+				if (!isController)
+					devName = string.Format(STATION_IDENTIFIER, DeviceId);
 
 				// Generate the provisioning JSON and send it to the device.
 				JObject json = JObject.Parse(@"{"
 					+ "'" + JsonConstants.ITEM_OP + "': '" + JsonConstants.OP_WRITE + "',"
 					+ "'" + JsonConstants.ITEM_PROP + "': {"
-						+ "'" + JsonConstants.PROP_NAME + "': '" + DeviceId + "',"
+						+ "'" + JsonConstants.PROP_NAME + "': '" + devName + "',"
 						+ (isController && isMainController ? "'" + JsonConstants.PROP_MAIN_CONTROLLER + "': 'true'," : "")
 						+ "'" + JsonConstants.PROP_LATITUDE + "': '" + FormatLocation(Location.Latitude) + "',"
 						+ "'" + JsonConstants.PROP_LONGITUDE + "': '" + FormatLocation(Location.Longitude) + "',"
