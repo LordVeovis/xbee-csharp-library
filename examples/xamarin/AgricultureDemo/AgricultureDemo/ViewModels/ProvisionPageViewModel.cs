@@ -278,16 +278,7 @@ namespace AgricultureDemo
 				return false;
 
 			// Check the hex format.
-			try
-			{
-				int.Parse(newValue, System.Globalization.NumberStyles.HexNumber);
-			}
-			catch (FormatException)
-			{
-				return false;
-			}
-
-			return true;
+			return Regex.IsMatch(newValue, @"\A\b[0-9a-fA-F]+\b\Z");
 		}
 
 		/// <summary>
