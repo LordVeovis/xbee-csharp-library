@@ -1,0 +1,9 @@
+﻿This product includes software developed by other open source projects:
+
+- Bluetooth LE plugin for Xamarin (Adrian Seceleanu, Sven-Michael Stübe)
+- ACR User Dialogs (Allan Ritchie)
+- XBee Library for Xamarin (Sébastien Rault and Digi International)
+- NETSRP (White Glove Games)
+- Json.NET (James Newton-King)
+- Popup Page Plugin (Kirill)
+- Plugin Permissions (James Montemagno)

@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<IX15Configurator.Pages:CustomContentPage
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:IX15Configurator.Pages="clr-namespace:IX15Configurator.Pages"
+             x:Class="IX15Configurator.Pages.DevicePage"
+             Title="Device Management"
+             x:Name="DeviceManagementPage"
+             EnableBackButtonOverride="True">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="read_64.png" Text="Refresh settings" Order="Secondary" Command="{Binding RefreshAllCommand}" />
+        <ToolbarItem Icon="write_64.png" Text="Write changes" Order="Secondary" Command="{Binding WriteAllCommand}" />
+        <ToolbarItem Icon="disconnect_64.png" Text="Disconnect" Order="Secondary" Command="{Binding DisconnectCommand}" />
+        <ToolbarItem Text="About" Order="Secondary" Command="{Binding AboutCommand}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Spacing="0" BackgroundColor="White">
+            <ScrollView VerticalOptions="FillAndExpand">
+                <StackLayout>
+                    <StackLayout StyleClass="section">
+                    <Label Text="Device Information" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+                </StackLayout>
+                <Grid Margin="0, 8, 0, 8" Padding="5" RowSpacing="5" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.24*" />
+                        <ColumnDefinition Width="0.26*" />
+                        <ColumnDefinition Width="0.5*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" Source="ix15.jpg" StyleClass="device-image" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                        <Image.HeightRequest>
+                            <OnPlatform Android="70" iOS="45" x:TypeArguments="x:Double" />
+                        </Image.HeightRequest>
+                    </Image>
+                    <Label Grid.Column="1" Grid.Row="0" Text="Host name: " Font="Medium" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="StartAndExpand" />
+                    <Label Grid.Column="1" Grid.Row="1" Text="SN: " Font="Medium" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="StartAndExpand" />
+                    <Label Grid.Column="1" Grid.Row="2" Text="Firmware: " Font="Medium" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="StartAndExpand" />
+                    <Label Grid.Column="1" Grid.Row="3" Text="Alt. firmware: " Font="Medium" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="StartAndExpand" />
+                    <Label Grid.Column="1" Grid.Row="4" Text="Bootloader: " Font="Medium" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="StartAndExpand" />
+                    <Label Grid.Column="1" Grid.Row="5" Text="IP address: " Font="Medium" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="StartAndExpand" />
+                    <Label Grid.Column="2" Grid.Row="0" Text="{Binding DeviceInformation.HostName}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    <Label Grid.Column="2" Grid.Row="1" Text="{Binding DeviceInformation.SerialNumber}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    <Label Grid.Column="2" Grid.Row="2" Text="{Binding DeviceInformation.FirmwareVersionActive}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    <Label Grid.Column="2" Grid.Row="3" Text="{Binding DeviceInformation.FirmwareVersionInactive}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    <Label Grid.Column="2" Grid.Row="4" Text="{Binding DeviceInformation.BootloaderVersion}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    <Label Grid.Column="2" Grid.Row="5" Text="{Binding DeviceInformation.IPAddress}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                </Grid>
+                <StackLayout StyleClass="section">
+                    <Label Text="Device Configuration" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+                </StackLayout>
+                    <StackLayout StyleClass="category">
+                        <Label Text="Shell access" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" StyleClass="setting-container">
+                        <Label Text="{Binding DeviceSettings.AdminShellEnabled.Name}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" StyleClass="setting-name" />
+                        <Switch IsToggled="{Binding DeviceSettings.AdminShellEnabled.Value, Converter={StaticResource StringToBooleanConverter}}" StyleClass="setting-value" WidthRequest="150" />
+                    </StackLayout>
+                    <StackLayout>
+                        <Label StyleClass="setting-error" Text="{Binding DeviceSettings.SessionIdleTime.ValidationDescriptions}" HorizontalTextAlignment="End" IsVisible="{Binding DeviceSettings.SessionIdleTime.IsValid, Converter={StaticResource InvertBooleanConverter}}" />
+                        <StackLayout Orientation="Horizontal" StyleClass="setting-container">
+                            <Label Text="{Binding DeviceSettings.SessionIdleTime.Name}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" StyleClass="setting-name" />
+                            <Entry HorizontalOptions="EndAndExpand" Text="{Binding DeviceSettings.SessionIdleTime.Value}" StyleClass="setting-value" WidthRequest="150">
+                                <Entry.Triggers>
+                                    <DataTrigger TargetType="Entry" Binding="{Binding DeviceSettings.SessionIdleTime.IsValid}" Value="False">
+                                        <Setter Property="TextColor" Value="Red" />
+                                    </DataTrigger>
+                                </Entry.Triggers>
+                            </Entry>
+                        </StackLayout>
+                    </StackLayout>
+                    <StackLayout StyleClass="category">
+                        <Label Text="Ethernet" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" StyleClass="setting-container">
+                        <Label Text="{Binding DeviceSettings.IPMode.Name}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" StyleClass="setting-name" />
+                        <Picker ItemsSource="{Binding DeviceSettings.IPMode.DisplayValues}" SelectedItem="{Binding DeviceSettings.IPMode.Value, Converter={StaticResource IPModeConverter}, Mode=TwoWay}" StyleClass="setting-value" WidthRequest="150" />
+                    </StackLayout>
+                    <StackLayout IsVisible="{Binding Path=DeviceSettings.IPMode.Value, Converter={StaticResource IPModeStaticBooleanConverter}}">
+                        <Label StyleClass="setting-error" Text="{Binding DeviceSettings.IP.ValidationDescriptions}" HorizontalTextAlignment="End" IsVisible="{Binding DeviceSettings.IP.IsValid, Converter={StaticResource InvertBooleanConverter}}" />
+                        <StackLayout Orientation="Horizontal" StyleClass="setting-container">
+                            <Label Text="{Binding DeviceSettings.IP.Name}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" StyleClass="setting-name" />
+                            <Entry HorizontalOptions="EndAndExpand" Text="{Binding DeviceSettings.IP.Value}" StyleClass="setting-value" WidthRequest="150" >
+                                <Entry.Triggers>
+                                    <DataTrigger TargetType="Entry" Binding="{Binding DeviceSettings.IP.IsValid}" Value="False">
+                                        <Setter Property="TextColor" Value="Red" />
+                                    </DataTrigger>
+                                </Entry.Triggers>
+                            </Entry>
+                        </StackLayout>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" StyleClass="setting-container" IsVisible="{Binding Path=DeviceSettings.IPMode.Value, Converter={StaticResource IPModeStaticBooleanConverter}}">
+                        <Label Text="{Binding DeviceSettings.DHCPServerEnabled.Name}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" StyleClass="setting-name" />
+                        <Switch IsToggled="{Binding DeviceSettings.DHCPServerEnabled.Value, Converter={StaticResource StringToBooleanConverter}}" StyleClass="setting-value" WidthRequest="150" />
+                    </StackLayout>
+                    <StackLayout>
+                        <Label StyleClass="setting-error" Text="{Binding DeviceSettings.DefaultIP.ValidationDescriptions}" HorizontalTextAlignment="End" IsVisible="{Binding DeviceSettings.DefaultIP.IsValid, Converter={StaticResource InvertBooleanConverter}}" />
+                        <StackLayout Orientation="Horizontal" StyleClass="setting-container">
+                            <Label Text="{Binding DeviceSettings.DefaultIP.Name}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" StyleClass="setting-name" />
+                            <Entry HorizontalOptions="EndAndExpand" Text="{Binding DeviceSettings.DefaultIP.Value}" StyleClass="setting-value" WidthRequest="150" >
+                                <Entry.Triggers>
+                                    <DataTrigger TargetType="Entry" Binding="{Binding DeviceSettings.DefaultIP.IsValid}" Value="False">
+                                        <Setter Property="TextColor" Value="Red" />
+                                    </DataTrigger>
+                                </Entry.Triggers>
+                            </Entry>
+                        </StackLayout>
+                    </StackLayout>
+                    <StackLayout StyleClass="category">
+                        <Label Text="Modem" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" StyleClass="setting-container">
+                        <Label Text="{Binding DeviceSettings.ModemEnabled.Name}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" StyleClass="setting-name" />
+                        <Switch IsToggled="{Binding DeviceSettings.ModemEnabled.Value, Converter={StaticResource StringToBooleanConverter}}" StyleClass="setting-value" WidthRequest="150" />
+                    </StackLayout>
+                </StackLayout>
+            </ScrollView>
+            <StackLayout Orientation="Horizontal" StyleClass="setting-button-container">
+                <Button x:Name="readButton" Image="read.png" Text="Refresh" Command="{Binding ReadAllCommand}" CommandParameter="{x:Reference readButton}" IsEnabled="{Binding CanReadSettings}" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" StyleClass="setting-button" Style="{StaticResource bottomButton}" />
+                <Button x:Name="writeButton" Image="write.png" Text="Save" Command="{Binding WriteAllCommand}" CommandParameter="{x:Reference writeButton}" IsEnabled="{Binding CanSaveSettings}" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" StyleClass="setting-button" Style="{StaticResource bottomButton}" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</IX15Configurator.Pages:CustomContentPage>

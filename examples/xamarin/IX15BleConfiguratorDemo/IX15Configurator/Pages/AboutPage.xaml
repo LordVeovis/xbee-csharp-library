@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<IX15Configurator.Pages:CustomContentPage
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:IX15Configurator.Pages="clr-namespace:IX15Configurator.Pages"
+             x:Class="IX15Configurator.Pages.AboutPage"
+             Title="About"
+             EnableBackButtonOverride="True">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Spacing="0" BackgroundColor="White">
+            <StackLayout StyleClass="about-header" VerticalOptions="Start">
+                <Image Source="digi_logo_white.png" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" HeightRequest="20" />
+            </StackLayout>
+            <Grid x:Name="LogoGrid" Padding="0,5,0,0" ColumnSpacing="0" RowSpacing="0" VerticalOptions="StartAndExpand" BackgroundColor="White" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.35*" />
+                    <ColumnDefinition Width="0.65*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Image x:Name="LogoImage" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Source="logo.png" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" />
+                <Label Grid.Column="1" Grid.Row="0" Text="{Binding AppName}" FontAttributes="Bold" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" StyleClass="about-title" />
+                <Label Grid.Column="1" Grid.Row="1" Text="{Binding AppVersion}" FontAttributes="Bold" HorizontalOptions="StartAndExpand" VerticalOptions="EndAndExpand" StyleClass="about-version" />
+            </Grid>
+            <Grid Margin="0,7,0,0" Padding="10,0,0,10" ColumnSpacing="0" RowSpacing="0" VerticalOptions="StartAndExpand" BackgroundColor="#EBEBEB">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.85*" />
+                    <ColumnDefinition Width="0.15*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Image Grid.Column="1" Grid.Row="0" Source="white_corner.png" HorizontalOptions="EndAndExpand" VerticalOptions="StartAndExpand" HeightRequest="30" />
+                <StackLayout Grid.Column="0" Grid.Row="0" HorizontalOptions="StartAndExpand" VerticalOptions="EndAndExpand" Orientation="Horizontal" StyleClass="about-copyright">
+                    <Label Text="© Copyright" />
+                    <Label Text="Digi International Inc." TextColor="#1F7FA5">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenURLCommand}" CommandParameter="{Binding URLDigi}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="2022"/>
+                </StackLayout>
+            </Grid>
+            <ScrollView Padding="10,10,10,0" Orientation="Vertical" VerticalOptions="StartAndExpand" BackgroundColor="#EBEBEB">
+                <StackLayout VerticalOptions="StartAndExpand" Spacing="0" BackgroundColor="#EBEBEB">
+                    <Label Text="{Binding Authors}" HorizontalOptions="StartAndExpand" VerticalOptions="EndAndExpand" StyleClass="about-text" />
+                    <Label Text="{Binding Licenses}" HorizontalOptions="StartAndExpand" VerticalOptions="EndAndExpand" StyleClass="about-text" />
+                </StackLayout>
+            </ScrollView>
+            <Grid Padding="45,0,45,0" ColumnSpacing="0" RowSpacing="0" BackgroundColor="#EBEBEB">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.2*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+                <Image Grid.Column="0" Grid.Row="0" Source="media_twitter.png" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" HeightRequest="35">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenURLCommand}" CommandParameter="{Binding URLTwitter}" />
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image Grid.Column="1" Grid.Row="0" Source="media_facebook.png" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" HeightRequest="35">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenURLCommand}" CommandParameter="{Binding URLFacebook}" />
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image Grid.Column="2" Grid.Row="0" Source="media_linkedin.png" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" HeightRequest="35">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenURLCommand}" CommandParameter="{Binding URLLinkedin}" />
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image Grid.Column="3" Grid.Row="0" Source="media_youtube.png" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" HeightRequest="35">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenURLCommand}" CommandParameter="{Binding URLYoutube}" />
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image Grid.Column="4" Grid.Row="0" Source="media_github.png" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" HeightRequest="35">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenURLCommand}" CommandParameter="{Binding URLGithub}" />
+                    </Image.GestureRecognizers>
+                </Image>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</IX15Configurator.Pages:CustomContentPage>

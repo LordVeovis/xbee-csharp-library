@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\about\authors.txt" />
+    <None Remove="Resources\about\licenses\apache_2.txt" />
+    <None Remove="Resources\about\licenses\lgpl_3.txt" />
+    <None Remove="Resources\about\licenses\mit_aritchie.txt" />
+    <None Remove="Resources\about\licenses\mit_james_montemagno.txt" />
+    <None Remove="Resources\about\licenses\mit_kirill.txt" />
+    <None Remove="Resources\about\licenses\mit_newton.txt" />
+    <None Remove="Resources\about\licenses\mozilla_2.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\about\authors.txt" />
+    <EmbeddedResource Include="Resources\about\licenses\apache_2.txt" />
+    <EmbeddedResource Include="Resources\about\licenses\lgpl_3.txt" />
+    <EmbeddedResource Include="Resources\about\licenses\mit_aritchie.txt" />
+    <EmbeddedResource Include="Resources\about\licenses\mit_james_montemagno.txt" />
+    <EmbeddedResource Include="Resources\about\licenses\mit_kirill.txt" />
+    <EmbeddedResource Include="Resources\about\licenses\mit_newton.txt" />
+    <EmbeddedResource Include="Resources\about\licenses\mozilla_2.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Acr.UserDialogs" Version="7.1.0.514" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Plugin.BLE" Version="2.1.2" />
+    <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
+    <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.12" />
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2083" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+    <PackageReference Include="XBeeLibrary.Xamarin" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="IX15ConfiguratorApp.xaml.cs">
+      <DependentUpon>IX15ConfiguratorApp.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Pages\EmptyView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<IX15Configurator.Pages:CustomContentPage
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:IX15Configurator.Pages="clr-namespace:IX15Configurator.Pages"
+             xmlns:pages="clr-namespace:IX15Configurator.Pages"
+             x:Class="IX15Configurator.Pages.DeviceListPage"
+             x:Name="DevicesPage"
+             Title="Device List">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Clear stored passwords" Order="Secondary" Command="{Binding ClearPasswords}" />
+        <ToolbarItem Text="About" Order="Secondary" Command="{Binding AboutCommand}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Spacing="10">
+            <StackLayout Orientation="Horizontal" HeightRequest="40" HorizontalOptions="FillAndExpand" Padding="20,15,20,10">
+                <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                    <Label Text="{Binding ScanStatus}" HorizontalOptions="EndAndExpand" VerticalOptions="Center" StyleClass="medium-label"/>
+                    <ActivityIndicator IsVisible="{Binding IsScanning}" IsRunning="{Binding IsScanning}" VerticalOptions="Center" HeightRequest="25" Margin="4,0,0,0"/>
+                </StackLayout>
+                <Button Text="{Binding ScanButtonText}" Command="{Binding ToggleScan}" HorizontalOptions="End" StyleClass="scan-button"/>
+            </StackLayout>
+            <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20,0,20,0">
+                <ListView Grid.Column="0" Grid.Row="0" ItemsSource="{Binding Devices}"
+                          HasUnevenRows="True" ItemSelected="OnItemSelected"
+                          IsPullToRefreshEnabled="true" IsRefreshing="{Binding IsRefreshing}"
+                          RefreshCommand="{Binding RefreshList}" SeparatorVisibility="None">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell BindingContextChanged="OnBindingContextChanged">
+                                <Grid Padding="5" RowSpacing="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.Triggers>
+                                        <DataTrigger TargetType="Grid" Binding="{Binding IsActive}" Value="False">
+                                            <Setter Property="Opacity" Value="0.2"/>
+                                        </DataTrigger>
+                                    </Grid.Triggers>
+                                    <Label Grid.Column="0" Grid.Row="0" Margin="0,0,0,5" Text="{Binding Name}" StyleClass="device-list-name" VerticalOptions="Center" LineBreakMode="MiddleTruncation">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding RfMac}" Value="">
+                                                <Grid.RowSpan>
+                                                    <OnPlatform x:TypeArguments="x:Int32">
+                                                        <On Platform="iOS" Value="3" />
+                                                        <On Platform="Android" Value="2" />
+                                                    </OnPlatform>
+                                                </Grid.RowSpan>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <StackLayout Grid.Column="0" Grid.Row="2" Margin="10,0,0,0" Orientation="Horizontal" VerticalOptions="Center" Spacing="5" IsVisible="{Binding BLEMac, Converter={StaticResource StringNullOrEmptyBooleanConverter}}">
+                                        <Label Text="BLE MAC:" StyleClass="device-list-mac-header" VerticalOptions="Center" />
+                                        <Label Text="{Binding BLEMac}" StyleClass="device-list-mac" VerticalOptions="Center" />
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="0" Grid.Row="1" Margin="10,0,0,0" Orientation="Horizontal" VerticalOptions="Center" Spacing="5" IsVisible="{Binding RfMac, Converter={StaticResource StringNullOrEmptyBooleanConverter}}">
+                                        <Label Text="RF MAC:" StyleClass="device-list-mac-header" VerticalOptions="Center" />
+                                        <Label Text="{Binding RfMac}" StyleClass="device-list-mac" VerticalOptions="Center" />
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Orientation="Vertical" VerticalOptions="CenterAndExpand">
+                                        <Image Source="{Binding RssiImage}" HeightRequest="25" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
+                                        <Label Text="{Binding Rssi, StringFormat='{0:F0} dB'}" StyleClass="device-list-rssi" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
+                                    </StackLayout>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <pages:EmptyView Grid.Column="0" Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Center" IsVisible="{Binding IsEmpty}"/>
+            </Grid>
+            <StackLayout Spacing="10" Orientation="Horizontal" Padding="10" StyleClass="filter-section">
+                <Label Text="Filter by name:" VerticalOptions="Center" />
+                <Entry Text="{Binding FilterText}" HorizontalOptions="FillAndExpand" />
+                <Image Source="question.png" WidthRequest="25">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowFilterInfoCommand}" />
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
+            <!--TODO: Add back when Scan QR functionality feature goes into the app.-->
+            <!--<Button Text="Scan QR code" x:Name="btScanQR" />-->
+        </StackLayout>
+    </ContentPage.Content>
+</IX15Configurator.Pages:CustomContentPage>

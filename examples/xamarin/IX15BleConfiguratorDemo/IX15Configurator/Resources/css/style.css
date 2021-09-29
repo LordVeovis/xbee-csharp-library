@@ -1,0 +1,152 @@
+﻿.section {
+	color: white;
+	font-weight: bold;
+	background-color: #4B4F53;
+	padding: 8;
+}
+
+.device-image {
+	margin-left: 5;
+	margin-right: 5;
+}
+
+.category {
+	background-color: #EEEEEE;
+	padding: 8;
+}
+
+.setting-container {
+	background-color: #FFFFFF;
+	padding: 2 10;
+}
+
+.setting-name {
+	font-size: 14;
+}
+
+.setting-button-container {
+	height: 60;
+	background-color: #DDDDDD;
+}
+
+.setting-button, .scan-button {
+	background-color: #3577B6;
+	color: white;
+	font-size: 14;
+	font-weight: bold;
+	border: 0;
+	width: 140;
+	height: 46;
+}
+
+.setting-error {
+	font-size: 12;
+	color: #FF0000;
+	text-align: right;
+	padding-right: 10;
+}
+
+.setting-value {
+	margin-right: 8;
+	font-size: 16;
+}
+
+.scan-button {
+	width: 96;
+	height: 46;
+}
+
+.medium-label {
+	font-size: 16;
+}
+
+.about-header {
+	color: white;
+	font-weight: bold;
+	background-color: #3F4245;
+	padding: 8;
+}
+
+.about-title {
+	color: #3F4245;
+	font-size: 34;
+	font-weight: bold;
+}
+
+.about-version {
+	color: #3F4245;
+	font-size: 14;
+	font-weight: bold;
+}
+
+.about-copyright {
+	color: #3F4245;
+	font-size: 14;
+}
+
+.about-text {
+	color: #3F4245;
+	font-size: 12;
+}
+
+.about-button {
+	background-color: #3F4245;
+	color: white;
+	font-size: 14;
+	font-weight: bold;
+	height: 40;
+	border: 0;
+	width: 100;
+	border-radius: 0;
+}
+
+.popup-frame {
+	background-color: white;
+	padding: 0;
+}
+
+.popup-title {
+	font-size: 20;
+	font-style: bold;
+	margin-bottom: 10;
+}
+
+.popup-entry {
+	margin-bottom: 10;
+}
+
+.popup-button {
+	border-color: transparent;
+	background-color: transparent;
+}
+
+.popup-text {
+	font-size: 14;
+}
+
+.popup-error {
+	margin-bottom: 10;
+	font-size: 12;
+}
+
+.device-list-name {
+	font-size: 20;
+	font-style: bold;
+}
+
+.device-list-mac-header {
+	font-size: 14;
+	font-style: bold;
+}
+
+.device-list-mac {
+	font-size: 14;
+}
+
+.device-list-rssi {
+	font-size: 12;
+}
+
+.filter-section {
+	background-color: #DDDDDD;
+}

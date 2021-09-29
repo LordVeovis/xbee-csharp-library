@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IX15Configurator.Pages.EmptyView">
+    <ContentView.Content>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15" Padding="20">
+            <Image Source="glass.png" HorizontalOptions="Center" HeightRequest="90"/>
+            <Label Text="No devices found" FontSize="Medium" TextColor="#BBBBBB" HorizontalOptions="Center"/>
+            <Label x:Name="filterLabel" Text="Change or remove the filter to see all Bluetooth devices" FontSize="Small"
+                   TextColor="#BBBBBB"  HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>

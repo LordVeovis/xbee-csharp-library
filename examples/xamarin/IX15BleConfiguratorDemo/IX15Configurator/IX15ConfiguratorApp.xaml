@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:IX15Configurator.Utils.Converters"
+             mc:Ignorable="d"
+             x:Class="IX15Configurator.IX15ConfiguratorApp">
+    <Application.Resources>
+        <StyleSheet Source="Resources/css/style.css" />
+        <converters:IPModeStaticBooleanConverter x:Key="IPModeStaticBooleanConverter"/>
+        <converters:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
+        <converters:StringNullOrEmptyBooleanConverter x:Key="StringNullOrEmptyBooleanConverter"/>
+        <converters:StringToBooleanConverter x:Key="StringToBooleanConverter"/>
+        <converters:IPModeConverter x:Key="IPModeConverter"/>
+        <Style x:Key="bottomButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#3577B6" />
+            <Style.Triggers>
+                <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                    <Setter Property="BackgroundColor" Value="#ababab" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Application.Resources>
+</Application>
