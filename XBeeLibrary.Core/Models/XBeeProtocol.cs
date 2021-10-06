@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019, Digi International Inc.
+ * Copyright 2019-2021, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -267,13 +267,16 @@ namespace XBeeLibrary.Core.Models
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_VERIZON.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_ATT.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_ATT_TELIT.GetValue()
-				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_LTE_VERIZON.GetValue())
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_LTE_VERIZON.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_TELIT.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_GLOBAL.GetValue())
 			{
 				return XBeeProtocol.CELLULAR;
 			}
 			else if (hardwareVersion.Value == HardwareVersionEnum.XBEE3_MICRO.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_TH.GetValue()
-				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_RESERVED.GetValue())
+				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_RESERVED.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_RR.GetValue())
 			{
 				if (firmwareVersion.StartsWith("2"))
 					return XBeeProtocol.RAW_802_15_4;
@@ -284,6 +287,15 @@ namespace XBeeLibrary.Core.Models
 			else if (hardwareVersion.Value == HardwareVersionEnum.XB8X.GetValue())
 			{
 				return XBeeProtocol.DIGI_MESH;
+			}
+			else if (hardwareVersion.Value == HardwareVersionEnum.XBEE3_DM_LR.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_DM_LR_868.GetValue())
+			{
+				return XBeeProtocol.DIGI_MESH;
+			}
+			else if (hardwareVersion.Value == HardwareVersionEnum.S2C_P5.GetValue())
+			{
+				return XBeeProtocol.ZIGBEE;
 			}
 
 			return XBeeProtocol.ZIGBEE;
