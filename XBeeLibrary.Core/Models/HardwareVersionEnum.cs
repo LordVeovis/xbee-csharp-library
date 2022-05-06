@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019-2021, Digi International Inc.
+ * Copyright 2019-2022, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -100,7 +100,8 @@ namespace XBeeLibrary.Core.Models
 		XBEE3_DM_LR_868 = 0x51,
 		XBEE3_RR = 0x52,
 		S2C_P5 = 0x53,
-		CELLULAR_3_CAT1_GLOBAL = 0x54
+		CELLULAR_3_CAT1_GLOBAL = 0x54,
+		CELLULAR_3_CAT1_NA = 0x55
 	}
 
 	public static class HardwareVersionEnumExtensions
@@ -183,7 +184,8 @@ namespace XBeeLibrary.Core.Models
 			lookupTable.Add(HardwareVersionEnum.XBEE3_DM_LR_868, "XB3-DMLR868");
 			lookupTable.Add(HardwareVersionEnum.XBEE3_RR, "XBee 3 Reduced RAM");
 			lookupTable.Add(HardwareVersionEnum.S2C_P5, "S2C P5");
-			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_CAT1_GLOBAL, "XBee Cellular 3 Cat 1 Global");
+			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_CAT1_GLOBAL, "XBee 3 Cellular Cat 1 Global");
+			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_CAT1_NA, "XBee 3 Cellular Cat 1 North America");
 		}
 
 		/// <summary>

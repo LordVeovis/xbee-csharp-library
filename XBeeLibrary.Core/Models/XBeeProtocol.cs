@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019-2021, Digi International Inc.
+ * Copyright 2019-2022, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -269,7 +269,8 @@ namespace XBeeLibrary.Core.Models
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_ATT_TELIT.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_LTE_VERIZON.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_TELIT.GetValue()
-				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_GLOBAL.GetValue())
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_GLOBAL.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_NA.GetValue())
 			{
 				return XBeeProtocol.CELLULAR;
 			}
