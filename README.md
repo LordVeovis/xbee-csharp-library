@@ -64,7 +64,7 @@ document.
 
 ## License
 
-Copyright 2019, 2020, Digi International Inc.
+Copyright 2019-2022, Digi International Inc.
 Copyright 2014-2015, Sébastien RAULT. 
 
 This Source Code Form is subject to the terms of the Mozilla Public

@@ -5,9 +5,9 @@
     <RootNamespace>XBeeLibrary.Core</RootNamespace>
     <AssemblyName>XBeeLibrary.Core</AssemblyName>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Company>Digi International Inc.</Company>
-    <Copyright>Copyright 2019, 2020, Digi International Inc. All rights reserved.</Copyright>
+    <Copyright>Copyright 2019-2022, Digi International Inc. All rights reserved.</Copyright>
     <Product>XBee Library Core</Product>
     <Title>XBee Library Core</Title>
     <Authors>Digi International Inc.</Authors>
@@ -16,19 +16,18 @@
     <PackageProjectUrl>http://www.digi.com/resources/documentation/digidocs/90002359/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/digidotcom/xbee-csharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageIconUrl>https://raw.githubusercontent.com/digidotcom/xbee-csharp/master/nuget_icon.png</PackageIconUrl>
+    <PackageIconUrl></PackageIconUrl>
     <Description>C# library to interact with Digi International's XBee radio frequency modules from mobile devices.</Description>
     <PackageTags>xbee, library, csharp, digi-xbee, digi, zigbee, bluetooth, rf</PackageTags>
-    <PackageReleaseNotes>
-	  <![CDATA[
-        - Limited the number of bytes that can be sent per operation to other XBee interfaces to 255 bytes.
-        - Fixed an issue reading data from a specific device if the device's 16-bit address is unknown.
-        - Cellular devices now return their actual 64-bit address.
-      ]]>
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>- Added support for new hardware versions.</PackageReleaseNotes>
+    <PackageIcon>nuget_icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\nuget_icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="libs\SRP.dll" Pack="true" PackagePath="lib\netstandard2.0" />
     <None Include="release_notes.txt" Pack="true" PackagePath="" />
   </ItemGroup>
