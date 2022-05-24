@@ -149,7 +149,7 @@
       <Version>4.6.0.1141</Version>
     </PackageReference>
     <PackageReference Include="XBeeLibrary.Core">
-      <Version>1.0.1</Version>
+      <Version>1.0.2</Version>
     </PackageReference>
     <PackageReference Include="XBeeLibrary.Xamarin">
       <Version>1.0.1</Version>
