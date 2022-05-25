@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019, 2020, Digi International Inc.
+ * Copyright 2019-2022, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -694,7 +694,15 @@ namespace XBeeLibrary.Core
 				response = GetParameter("HV");
 				if (response == null || response.Length < 1)
 					throw new ATCommandEmptyException("HV");
-				HardwareVersion = HardwareVersion.Get(response[0]);
+				try
+				{
+					HardwareVersion = HardwareVersion.Get(response[0]);
+				}
+				catch (Exception)
+				{
+					throw new XBeeException("XBee device not supported (hardware version 0x"
+						+ HexUtils.IntegerToHexString(response[0], 1) + ").");
+				}
 			}
 
 			// Get the firmware version.
