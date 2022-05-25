@@ -51,7 +51,8 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>None</MtouchLink>
     <MtouchInterpreter>-all</MtouchInterpreter>
-    <CodesignProvision>VS: WildCard Development</CodesignProvision>
+    <CodesignProvision>
+    </CodesignProvision>
     <MtouchFloat32>true</MtouchFloat32>
     <MtouchEnableSGenConc>false</MtouchEnableSGenConc>
   </PropertyGroup>
