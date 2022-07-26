@@ -185,10 +185,14 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 					var retries = BT_CONNECT_RETRIES;
 					while (!IsOpen && retries > 0)
 					{
+						// Force connection transport to be BLE. This fixes an issue with some Android devices
+						// throwing the error '133' while connecting with a BLE device and requesting the GATT
+						// server services and characteristics.
+						var parameters = new ConnectParameters(forceBleTransport: true);
 						if (device == null)
-							device = await adapter.ConnectToKnownDeviceAsync(deviceGuid, new ConnectParameters(), token.Token);
+							device = await adapter.ConnectToKnownDeviceAsync(deviceGuid, parameters, token.Token);
 						else
-							await adapter.ConnectToDeviceAsync(device, new ConnectParameters(), token.Token);
+							await adapter.ConnectToDeviceAsync(device, parameters, token.Token);
 						await Task.Delay(1000);
 						if (device != null && device.State == DeviceState.Connected)
 							IsOpen = true;
