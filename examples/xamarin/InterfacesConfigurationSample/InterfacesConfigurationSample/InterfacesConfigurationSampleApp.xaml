@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:InterfacesConfigurationSample.Utils.Converters"
+             xmlns:models="clr-namespace:InterfacesConfigurationSample.Models"
+             x:Class="InterfacesConfigurationSample.InterfacesConfigurationSampleApp">
+    <Application.Resources>
+        <StyleSheet Source="Resources/css/style.css" />
+        <Style x:Key="bottomButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#3577B6" />
+            <Style.Triggers>
+                <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                    <Setter Property="BackgroundColor" Value="#ababab" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <converters:StringNullOrEmptyBooleanConverter x:Key="StringNullOrEmptyBooleanConverter"/>
+        <converters:StringToBooleanConverter x:Key="StringToBooleanConverter"/>
+        <converters:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
+        <converters:ValidToRowHeightConverter x:Key="ValidToRowHeightConverter"/>
+        <converters:ComboValueConverter x:Key="ComboValueConverter"/>
+    </Application.Resources>
+</Application>

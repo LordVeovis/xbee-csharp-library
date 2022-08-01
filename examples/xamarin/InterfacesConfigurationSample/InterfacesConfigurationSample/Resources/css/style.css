@@ -1,0 +1,97 @@
+﻿.section {
+	color: white;
+	font-weight: bold;
+	background-color: #4B4F53;
+	padding: 8;
+}
+
+.interface {
+	background-color: #EEEEEE;
+}
+
+.setting-background {
+	background-color: #DDDDDD;
+}
+
+.setting-error {
+	font-size: 12;
+	color: #FF0000;
+	text-align: right;
+	padding-right: 10;
+}
+
+.setting-button, scan-button {
+	background-color: #3577B6;
+	color: white;
+	font-size: 14;
+	font-weight: bold;
+	border: 0;
+	width: 110;
+	height: 46;
+}
+
+.setting-name {
+	margin-left: 10;
+	font-size: 16;
+}
+
+.setting-value {
+	margin-right: 10;
+	font-size: 16;
+}
+
+.setting-button-container {
+	height: 60;
+	background-color: #DDDDDD;
+}
+
+.medium-label {
+	font-size: 16;
+}
+
+.popup-frame {
+	background-color: white;
+	padding: 0;
+}
+
+.popup-title {
+	font-size: 20;
+	font-weight: bold;
+	margin-bottom: 10;
+}
+
+.popup-entry {
+	margin-bottom: 10;
+}
+
+.popup-button {
+	border-color: transparent;
+	background-color: transparent;
+}
+
+.popup-text {
+	font-size: 14;
+}
+
+.popup-error {
+	margin-bottom: 10;
+	font-size: 12;
+}
+
+.device-list-name {
+	font-size: 20;
+	font-weight: bold;
+}
+
+.device-list-mac-header {
+	font-size: 14;
+	font-weight: bold;
+}
+
+.device-list-mac {
+	font-size: 14;
+}
+
+.device-list-rssi {
+	font-size: 12;
+}

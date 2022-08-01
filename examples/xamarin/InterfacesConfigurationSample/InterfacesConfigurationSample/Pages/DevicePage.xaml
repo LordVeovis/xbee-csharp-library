@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<InterfacesConfigurationSample.Pages:CustomContentPage
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:InterfacesConfigurationSample.Pages="clr-namespace:InterfacesConfigurationSample.Pages"
+             xmlns:models="clr-namespace:InterfacesConfigurationSample.Models"
+             x:Class="InterfacesConfigurationSample.Pages.DevicePage"
+             Title="Device Information"
+             x:Name="DeviceInformationPage"
+             EnableBackButtonOverride="True">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="disconnect_64.png" Text="Disconnect" Order="Secondary" Command="{Binding DisconnectCommand}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="interfaceTemplate">
+                <ViewCell Height="40">
+                    <Grid Padding="10,0,0,0" StyleClass="interface" ColumnSpacing="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer 
+								Command="{Binding OpenInterface}" 
+								CommandParameter="{Binding .}"
+								NumberOfTapsRequired="1" />
+                        </Grid.GestureRecognizers>
+                        <Image Grid.Column="0" Grid.Row="0" Source="gear_64.png" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="20" />
+                        <Label Grid.Column="1" Grid.Row="0" Margin="8,0,0,0" Text="{Binding InterfaceName}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" LineBreakMode="MiddleTruncation" />
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <models:InterfaceContainerTemplateSelector x:Key="interfaceContainerTemplateSelector" InterfaceTemplate="{StaticResource interfaceTemplate}" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Spacing="0" BackgroundColor="White">
+            <StackLayout StyleClass="section">
+                <Label Text="Device Information" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+            </StackLayout>
+            <Grid Margin="0, 8, 0, 8" Padding="5" RowSpacing="5" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.3*" />
+                    <ColumnDefinition Width="0.7*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Text="Name: " Font="Medium" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="StartAndExpand" />
+                <Label Grid.Column="0" Grid.Row="1" Text="MAC: " Font="Medium" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="StartAndExpand" />
+                <Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                <Label Grid.Column="1" Grid.Row="1" Text="{Binding MacAddress}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+            </Grid>
+            <StackLayout StyleClass="section">
+                <Label Text="Device Configuration" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+            </StackLayout>
+            <ListView ItemsSource="{Binding Interfaces}" SeparatorColor="Transparent" BackgroundColor="White" HasUnevenRows="True" ItemTemplate="{StaticResource interfaceContainerTemplateSelector}" />
+        </StackLayout>
+    </ContentPage.Content>
+</InterfacesConfigurationSample.Pages:CustomContentPage>

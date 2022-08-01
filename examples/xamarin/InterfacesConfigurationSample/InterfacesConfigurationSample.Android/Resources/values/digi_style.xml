@@ -1,0 +1,16 @@
+﻿<resources>
+    <style name="DigiTheme.Base" parent="Theme.AppCompat.Light">
+    </style>
+
+    <style name="DigiTheme" parent="DigiTheme.Base">
+    </style>
+
+    <style name="DigiTheme.Splash" parent ="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+</resources>
