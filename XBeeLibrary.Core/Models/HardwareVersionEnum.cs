@@ -101,7 +101,9 @@ namespace XBeeLibrary.Core.Models
 		XBEE3_RR = 0x52,
 		S2C_P5 = 0x53,
 		CELLULAR_3_CAT1_GLOBAL = 0x54,
-		CELLULAR_3_CAT1_NA = 0x55
+		CELLULAR_3_CAT1_NA = 0x55,
+		CELLULAR_3_LTE_M_LOW_POWER = 0x56,
+		XBEE_RR_TH = 0x57
 	}
 
 	public static class HardwareVersionEnumExtensions
@@ -186,6 +188,8 @@ namespace XBeeLibrary.Core.Models
 			lookupTable.Add(HardwareVersionEnum.S2C_P5, "S2C P5");
 			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_CAT1_GLOBAL, "XBee 3 Cellular Cat 1 Global");
 			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_CAT1_NA, "XBee 3 Cellular Cat 1 North America");
+			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_LTE_M_LOW_POWER, "XBee 3 Cellular LTE-M/NB-IoT Low Power");
+			lookupTable.Add(HardwareVersionEnum.XBEE_RR_TH, "XBee RR TH Pro/Non-Pro");
 		}
 
 		/// <summary>

@@ -270,14 +270,16 @@ namespace XBeeLibrary.Core.Models
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_LTE_VERIZON.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_TELIT.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_GLOBAL.GetValue()
-				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_NA.GetValue())
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_NA.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_LOW_POWER.GetValue())
 			{
 				return XBeeProtocol.CELLULAR;
 			}
 			else if (hardwareVersion.Value == HardwareVersionEnum.XBEE3_MICRO.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_TH.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_RESERVED.GetValue()
-				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_RR.GetValue())
+				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_RR.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.XBEE_RR_TH.GetValue())
 			{
 				if (firmwareVersion.StartsWith("2"))
 					return XBeeProtocol.RAW_802_15_4;
