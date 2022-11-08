@@ -15,8 +15,7 @@
  */
 
 using Acr.UserDialogs;
-using Plugin.FilePicker;
-using Plugin.FilePicker.Abstractions;
+using Xamarin.Essentials;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -159,7 +158,7 @@ namespace BleMicrocontrollerSample
 		public async void LoadFile()
 		{
 			// Show a file picker to choose the file to send.
-			FileData fileData = await CrossFilePicker.Current.PickFile();
+			FileResult fileData = await FilePicker.PickAsync();
 			if (fileData == null)
 				return;
 
@@ -183,17 +182,22 @@ namespace BleMicrocontrollerSample
 		/// Sends the file corresponding to the given file data split in blocks to the XBee serial
 		/// interface.
 		/// </summary>
-		/// <param name="fileData">File data corresponding to the file to send.</param>
-		public void SendFile(FileData fileData)
+		/// <param name="fileResult">File result corresponding to the file to send.</param>
+		public void SendFile(FileResult fileResult)
 		{
 			try
 			{
 				// Send the 'START' message.
-				if (!SendDataAndWaitResponse(Encoding.Default.GetBytes(string.Format(MSG_START, fileData.FileName))))
+				if (!SendDataAndWaitResponse(Encoding.Default.GetBytes(string.Format(MSG_START, fileResult.FileName))))
 					return;
 
+				// Get the file bytes.
+				var stream = fileResult.OpenReadAsync().Result;
+				byte[] fileData = new byte[stream.Length];
+				stream.Read(fileData, 0, (int)stream.Length);
+
 				// Split the file in blocks.
-				List<byte[]> fileBlocks = GetFileBlocks(fileData.DataArray);
+				List<byte[]> fileBlocks = GetFileBlocks(fileData);
 				for (int i = 0; i < fileBlocks.Count; i++)
 				{
 					byte[] block = fileBlocks[i];
@@ -237,8 +241,8 @@ namespace BleMicrocontrollerSample
 			int index = 0;
 			while (index < file.Length)
 			{
-				byte[] block = new byte[BLOCK_SIZE];
 				int length = (file.Length - index > BLOCK_SIZE) ? BLOCK_SIZE : (file.Length - index);
+				byte[] block = new byte[length];
 				Array.Copy(file, index, block, 0, length);
 				index += length;
 				fileBlocks.Add(block);

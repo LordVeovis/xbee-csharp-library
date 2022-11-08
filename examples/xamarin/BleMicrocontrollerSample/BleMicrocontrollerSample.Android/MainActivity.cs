@@ -25,7 +25,6 @@ using Android.Widget;
 using System.Collections;
 using System.Linq;
 using Xamarin.Forms;
-using Support = Android.Support;
 
 namespace BleMicrocontrollerSample.Droid
 {
@@ -59,9 +58,11 @@ namespace BleMicrocontrollerSample.Droid
 			global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 			LoadApplication(new App());
 
-			Support.V7.Widget.Toolbar toolbar
-				= this.FindViewById<Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
+			AndroidX.AppCompat.Widget.Toolbar toolbar
+				= this.FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
 			SetSupportActionBar(toolbar);
+
+			Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 		}
 
 		public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)

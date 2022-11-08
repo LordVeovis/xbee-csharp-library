@@ -53,7 +53,7 @@ namespace AgricultureDemo.Droid
 
 			Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 			UserDialogs.Init(this);
-			Popup.Init(this, savedInstanceState);
+			Popup.Init(this);
 
 			CheckPermissions();
 

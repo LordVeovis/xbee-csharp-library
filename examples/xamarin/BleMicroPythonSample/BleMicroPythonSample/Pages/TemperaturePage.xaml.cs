@@ -70,7 +70,7 @@ namespace BleMicroPythonSample
 			temperaturePageViewModel.UnregisterEventHandler();
 		}
 
-		public async void StartButtonClicked(object sender, ClickedEventArgs e)
+		public async void StartButtonClicked(object sender, System.EventArgs e)
 		{
 			bool newState = !temperaturePageViewModel.IsRunning;
 

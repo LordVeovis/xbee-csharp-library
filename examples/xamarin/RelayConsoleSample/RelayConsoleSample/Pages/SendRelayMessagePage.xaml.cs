@@ -49,7 +49,7 @@ namespace RelayConsoleSample
 			interfacePicker.SelectedIndex = 0;
 		}
 
-		public void OnSendButtonClicked(object sender, ClickedEventArgs e)
+		public void OnSendButtonClicked(object sender, System.EventArgs e)
 		{
 			DestinationInterface = (XBeeLocalInterface) interfacePicker.SelectedItem;
 			Data = dataEntry.Text;
@@ -57,7 +57,7 @@ namespace RelayConsoleSample
 			ClosePopup();
 		}
 
-		public void OnCancelButtonClicked(object sender, ClickedEventArgs e)
+		public void OnCancelButtonClicked(object sender, System.EventArgs e)
 		{
 			ClosePopup();
 		}

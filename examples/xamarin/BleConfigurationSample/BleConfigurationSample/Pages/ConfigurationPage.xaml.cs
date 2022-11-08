@@ -77,12 +77,12 @@ namespace BleConfigurationSample
 			base.OnDisappearing();
 		}
 
-		public void ReadButtonClicked(object sender, ClickedEventArgs e)
+		public void ReadButtonClicked(object sender, System.EventArgs e)
 		{
 			configurationPageViewModel.ReadSettings();
 		}
 
-		public void WriteButtonClicked(object sender, ClickedEventArgs e)
+		public void WriteButtonClicked(object sender, System.EventArgs e)
 		{
 			configurationPageViewModel.WriteSettings();
 		}

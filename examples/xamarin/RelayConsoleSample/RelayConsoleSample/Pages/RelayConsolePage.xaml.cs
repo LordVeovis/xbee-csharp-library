@@ -56,7 +56,7 @@ namespace RelayConsoleSample
 			relayConsolePageViewModel.UnregisterEventHandler();
 		}
 
-		public void SendButtonClicked(object sender, ClickedEventArgs e)
+		public void SendButtonClicked(object sender, System.EventArgs e)
 		{
 			relayConsolePageViewModel.SendRelayMessage();
 		}

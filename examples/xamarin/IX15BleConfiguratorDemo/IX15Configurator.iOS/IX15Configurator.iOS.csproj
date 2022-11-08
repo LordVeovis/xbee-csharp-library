@@ -14,7 +14,7 @@
     <AssemblyName>IX15Configurator.iOS</AssemblyName>
     <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
-    <ProvisioningType>manual</ProvisioningType>
+    <ProvisioningType>automatic</ProvisioningType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,8 +27,8 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>Apple Distribution: Digi International Inc (D5PV9FUNTY)</CodesignKey>
-    <CodesignProvision>com.digi.ix15configurator Distribution</CodesignProvision>
+    <CodesignKey>Apple Development: Diego Escalona (N8U4F87B93)</CodesignKey>
+    <CodesignProvision>VS: WildCard Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -96,28 +96,21 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Acr.UserDialogs">
-      <Version>7.1.0.514</Version>
+      <Version>7.2.0.564</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Plugin.BLE">
-      <Version>2.1.2</Version>
     </PackageReference>
     <PackageReference Include="Plugin.Permissions">
       <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="Rg.Plugins.Popup">
-      <Version>2.0.0.12</Version>
+      <Version>2.1.0</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>5.0.2</Version>
+      <Version>7.0.0</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2083" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
-    <PackageReference Include="XBeeLibrary.Xamarin">
-      <Version>1.0.1</Version>
-    </PackageReference>
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2515" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
@@ -259,9 +252,6 @@
     <BundleResource Include="Resources\write%403x.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageAsset Include="Media.xcassets\AppIcons.appiconset\Contents.json">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon-1024.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -316,12 +306,6 @@
     <ImageAsset Include="Media.xcassets\AppIcons.appiconset\Icon-Small@3x.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Media.xcassets\LaunchImages.imageset\Contents.json">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Media.xcassets\LaunchImages.launchimage\Contents.json">
-      <Visible>false</Visible>
-    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default.png" />
@@ -337,6 +321,16 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default-Portrait%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XBeeLibrary.Core\XBeeLibrary.Core.csproj">
+      <Project>{40993e66-febc-42c4-aead-a04838145207}</Project>
+      <Name>XBeeLibrary.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XBeeLibrary.Xamarin\XBeeLibrary.Xamarin.csproj">
+      <Project>{136e00a4-29b0-4981-8213-0f49a87e4084}</Project>
+      <Name>XBeeLibrary.Xamarin</Name>
+    </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

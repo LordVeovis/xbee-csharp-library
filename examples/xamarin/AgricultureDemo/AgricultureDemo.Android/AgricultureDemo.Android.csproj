@@ -66,24 +66,18 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Acr.UserDialogs">
-      <Version>7.1.0.446</Version>
+      <Version>7.2.0.564</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
+      <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="Rg.Plugins.Popup">
-      <Version>2.0.0.4</Version>
+      <Version>2.1.0</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.6.0.1141" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2515" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
     <PackageReference Include="Xamarin.Forms.Maps">
-      <Version>4.6.0.1141</Version>
-    </PackageReference>
-    <PackageReference Include="XBeeLibrary.Core">
-      <Version>1.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="XBeeLibrary.Xamarin">
-      <Version>1.0.1</Version>
+      <Version>5.0.0.2515</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +133,14 @@
     <AndroidResource Include="Resources\drawable\map_view.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XBeeLibrary.Core\XBeeLibrary.Core.csproj">
+      <Project>{40993e66-febc-42c4-aead-a04838145207}</Project>
+      <Name>XBeeLibrary.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XBeeLibrary.Xamarin\XBeeLibrary.Xamarin.csproj">
+      <Project>{136e00a4-29b0-4981-8213-0f49a87e4084}</Project>
+      <Name>XBeeLibrary.Xamarin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AgricultureDemo\AgricultureDemo.csproj">
       <Project>{ff632e32-38ab-487d-a776-e247b9c972ce}</Project>
       <Name>AgricultureDemo</Name>

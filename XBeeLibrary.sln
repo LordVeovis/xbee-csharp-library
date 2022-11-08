@@ -61,6 +61,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AgricultureDemo", "Agricult
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AgricultureDemo", "examples\xamarin\AgricultureDemo\AgricultureDemo\AgricultureDemo.csproj", "{FF632E32-38AB-487D-A776-E247B9C972CE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{136E00A4-29B0-4981-8213-0F49A87E4084} = {136E00A4-29B0-4981-8213-0F49A87E4084}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgricultureDemo.Android", "examples\xamarin\AgricultureDemo\AgricultureDemo.Android\AgricultureDemo.Android.csproj", "{A48E4CE6-DA61-429A-A154-9271A5910FCC}"
 EndProject
@@ -85,8 +88,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfacesConfigurationSample.Android", "examples\xamarin\InterfacesConfigurationSample\InterfacesConfigurationSample.Android\InterfacesConfigurationSample.Android.csproj", "{21698BF3-2AF2-44DA-AD07-70E7C1DC1873}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfacesConfigurationSample.iOS", "examples\xamarin\InterfacesConfigurationSample\InterfacesConfigurationSample.iOS\InterfacesConfigurationSample.iOS.csproj", "{3B9BE251-0A14-4C04-AF97-2A60C97A1A04}"
+	ProjectSection(ProjectDependencies) = postProject
+		{40993E66-FEBC-42C4-AEAD-A04838145207} = {40993E66-FEBC-42C4-AEAD-A04838145207}
+		{136E00A4-29B0-4981-8213-0F49A87E4084} = {136E00A4-29B0-4981-8213-0F49A87E4084}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterfacesConfigurationSample", "examples\xamarin\InterfacesConfigurationSample\InterfacesConfigurationSample\InterfacesConfigurationSample.csproj", "{2DB03613-576F-41E3-B56E-10BC551BE833}"
+	ProjectSection(ProjectDependencies) = postProject
+		{40993E66-FEBC-42C4-AEAD-A04838145207} = {40993E66-FEBC-42C4-AEAD-A04838145207}
+		{136E00A4-29B0-4981-8213-0F49A87E4084} = {136E00A4-29B0-4981-8213-0F49A87E4084}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InterfacesConfigurationSample", "InterfacesConfigurationSample", "{913CD284-92E1-4617-ACE3-1A2D366B7067}"
 	ProjectSection(SolutionItems) = preProject
@@ -702,6 +713,7 @@ Global
 		{3B9BE251-0A14-4C04-AF97-2A60C97A1A04}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
 		{3B9BE251-0A14-4C04-AF97-2A60C97A1A04}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{3B9BE251-0A14-4C04-AF97-2A60C97A1A04}.Debug|iPhone.Build.0 = Debug|iPhone
+		{3B9BE251-0A14-4C04-AF97-2A60C97A1A04}.Debug|iPhone.Deploy.0 = Debug|iPhone
 		{3B9BE251-0A14-4C04-AF97-2A60C97A1A04}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
 		{3B9BE251-0A14-4C04-AF97-2A60C97A1A04}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
 		{3B9BE251-0A14-4C04-AF97-2A60C97A1A04}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator

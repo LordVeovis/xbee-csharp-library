@@ -56,7 +56,7 @@ namespace BleMicrocontrollerSample
 			sendFilePageViewModel.UnregisterEventHandler();
 		}
 
-		public void SendFileButtonClicked(object sender, ClickedEventArgs e)
+		public void SendFileButtonClicked(object sender, System.EventArgs e)
 		{
 			sendFilePageViewModel.LoadFile();
 		}
