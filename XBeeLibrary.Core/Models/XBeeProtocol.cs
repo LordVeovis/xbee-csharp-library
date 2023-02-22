@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019-2022, Digi International Inc.
+ * Copyright 2019-2023, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -292,7 +292,9 @@ namespace XBeeLibrary.Core.Models
 				return XBeeProtocol.DIGI_MESH;
 			}
 			else if (hardwareVersion.Value == HardwareVersionEnum.XBEE3_DM_LR.GetValue()
-				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_DM_LR_868.GetValue())
+				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_DM_LR_868.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.XBEE_XR_900_TH.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.XBEE_XR_868_TH.GetValue())
 			{
 				return XBeeProtocol.DIGI_MESH;
 			}

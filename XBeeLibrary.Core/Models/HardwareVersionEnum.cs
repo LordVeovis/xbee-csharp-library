@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019-2022, Digi International Inc.
+ * Copyright 2019-2023, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -103,7 +103,9 @@ namespace XBeeLibrary.Core.Models
 		CELLULAR_3_CAT1_GLOBAL = 0x54,
 		CELLULAR_3_CAT1_NA = 0x55,
 		CELLULAR_3_LTE_M_LOW_POWER = 0x56,
-		XBEE_RR_TH = 0x57
+		XBEE_RR_TH = 0x57,
+		XBEE_XR_900_TH = 0x5A,
+		XBEE_XR_868_TH = 0x5B
 	}
 
 	public static class HardwareVersionEnumExtensions
@@ -182,14 +184,16 @@ namespace XBeeLibrary.Core.Models
 			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_LTE_M_ATT_TELIT, "XBee3 Cellular LTE-M AT&T (Telit)");
 			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_CAT1_LTE_VERIZON, "XBee3 Cellular Cat 1 LTE Verizon");
 			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_LTE_M_TELIT, "XBee 3 Cellular LTE - M / NB - IoT (Telit)");
-			lookupTable.Add(HardwareVersionEnum.XBEE3_DM_LR, "XB3-DMLR");
-			lookupTable.Add(HardwareVersionEnum.XBEE3_DM_LR_868, "XB3-DMLR868");
+			lookupTable.Add(HardwareVersionEnum.XBEE3_DM_LR, "XBee XR 900");
+			lookupTable.Add(HardwareVersionEnum.XBEE3_DM_LR_868, "XBee XR 868");
 			lookupTable.Add(HardwareVersionEnum.XBEE3_RR, "XBee 3 Reduced RAM");
 			lookupTable.Add(HardwareVersionEnum.S2C_P5, "S2C P5");
 			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_CAT1_GLOBAL, "XBee 3 Cellular Cat 1 Global");
 			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_CAT1_NA, "XBee 3 Cellular Cat 1 North America");
 			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_LTE_M_LOW_POWER, "XBee 3 Cellular LTE-M/NB-IoT Low Power");
 			lookupTable.Add(HardwareVersionEnum.XBEE_RR_TH, "XBee RR TH Pro/Non-Pro");
+			lookupTable.Add(HardwareVersionEnum.XBEE_XR_900_TH, "XBee XR 900 TH");
+			lookupTable.Add(HardwareVersionEnum.XBEE_XR_868_TH, "XBee XR 868 TH");
 		}
 
 		/// <summary>
