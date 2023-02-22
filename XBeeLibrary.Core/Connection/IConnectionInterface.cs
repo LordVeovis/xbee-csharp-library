@@ -54,6 +54,7 @@ namespace XBeeLibrary.Core.Connection
 		/// Writes the given data in the connection interface.
 		/// </summary>
 		/// <param name="data">The data to be written in the connection interface.</param>
+		/// <exception cref="XBeeException">If there is any error writing the data.</exception>
 		/// <seealso cref="WriteData(byte[], int, int)"/>
 		void WriteData(byte[] data);
 
@@ -63,6 +64,7 @@ namespace XBeeLibrary.Core.Connection
 		/// <param name="data">The data to be written in the connection interface.</param>
 		/// <param name="offset">The start offset in the data to write.</param>
 		/// <param name="length">The number of bytes to write.</param>
+		/// <exception cref="XBeeException">If there is any error writing the data.</exception>
 		/// <seealso cref="WriteData(byte[])"/>
 		void WriteData(byte[] data, int offset, int length);
 

@@ -2230,6 +2230,7 @@ namespace XBeeLibrary.Core
 		/// Writes the given XBee packet in the connection interface of this device.
 		/// </summary>
 		/// <param name="packet">The XBee packet to be written.</param>
+		/// <exception cref="XBeeException">If there is any error writing the packet.</exception>
 		/// <seealso cref="XBeePacket"/>
 		private void WritePacket(XBeePacket packet)
 		{

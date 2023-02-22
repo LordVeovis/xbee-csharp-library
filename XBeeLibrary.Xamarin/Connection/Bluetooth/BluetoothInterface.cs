@@ -19,13 +19,11 @@ using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using XBeeLibrary.Core.Connection;
 using XBeeLibrary.Core.Exceptions;
 using XBeeLibrary.Core.Utils;
@@ -41,22 +39,23 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		// Constants.
 		private static readonly int CONNECTION_TIMEOUT = 20000;
 		private static readonly int DISCONNECTION_TIMEOUT = 5000;
-		private static readonly int WRITE_TIMEOUT = 20000;
+		private static readonly int SUBSCRIBE_TIMEOUT = 3000;
+		private static readonly int WRITE_TIMEOUT = 3000;
 
 		private static readonly int LENGTH_COUNTER = 16;
 
-		private static readonly int BT_CONNECT_RETRIES = 3;
-
-		private static readonly int REQUESTED_MTU = 256;
+		private static readonly int REQUESTED_MTU = 255;
 
 		private static readonly string ERROR_INVALID_MAC_GUID = "Invalid MAC address or GUID, it has to follow the format 00112233AABB or " +
 			"00:11:22:33:AA:BB for the MAC address or 01234567-0123-0123-0123-0123456789AB for the GUID";
 		private static readonly string ERROR_CONNECTION = "Could not connect to the XBee BLE device";
-		private static readonly string ERROR_CONNECTION_CANCELED = ERROR_CONNECTION + " > Connection canceled";
+		private static readonly string ERROR_CONNECTION_CLOSED = "Device is not connected";
+		private static readonly string ERROR_CONNECTION_TIMEOUT = "Timeout while opening connection";
 		private static readonly string ERROR_DISCONNECTION = "Could not disconnect the XBee BLE device";
 		private static readonly string ERROR_WRITE = "Timeout writing in the TX Characteristic";
 		private static readonly string ERROR_GET_SERVICE = "Could not get the communication service";
 		private static readonly string ERROR_GET_CHARS = "Could not get the communication characteristics";
+		private static readonly string ERROR_SUBSCRIBE_RX_CHAR = "Could not subscribe to RX characteristic";
 
 		private static readonly string SERVICE_GUID = "53DA53B9-0447-425A-B9EA-9837505EB59A";
 		private static readonly string TX_CHAR_GUID = "7DDDCA00-3E05-4651-9254-44074792C590";
@@ -67,11 +66,6 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		private static readonly string MAC_GUID = "00000000-0000-0000-0000-{0}";
 
 		// Variables.
-		private object connectLock = new object();
-		private object disconnectLock = new object();
-		private object writeLock = new object();
-		private object txLock = new object();
-
 		private IAdapter adapter;
 		private IDevice device;
 
@@ -81,9 +75,12 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		private ICharacteristic rxCharacteristic;
 
 		private bool encrypt = false;
+		private bool subscribed = false;
 
 		private CounterModeCryptoTransform encryptor;
 		private CounterModeCryptoTransform decryptor;
+
+		static readonly SemaphoreSlim deviceSemaphore = new SemaphoreSlim(initialCount: 1);
 
 		private int mtu;
 
@@ -157,9 +154,8 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		/// <summary>
 		/// Opens the connection interface associated with this Bluetooth device.
 		/// </summary>
-		/// <exception cref="Exception">If there is any problem opening the connection with this bluetooth 
-		/// device.</exception>
-		/// <exception cref="XBeeException">If there is any XBee error.</exception>
+		/// <exception cref="XBeeException">If there is any problem opening the connection
+		/// with this bluetooth device.</exception>
 		/// <seealso cref="IsOpen"/>
 		/// <seealso cref="Close"/>
 		public void Open()
@@ -168,8 +164,11 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 
 			// Do nothing if the device is already open.
 			if (IsOpen)
+			{
 				return;
+			}
 
+			// Initialize variables.
 			string connectExceptionMessage = null;
 
 			// Create a task to connect the device.
@@ -177,99 +176,104 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 			{
 				try
 				{
-					// Abort the connect operation if the given timeout expires.
-					CancellationTokenSource token = new CancellationTokenSource();
-					token.CancelAfter(CONNECTION_TIMEOUT);
+					// Force connection transport to be BLE. This fixes an issue with some Android devices
+					// throwing the error '133' while connecting with a BLE device and requesting the GATT
+					// server services and characteristics.
+					ConnectParameters parameters = new ConnectParameters(forceBleTransport: true);
 
-					// Connect the device. Try to connect up to 3 times.
-					var retries = BT_CONNECT_RETRIES;
-					while (!IsOpen && retries > 0)
+					// Abort the connect operation if the given timeout expires.
+					CancellationTokenSource cancelToken = new CancellationTokenSource(CONNECTION_TIMEOUT);
+
+					// Connect to the device.
+					if (device == null)
 					{
-						// Force connection transport to be BLE. This fixes an issue with some Android devices
-						// throwing the error '133' while connecting with a BLE device and requesting the GATT
-						// server services and characteristics.
-						var parameters = new ConnectParameters(forceBleTransport: true);
-						if (device == null)
-							device = await adapter.ConnectToKnownDeviceAsync(deviceGuid, parameters, token.Token);
-						else
-							await adapter.ConnectToDeviceAsync(device, parameters, token.Token);
-						await Task.Delay(1000);
-						if (device != null && device.State == DeviceState.Connected)
-							IsOpen = true;
-						retries--;
+						device = await adapter.ConnectToKnownDeviceAsync(deviceGuid, parameters, cancelToken.Token);
+					}
+					else
+					{
+						await adapter.ConnectToDeviceAsync(device, parameters, cancelToken.Token);
 					}
 
-					// Check if device is connected.
-					if (!IsOpen)
-						throw new Exception();
+					// Check if token expired.
+					if (cancelToken.IsCancellationRequested)
+					{
+						throw new Exception(ERROR_CONNECTION_TIMEOUT);
+					}
+					cancelToken.Dispose();
 
-					// Request a larger MTU.
+					// Check if device is connected.
+					if (device != null && device.State == DeviceState.Connected)
+					{
+						IsOpen = true;
+					}
+					else
+					{
+						throw new Exception();
+					}
+
+					// Request MTU.
 					mtu = await device.RequestMtuAsync(REQUESTED_MTU);
-					Console.WriteLine("----- MTU: " + mtu);
+					Debug.WriteLine("----- MTU: " + mtu);
 
 					// Get the TX and RX characteristics.
-					IService service = await device.GetServiceAsync(Guid.Parse(SERVICE_GUID));
-					if (service == null)
+					cancelToken = new CancellationTokenSource(WRITE_TIMEOUT);
+					IService service = await device.GetServiceAsync(Guid.Parse(SERVICE_GUID), cancellationToken: cancelToken.Token);
+					if (service == null || cancelToken.IsCancellationRequested)
+					{
 						throw new Exception(ERROR_GET_SERVICE);
+					}
+					cancelToken.Dispose();
 					txCharacteristic = await service.GetCharacteristicAsync(Guid.Parse(TX_CHAR_GUID));
 					rxCharacteristic = await service.GetCharacteristicAsync(Guid.Parse(RX_CHAR_GUID));
 					if (txCharacteristic == null || rxCharacteristic == null)
+					{
 						throw new Exception(ERROR_GET_CHARS);
+					}
 
 					// Subscribe to the RX characteristic.
 					if (rxCharacteristic.CanUpdate)
 					{
 						rxCharacteristic.ValueUpdated += DataReceived;
-						await rxCharacteristic.StartUpdatesAsync();
+						cancelToken = new CancellationTokenSource(SUBSCRIBE_TIMEOUT);
+						await rxCharacteristic.StartUpdatesAsync(cancellationToken: cancelToken.Token);
+						if (cancelToken.IsCancellationRequested)
+						{
+							throw new Exception(ERROR_SUBSCRIBE_RX_CHAR);
+						}
+						cancelToken.Dispose();
+						subscribed = true;
 					}
 
+					// Initialize the connection without encryption for the SRP handshake protocol.
 					encrypt = false;
 				}
 				catch (Exception e)
 				{
 					connectExceptionMessage = e.Message == null ? ERROR_CONNECTION : ERROR_CONNECTION + " > " + e.Message;
 				}
-				finally
-				{
-					lock (connectLock)
-					{
-						Monitor.Pulse(connectLock);
-					}
-				}
 			});
 
-			if (!task.IsCompleted)
+			// Wait until the task finishes.
+			bool completed = task.Wait(CONNECTION_TIMEOUT);
+
+			// Check if task completed.
+			if (!completed)
 			{
-				// Wait until the task finishes.
-				lock (connectLock)
-				{
-					Monitor.Wait(connectLock);
-				}
+				Close();
+				throw new XBeeException(ERROR_CONNECTION_TIMEOUT);
 			}
 
 			// If the task finished with excepction, throw it.
 			if (connectExceptionMessage != null)
 			{
-				if (device != null && device.State != DeviceState.Connected)
-					IsOpen = false;
 				Close();
 				throw new XBeeException(connectExceptionMessage);
-			}
-
-			// If the task was cancelled, throw an exception.
-			if (task.IsCanceled)
-			{
-				if (device != null && device.State != DeviceState.Connected)
-					IsOpen = false;
-				Close();
-				throw new XBeeException(ERROR_CONNECTION_CANCELED);
 			}
 
 			// Check again if the device is connected. We've seen that sometimes the 
 			// Rx subscribe process could make the device to disconnect.
 			if (device != null && device.State != DeviceState.Connected)
 			{
-				IsOpen = false;
 				Close();
 				throw new XBeeException(ERROR_CONNECTION);
 			}
@@ -278,7 +282,7 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		/// <summary>
 		/// Closes the connection interface associated with this bluetooth device.
 		/// </summary>
-		/// <exception cref="XBeeException">If there is any XBee error.</exception>
+		/// <exception cref="XBeeException">If there is any error closing the connection.</exception>
 		/// <seealso cref="IsOpen"/>
 		/// <seealso cref="Open"/>
 		public void Close()
@@ -287,28 +291,50 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 
 			// Do nothing if the device is not open.
 			if (!IsOpen)
+			{
 				return;
+			}
+
+			// Wait for other device operations.
+			deviceSemaphore.Wait(WRITE_TIMEOUT);
 
 			// Create a task to disconnect the device.
 			Task task = Task.Run(async () =>
 			{
 				// Unsubscribe from the RX characteristic.
-				rxCharacteristic.ValueUpdated -= DataReceived;
-				try
+				if (subscribed)
 				{
-					if (device != null && device.State == DeviceState.Connected)
-						await rxCharacteristic.StopUpdatesAsync();
-				}
-				catch (Exception e)
-				{
-					Debug.WriteLine("----- BLE interface - Error unsubscribing RX characteristic: " + e.Message);
+					CancellationTokenSource cancelToken = new CancellationTokenSource(SUBSCRIBE_TIMEOUT);
+					try
+					{
+						await MainThread.InvokeOnMainThreadAsync(async () =>
+						{
+							await rxCharacteristic.StopUpdatesAsync(cancellationToken: cancelToken.Token);
+						});
+						if (cancelToken.IsCancellationRequested)
+						{
+							Debug.WriteLine("----- BLE interface - Timeout unsubscribing RX characteristic");
+						}
+					}
+					catch (Exception e)
+					{
+						Debug.WriteLine("----- BLE interface - Error unsubscribing RX characteristic: " + e.Message);
+					}
+					finally
+					{
+						rxCharacteristic.ValueUpdated -= DataReceived;
+						subscribed = false;
+						cancelToken.Dispose();
+					}
 				}
 
 				// Disconnect the device.
 				try
 				{
 					if (device != null && device.State == DeviceState.Connected)
+					{
 						await adapter.DisconnectDeviceAsync(device);
+					}
 				}
 				catch (Exception e)
 				{
@@ -316,26 +342,24 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 				}
 
 				IsOpen = false;
-				lock (disconnectLock)
-				{
-					Monitor.Pulse(disconnectLock);
-				}
 			});
 
-			if (!task.IsCompleted)
+			// Wait until the task finishes.
+			bool completed = task.Wait(DISCONNECTION_TIMEOUT);
+
+			// Check if disconnect process finished.
+			try
 			{
-				// Wait until the task finishes.
-				lock (disconnectLock)
+				if (!completed || (device != null && device.State != DeviceState.Disconnected && device.State != DeviceState.Limited))
 				{
-					Monitor.Wait(disconnectLock, DISCONNECTION_TIMEOUT);
+					// Set interface connection as closed (although there was a problem closing it...)
+					IsOpen = false;
+					throw new XBeeException(ERROR_DISCONNECTION);
 				}
 			}
-
-			if (device != null && device.State != DeviceState.Disconnected && device.State != DeviceState.Limited)
+			finally
 			{
-				// Set interface connection as closed (although there was a problem closing it...)
-				IsOpen = false;
-				throw new XBeeException(ERROR_DISCONNECTION);
+				deviceSemaphore.Release();
 			}
 		}
 
@@ -374,6 +398,7 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		/// Writes the given data in the bluetooth connection interface.
 		/// </summary>
 		/// <param name="data">The data to be written in the connection interface.</param>
+		/// <exception cref="XBeeException">If there is any error writing data.</exception>
 		/// <seealso cref="WriteData(byte[], int, int)"/>
 		public void WriteData(byte[] data)
 		{
@@ -386,61 +411,56 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 		/// <param name="data">The data to be written in the connection interface.</param>
 		/// <param name="offset">The start offset in the data to write.</param>
 		/// <param name="length">The number of bytes to write.</param>
-		/// <exception cref="XBeeException">If there is any XBee error.</exception>
+		/// <exception cref="XBeeException">If there is any error writing data.</exception>
 		/// <seealso cref="WriteData(byte[])"/>
 		public void WriteData(byte[] data, int offset, int length)
 		{
-			lock (txLock)
+			// Wait for other device operations.
+			deviceSemaphore.Wait(WRITE_TIMEOUT);
+			if (!IsOpen)
 			{
-				Debug.WriteLine("----- WriteData " + HexUtils.ByteArrayToHexString(data));
-				bool dataWritten = false;
+				deviceSemaphore.Release();
+				throw new XBeeException(ERROR_CONNECTION_CLOSED);
+			}
 
-				// Create a task to write in the TX characteristic.
-				Task task = Task.Run(async () =>
+			// Prepare data to write.
+			Debug.WriteLine("----- WriteData " + HexUtils.ByteArrayToHexString(data));
+			byte[] buffer = new byte[length];
+			Array.Copy(data, offset, buffer, 0, length);
+			byte[] dataToWrite = encrypt ? encryptor.TransformFinalBlock(buffer, 0, buffer.Length) : buffer;
+
+			// Abort the write operation if the write timeout expires.
+			CancellationTokenSource cancelToken = new CancellationTokenSource(WRITE_TIMEOUT);
+			bool success = false;
+			Task writeTask = Task.Run(async () =>
+			{
+				// According to BLE.Plugin API documentation, every write operation
+				// must be executed in the main thread.
+				await MainThread.InvokeOnMainThreadAsync(async () => 
 				{
 					try
 					{
-						byte[] buffer = new byte[length];
-						Array.Copy(data, offset, buffer, 0, length);
-
-						byte[] dataToWrite = encrypt ? encryptor.TransformFinalBlock(buffer, 0, buffer.Length) : buffer;
-
-						// Split the data in chunks with a max length of the current MTU.
-						foreach (byte[] chunk in GetChunks(dataToWrite))
-						{
-							// Write the chunk in the TX characteristic.
-							dataWritten = await txCharacteristic.WriteAsync(chunk);
-						}
+						success = await txCharacteristic.WriteAsync(dataToWrite, cancellationToken: cancelToken.Token);
+					}
+					catch (Exception)
+					{
+						encryptor.DecrementCounter();
 					}
 					finally
 					{
-						lock (writeLock)
-						{
-							Monitor.Pulse(writeLock);
-						}
+						cancelToken.Dispose();
 					}
 				});
-
-				if (!task.IsCompleted)
-				{
-					// Wait until the task finishes.
-					lock (writeLock)
-					{
-						Monitor.Wait(writeLock, WRITE_TIMEOUT);
-					}
-				}
-
-				// If the data could not be written, decrement the counter and throw an exception.
-				if (!dataWritten)
-				{
-					encryptor.DecrementCounter();
-					throw new XBeeException(ERROR_WRITE);
-				}
-
-				// If the task finished with excepction, throw it.
-				if (task.Exception != null)
-					throw task.Exception.InnerException;
-			} 
+			});
+			// Wait for write task to complete.
+			Task.WaitAll(writeTask);
+			// Free semaphore.
+			deviceSemaphore.Release();
+			// Check for error.
+			if (!success)
+			{
+				throw new XBeeException(ERROR_WRITE);
+			}
 		}
 
 		/// <summary>
@@ -512,37 +532,6 @@ namespace XBeeLibrary.Xamarin.Connection.Bluetooth
 			byte[] countBytes = ByteUtils.IntToByteArray(count);
 			Array.Copy(countBytes, 0, counter, nonce.Length, countBytes.Length);
 			return counter;
-		}
-
-		/// <summary>
-		/// Returns a list with the data chunks of the given byte array. The
-		/// maximum length of each chunk is the negotiated MTU.
-		/// </summary>
-		/// <param name="data">Data to get the chunks from.</param>
-		/// <returns>A list with the data chunks.</returns>
-		private List<byte[]> GetChunks(byte[] data)
-		{
-			List<byte[]> chunks = new List<byte[]>();
-
-			if (data.Length <= mtu)
-			{
-				chunks.Add(data);
-			}
-			else
-			{
-				int i = 0;
-				while (i < data.Length)
-				{
-					int remainingLength = data.Length - i;
-					int bufferLength = remainingLength < mtu ? remainingLength : mtu;
-					byte[] buffer = new byte[bufferLength];
-					Array.Copy(data, i, buffer, 0, bufferLength);
-					chunks.Add(buffer);
-					i += bufferLength;
-				}
-			}
-
-			return chunks;
 		}
 	}
 }
