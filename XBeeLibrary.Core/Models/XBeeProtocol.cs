@@ -271,7 +271,9 @@ namespace XBeeLibrary.Core.Models
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_TELIT.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_GLOBAL.GetValue()
 				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT1_NA.GetValue()
-				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_LOW_POWER.GetValue())
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_LTE_M_LOW_POWER.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT4_GLOBAL.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.CELLULAR_3_CAT4_NA.GetValue())
 			{
 				return XBeeProtocol.CELLULAR;
 			}
