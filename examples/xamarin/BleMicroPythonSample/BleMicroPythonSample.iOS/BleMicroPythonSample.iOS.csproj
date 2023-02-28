@@ -150,7 +150,7 @@
     <PackageReference Include="Acr.UserDialogs">
       <Version>7.2.0.564</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2515" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2545" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\XBeeLibrary.Core\XBeeLibrary.Core.csproj">
