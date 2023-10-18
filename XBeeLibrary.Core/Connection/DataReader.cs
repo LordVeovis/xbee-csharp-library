@@ -638,7 +638,7 @@ namespace XBeeLibrary.Core.Connection
 
 					// Need to go over the list of Packet received handlers to 
 					// verify which ones need to be notified of the received packet.
-					foreach (var packetHandler in packetReceivedHandlers)
+					foreach (var packetHandler in packetReceivedHandlers.ToList())
 					{
 						if (packetHandler.Handler != null)
 						{
