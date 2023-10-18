@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019, 2020, Digi International Inc.
+ * Copyright 2019-2023, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using XBeeLibrary.Core.Connection;
 using XBeeLibrary.Core.Events;
 using XBeeLibrary.Core.Events.Relay;
@@ -785,6 +786,40 @@ namespace XBeeLibrary.Core
 		public new UserDataRelayMessage ReadUserDataRelay(int timeout)
 		{
 			return base.ReadUserDataRelay(timeout);
+		}
+
+		/// <summary>
+		/// Updates the firmware of this XBee device with the given binary stream.
+		/// </summary>
+		/// <remarks>This method only works for those devices that support GPM firmware update.</remarks>
+		/// <param name="firmwareBinaryStream">Firmware binary stream.</param>
+		/// <exception cref="GpmException"></exception>
+		public void UpdateFirmware(Stream firmwareBinaryStream)
+		{
+			UpdateFirmware(firmwareBinaryStream, null);
+		}
+
+		/// <summary>
+		/// Updates the firmware of this XBee device with the given binary stream.
+		/// </summary>
+		/// <remarks>This method only works for those devices that support GPM firmware update.</remarks>
+		/// <param name="firmwareBinaryStream">Firmware binary stream.</param>
+		/// <param name="eventHandler">Event handler to get notified about any process event.</param>
+		/// <exception cref="GpmException"></exception>
+		public void UpdateFirmware(Stream firmwareBinaryStream, EventHandler<GpmUpdateEventArgs> eventHandler)
+		{
+			GpmManager manager = new GpmManager(this, firmwareBinaryStream);
+			if (eventHandler != null)
+				manager.GpmUpdateEventHandler += eventHandler;
+			try
+			{
+				manager.UpdateFirmware();
+			}
+			finally
+			{
+				if (eventHandler != null)
+					manager.GpmUpdateEventHandler -= eventHandler;
+			}
 		}
 	}
 }
