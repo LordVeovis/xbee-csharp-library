@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2019-2022, Digi International Inc.
+ * Copyright 2019-2023, Digi International Inc.
  * Copyright 2014, 2015, Sébastien Rault.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -48,7 +48,7 @@ namespace XBeeLibrary.Core
 		/// Default receive timeout used to wait for a response in synchronous operations.
 		/// </summary>
 		/// <seealso cref="ReceiveTimeout"/>
-		protected const int DEFAULT_RECEIVE_TIMETOUT = 2000; // 2.0 seconds of timeout to receive packet and command responses.
+		internal const int DEFAULT_RECEIVE_TIMETOUT = 2000; // 2.0 seconds of timeout to receive packet and command responses.
 
 		/// <summary>
 		/// Timeout to wait before entering in command mode.
@@ -3772,6 +3772,44 @@ namespace XBeeLibrary.Core
 		protected void SetBluetoothPassword(string password)
 		{
 			bluetoothPassword = password;
+		}
+
+		/// <summary>
+		/// Updates the firmware of this XBee device with the given binary stream.
+		/// </summary>
+		/// <remarks>This method only works for those devices that support GPM firmware update.</remarks>
+		/// <param name="firmwareBinaryStream">Firmware binary stream.</param>
+		/// <exception cref="GpmException"></exception>
+		protected void UpdateFirmware(Stream firmwareBinaryStream)
+		{
+			UpdateFirmware(firmwareBinaryStream, null);
+		}
+
+		/// <summary>
+		/// Updates the firmware of this XBee device with the given binary stream.
+		/// </summary>
+		/// <remarks>This method only works for those devices that support GPM firmware update.</remarks>
+		/// <param name="firmwareBinaryStream">Firmware binary stream.</param>
+		/// <param name="eventHandler">Event handler to get notified about any process event.</param>
+		/// <exception cref="GpmException"></exception>
+		protected void UpdateFirmware(Stream firmwareBinaryStream, EventHandler<GpmUpdateEventArgs> eventHandler)
+		{
+			GpmManager manager = new GpmManager(this, firmwareBinaryStream);
+			if (eventHandler != null)
+				manager.GpmUpdateEventHandler += eventHandler;
+			try
+			{
+				manager.UpdateFirmware();
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+			finally
+			{
+				if (eventHandler != null)
+					manager.GpmUpdateEventHandler -= eventHandler;
+			}
 		}
 	}
 }

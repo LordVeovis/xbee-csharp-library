@@ -28,7 +28,7 @@ using XBeeLibrary.Core.Utils;
 
 namespace XBeeLibrary.Core.Models
 {
-	internal class GpmManager
+	public class GpmManager
 	{
 		// Constants.
 		private static readonly byte COMMAND_GPM_INFO_REQUEST = (byte)0x00;
@@ -51,7 +51,7 @@ namespace XBeeLibrary.Core.Models
 		private static readonly byte[] PROFILE_DIGI = new byte[] { (byte)0xC1, 0x05 };
 
 		private static readonly string ERROR_TX_STATUS = "Transmit status was not received.";
-		private static readonly string ERROR_RX_TIMEOUT = "Timeout waiting for GPM response.";
+		public static readonly string ERROR_RX_TIMEOUT = "Timeout waiting for GPM response.";
 		private static readonly string ERROR_SEND_PACKET_EXTENDED = "Could not send GPM packet > ";
 		private static readonly string ERROR_INVALID_ANSWER = "Invalid GPM packet answer";
 		private static readonly string ERROR_ERASE_ERROR_PROCESS = "An error occurred in the erase process.";
@@ -60,12 +60,19 @@ namespace XBeeLibrary.Core.Models
 		private static readonly string ERROR_PLATFORM_INFO_ERROR_PROCESS = "An error occurred getting the platform information.";
 		private static readonly string ERROR_NO_MODEM_RESET = "No modem reset frame detected after {0} seconds.";
 
+		public static readonly string TASK_GET_PLATFORM_INFO = "Getting platform info";
+		public static readonly string TASK_ERASE = "Erasing flash";
+		public static readonly string TASK_TRANSFER = "Transferring firmware";
+		public static readonly string TASK_VERIFY = "Verifying flash image";
+		public static readonly string TASK_VERIFY_AND_INSTALL = "Verifying and installing flash image";
+		public static readonly string TASK_WAIT_FOR_UPDATE = "Waiting for device to be upgraded";
+
 		private static readonly int GPM_WRITE_RETRIES = 3;
 		private static readonly int MAX_UPGRADE_TIME = 90000;
 		private static readonly int DEFAULT_TIMEOUT = 30000;
 
 		// Variables.
-		private readonly XBeeDevice device;
+		private readonly AbstractXBeeDevice device;
 
 		private readonly Stream firmwareBinaryStream;
 
@@ -85,10 +92,10 @@ namespace XBeeLibrary.Core.Models
 
 		private readonly ILog logger;
 
-		public GpmManager(XBeeDevice device, Stream firmwareBinaryStream)
+		public GpmManager(AbstractXBeeDevice device, Stream firmwareBinaryStream)
 			: this(device, firmwareBinaryStream, DEFAULT_TIMEOUT) { }
 
-		public GpmManager(XBeeDevice device, Stream firmwareBinaryStream, int timeout)
+		public GpmManager(AbstractXBeeDevice device, Stream firmwareBinaryStream, int timeout)
 		{
 			this.device = device;
 			this.firmwareBinaryStream = firmwareBinaryStream;
@@ -140,7 +147,7 @@ namespace XBeeLibrary.Core.Models
 		/// <exception cref="GpmException"></exception>
 		private void GetPlatformInfo()
 		{
-			NotifyEvent("Getting platform info", null);
+			NotifyEvent(TASK_GET_PLATFORM_INFO, null);
 
 			// Initialize and fill the erase platform info packet.
 			byte[] platformInfoPayload = new byte[8];
@@ -187,7 +194,7 @@ namespace XBeeLibrary.Core.Models
 		/// <exception cref="GpmException"></exception>
 		private void EraseFlash()
 		{
-			NotifyEvent("Erasing flash", null);
+			NotifyEvent(TASK_ERASE, null);
 
 			// Initialize and fill the erase flash packet.
 			byte[] erasePayload = new byte[8];
@@ -225,7 +232,7 @@ namespace XBeeLibrary.Core.Models
 		/// <exception cref="GpmException"></exception>
 		private void TransferFirmware(int pageSize)
 		{
-			NotifyEvent("Transferring firmware", 0);
+			NotifyEvent(TASK_TRANSFER, 0);
 
 			FirmwareFile firmwareFile = new FirmwareFile(firmwareBinaryStream, pageSize);
 			List<MemPage> memPages = firmwareFile.GetMemPages();
@@ -354,7 +361,7 @@ namespace XBeeLibrary.Core.Models
 		/// <exception cref="GpmException"></exception>
 		private void VerifyFlashImage()
 		{
-			NotifyEvent("Verifying flash image", null);
+			NotifyEvent(TASK_VERIFY, null);
 
 			// Declare and fill the verify and install packet.
 			byte[] verifyAndInstallPayload = new byte[8];
@@ -391,7 +398,7 @@ namespace XBeeLibrary.Core.Models
 		/// <exception cref="GpmException"></exception>
 		private void VerifyAndInstallFlashImage()
 		{
-			NotifyEvent("Verifying and installing flash image", null);
+			NotifyEvent(TASK_VERIFY_AND_INSTALL, null);
 
 			// Declare and fill the verify and install packet.
 			byte[] verifyAndInstallPayload = new byte[8];
@@ -428,15 +435,15 @@ namespace XBeeLibrary.Core.Models
 		/// <exception cref="GpmException"></exception>
 		private void WaitForDeviceToUpgrade()
 		{
-			NotifyEvent("Waiting for device to be upgraded", null);
+			NotifyEvent(TASK_WAIT_FOR_UPDATE, null);
 
 			modemStatusReceived = false;
-			device.ModemStatusReceived += ReceiveModemStatus;
+			device.PacketReceived += ReceiveModemStatusPacket;
 			lock (modemStatusLock)
 			{
 				Monitor.Wait(modemStatusLock, MAX_UPGRADE_TIME);
 			}
-			device.ModemStatusReceived -= ReceiveModemStatus;
+			device.PacketReceived -= ReceiveModemStatusPacket;
 			if (!modemStatusReceived)
 			{
 				logger.Error("Did not receive the reset modem status");
@@ -467,7 +474,7 @@ namespace XBeeLibrary.Core.Models
 				// Wait for response or timeout.
 				lock (gpmLock)
 				{
-					Monitor.Wait(gpmLock, Math.Max(timeout, device.ReceiveTimeout));
+					Monitor.Wait(gpmLock, Math.Max(timeout, AbstractXBeeDevice.DEFAULT_RECEIVE_TIMETOUT));
 				}
 
 				if (!gpmPacketSent)
@@ -568,20 +575,29 @@ namespace XBeeLibrary.Core.Models
 		}
 
 		/// <summary>
-		/// Method called when a modem status is received.
+		/// Method called when a packet is received.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">Event args.</param>
-		private void ReceiveModemStatus(object sender, ModemStatusReceivedEventArgs e)
+		private void ReceiveModemStatusPacket(object sender, PacketReceivedEventArgs e)
 		{
-			if (e.ModemStatusEvent == ModemStatusEvent.STATUS_HARDWARE_RESET)
+			try
 			{
-				logger.Info("Reset modem status received");
-				modemStatusReceived = true;
-				lock (modemStatusLock)
+				ModemStatusPacket modemStatusPacket = ModemStatusPacket.CreatePacket(e.ReceivedPacket.GenerateByteArray());
+				if (modemStatusPacket.Status == ModemStatusEvent.STATUS_HARDWARE_RESET)
 				{
-					Monitor.Pulse(modemStatusLock);
+					logger.Info("Reset modem status received");
+					modemStatusReceived = true;
+					lock (modemStatusLock)
+					{
+						Monitor.Pulse(modemStatusLock);
+					}
 				}
+			}
+			catch (Exception)
+			{
+				// Do nothing, an error will be thrown by the process if the modem status
+				// packet is not received in a specific time window.
 			}
 		}
 

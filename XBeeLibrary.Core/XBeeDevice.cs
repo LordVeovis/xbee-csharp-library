@@ -794,9 +794,9 @@ namespace XBeeLibrary.Core
 		/// <remarks>This method only works for those devices that support GPM firmware update.</remarks>
 		/// <param name="firmwareBinaryStream">Firmware binary stream.</param>
 		/// <exception cref="GpmException"></exception>
-		public void UpdateFirmware(Stream firmwareBinaryStream)
+		public new void UpdateFirmware(Stream firmwareBinaryStream)
 		{
-			UpdateFirmware(firmwareBinaryStream, null);
+			base.UpdateFirmware(firmwareBinaryStream);
 		}
 
 		/// <summary>
@@ -806,20 +806,9 @@ namespace XBeeLibrary.Core
 		/// <param name="firmwareBinaryStream">Firmware binary stream.</param>
 		/// <param name="eventHandler">Event handler to get notified about any process event.</param>
 		/// <exception cref="GpmException"></exception>
-		public void UpdateFirmware(Stream firmwareBinaryStream, EventHandler<GpmUpdateEventArgs> eventHandler)
+		public new void UpdateFirmware(Stream firmwareBinaryStream, EventHandler<GpmUpdateEventArgs> eventHandler)
 		{
-			GpmManager manager = new GpmManager(this, firmwareBinaryStream);
-			if (eventHandler != null)
-				manager.GpmUpdateEventHandler += eventHandler;
-			try
-			{
-				manager.UpdateFirmware();
-			}
-			finally
-			{
-				if (eventHandler != null)
-					manager.GpmUpdateEventHandler -= eventHandler;
-			}
+			base.UpdateFirmware(firmwareBinaryStream, eventHandler);
 		}
 	}
 }
