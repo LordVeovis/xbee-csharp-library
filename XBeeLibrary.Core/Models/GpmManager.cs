@@ -69,7 +69,10 @@ namespace XBeeLibrary.Core.Models
 
 		private static readonly int GPM_WRITE_RETRIES = 3;
 		private static readonly int MAX_UPGRADE_TIME = 90000;
-		private static readonly int DEFAULT_TIMEOUT = 30000;
+		internal static readonly int DEFAULT_TIMEOUT = 30000;
+		private static readonly int API_EXPLICIT_OVERHEAD = 24;
+		private static readonly int GPM_PROTOCOL_OVERHEAD = 8;
+		private static readonly int MTU_OVERHEAD = 3;
 
 		// Variables.
 		private readonly AbstractXBeeDevice device;
@@ -81,6 +84,7 @@ namespace XBeeLibrary.Core.Models
 
 		private int gpmBlocks;
 		private int gpmBytesPerBlock;
+		private int attMTU;
 
 		private bool gpmPacketSent = false;
 		private bool gpmPacketReceived = false;
@@ -96,10 +100,14 @@ namespace XBeeLibrary.Core.Models
 			: this(device, firmwareBinaryStream, DEFAULT_TIMEOUT) { }
 
 		public GpmManager(AbstractXBeeDevice device, Stream firmwareBinaryStream, int timeout)
+		: this(device, firmwareBinaryStream, DEFAULT_TIMEOUT, -1) { }
+
+		public GpmManager(AbstractXBeeDevice device, Stream firmwareBinaryStream, int timeout, int attMTU)
 		{
 			this.device = device;
 			this.firmwareBinaryStream = firmwareBinaryStream;
 			this.timeout = timeout;
+			this.attMTU = attMTU;
 
 			logger = LogManager.GetLogger<GpmManager>();
 		}
@@ -119,7 +127,25 @@ namespace XBeeLibrary.Core.Models
 
 			// Step 1: Calculate the page size.
 			int maxCmdLen = ByteUtils.ByteArrayToInt(device.GetParameter("NP"));
-			int pageSize = maxCmdLen - 8;
+			int pageSize = maxCmdLen - GPM_PROTOCOL_OVERHEAD;
+			// Optimize the page size based on the provided ATT_MTU. In order to do so, 
+			// the ATT_MTU must be greater than all the API and GPM overheads.
+			if (attMTU != -1 && (attMTU - MTU_OVERHEAD) > (API_EXPLICIT_OVERHEAD + GPM_PROTOCOL_OVERHEAD))
+			{
+				int totalPacketSize = API_EXPLICIT_OVERHEAD + GPM_PROTOCOL_OVERHEAD + pageSize;
+				if (totalPacketSize > (attMTU - MTU_OVERHEAD))
+				{
+					// Check how many BLE packets are necessary to send 'pageSize' bytes.
+					int numBLEPackets = (totalPacketSize / (attMTU - MTU_OVERHEAD)) + ((totalPacketSize % (attMTU - MTU_OVERHEAD)) != 0 ? 1 : 0);
+
+					// Now check if the number of effective bytes sent in the same number of BLE packets adjusting the page size to the MTU is greater.
+					int newPageSize = attMTU - MTU_OVERHEAD - API_EXPLICIT_OVERHEAD - GPM_PROTOCOL_OVERHEAD;
+					int totalEffectiveBytes = newPageSize * numBLEPackets;
+
+					if (totalEffectiveBytes > pageSize)
+						pageSize = newPageSize;
+				}
+			}
 
 			// Step 2: Get the platform information (GPM info) from the device.
 			GetPlatformInfo();

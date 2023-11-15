@@ -3794,7 +3794,20 @@ namespace XBeeLibrary.Core
 		/// <exception cref="GpmException"></exception>
 		protected void UpdateFirmware(Stream firmwareBinaryStream, EventHandler<GpmUpdateEventArgs> eventHandler)
 		{
-			GpmManager manager = new GpmManager(this, firmwareBinaryStream);
+			UpdateFirmware(firmwareBinaryStream, null, -1);
+		}
+
+		/// <summary>
+		/// Updates the firmware of this XBee device with the given binary stream.
+		/// </summary>
+		/// <remarks>This method only works for those devices that support GPM firmware update.</remarks>
+		/// <param name="firmwareBinaryStream">Firmware binary stream.</param>
+		/// <param name="eventHandler">Event handler to get notified about any process event.</param>
+		/// <param name="attMTU">Attribute MTU value for Bluetooth communications.</param>
+		/// <exception cref="GpmException"></exception>
+		protected void UpdateFirmware(Stream firmwareBinaryStream, EventHandler<GpmUpdateEventArgs> eventHandler, int attMTU)
+		{
+			GpmManager manager = new GpmManager(this, firmwareBinaryStream, GpmManager.DEFAULT_TIMEOUT, attMTU);
 			if (eventHandler != null)
 				manager.GpmUpdateEventHandler += eventHandler;
 			try

@@ -810,5 +810,18 @@ namespace XBeeLibrary.Core
 		{
 			base.UpdateFirmware(firmwareBinaryStream, eventHandler);
 		}
+
+		/// <summary>
+		/// Updates the firmware of this XBee device with the given binary stream.
+		/// </summary>
+		/// <remarks>This method only works for those devices that support GPM firmware update.</remarks>
+		/// <param name="firmwareBinaryStream">Firmware binary stream.</param>
+		/// <param name="eventHandler">Event handler to get notified about any process event.</param>
+		/// <param name="attMTU">Attribute MTU value for Bluetooth communications.</param>
+		/// <exception cref="GpmException"></exception>
+		public new void UpdateFirmware(Stream firmwareBinaryStream, EventHandler<GpmUpdateEventArgs> eventHandler, int attMTU)
+		{
+			base.UpdateFirmware(firmwareBinaryStream, eventHandler, attMTU);
+		}
 	}
 }
