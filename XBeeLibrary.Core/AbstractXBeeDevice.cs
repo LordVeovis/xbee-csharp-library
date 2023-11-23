@@ -664,22 +664,30 @@ namespace XBeeLibrary.Core
 			// Get the 64-bit address.
 			if (XBee64BitAddr == null || XBee64BitAddr.Equals(XBee64BitAddress.UNKNOWN_ADDRESS))
 			{
-				string addressHigh;
-				string addressLow;
+				string addressHigh = "00000000";
+				string addressLow = "00000000";
 
-				response = GetParameter("SH");
-				if (response == null || response.Length < 1)
-					throw new ATCommandEmptyException("SH");
-				addressHigh = HexUtils.ByteArrayToHexString(response);
+				try
+				{
+					response = GetParameter("SH");
+					if (response == null || response.Length < 1)
+						throw new ATCommandEmptyException("SH");
+					else
+						addressHigh = HexUtils.ByteArrayToHexString(response);
 
-				response = GetParameter("SL");
-				if (response == null || response.Length < 1)
-					throw new ATCommandEmptyException("SL");
-				addressLow = HexUtils.ByteArrayToHexString(response);
+					response = GetParameter("SL");
+					if (response == null || response.Length < 1)
+						throw new ATCommandEmptyException("SL");
+					addressLow = HexUtils.ByteArrayToHexString(response);
 
-				while (addressLow.Length < 8)
-					addressLow = "0" + addressLow;
-
+					while (addressLow.Length < 8)
+						addressLow = "0" + addressLow;
+				}
+				catch (Exception ex) when (ex is ATCommandEmptyException || ex is ATCommandException)
+				{
+					// Ignore any AT command related exception reading the SH and SL parameters, there could
+					// be XBee devices that do not include them.
+				}
 				XBee64BitAddr = new XBee64BitAddress(addressHigh + addressLow);
 			}
 			// Get the Node ID.

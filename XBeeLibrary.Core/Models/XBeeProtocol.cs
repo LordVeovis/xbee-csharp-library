@@ -46,6 +46,7 @@ namespace XBeeLibrary.Core.Models
 		CELLULAR = 15,
 		CELLULAR_NBIOT = 16,
 		THREAD = 17,
+		BLU = 18,
 		UNKNOWN = 99
 	}
 
@@ -73,6 +74,7 @@ namespace XBeeLibrary.Core.Models
 			lookupTable.Add(XBeeProtocol.CELLULAR, "Cellular");
 			lookupTable.Add(XBeeProtocol.CELLULAR_NBIOT, "Cellular NB-IoT");
 			lookupTable.Add(XBeeProtocol.THREAD, "Thread");
+			lookupTable.Add(XBeeProtocol.BLU, "Bluetooth");
 			lookupTable.Add(XBeeProtocol.UNKNOWN, "Unknown");
 		}
 
@@ -303,6 +305,11 @@ namespace XBeeLibrary.Core.Models
 			else if (hardwareVersion.Value == HardwareVersionEnum.S2C_P5.GetValue())
 			{
 				return XBeeProtocol.ZIGBEE;
+			}
+			else if (hardwareVersion.Value == HardwareVersionEnum.XBEE3_BLU_MICRO_SMT.GetValue()
+				|| hardwareVersion.Value == HardwareVersionEnum.XBEE3_BLU_TH.GetValue())
+			{
+				return XBeeProtocol.BLU;
 			}
 
 			return XBeeProtocol.ZIGBEE;

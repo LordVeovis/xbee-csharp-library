@@ -107,7 +107,9 @@ namespace XBeeLibrary.Core.Models
 		CELLULAR_3_CAT4_GLOBAL = 0x58,
 		CELLULAR_3_CAT4_NA = 0x59,
 		XBEE_XR_900_TH = 0x5A,
-		XBEE_XR_868_TH = 0x5B
+		XBEE_XR_868_TH = 0x5B,
+		XBEE3_BLU_MICRO_SMT = 0x5C,
+		XBEE3_BLU_TH = 0x5D
 	}
 
 	public static class HardwareVersionEnumExtensions
@@ -198,6 +200,8 @@ namespace XBeeLibrary.Core.Models
 			lookupTable.Add(HardwareVersionEnum.CELLULAR_3_CAT4_NA, "XBee 3 Cellular North America Cat 4");
 			lookupTable.Add(HardwareVersionEnum.XBEE_XR_900_TH, "XBee XR 900 TH");
 			lookupTable.Add(HardwareVersionEnum.XBEE_XR_868_TH, "XBee XR 868 TH");
+			lookupTable.Add(HardwareVersionEnum.XBEE3_BLU_MICRO_SMT, "XBee BLU Micro and SMT");
+			lookupTable.Add(HardwareVersionEnum.XBEE3_BLU_TH, "XBee BLU TH");
 		}
 
 		/// <summary>
