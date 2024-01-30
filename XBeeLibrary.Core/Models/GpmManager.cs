@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2023, Digi International Inc.
+ * Copyright 2023,2024, Digi International Inc.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -498,9 +498,15 @@ namespace XBeeLibrary.Core.Models
 				// Send the packet.
 				device.SendPacketAsync(packet);
 				// Wait for response or timeout.
-				lock (gpmLock)
+				// Check first if the answer to the packet was not already received. Interfaces
+				// such as Bluetooth can take some time to execute the write operation and, by
+				// the time that process finishes, the answer could have been already received.
+				if (!gpmPacketReceived)
 				{
-					Monitor.Wait(gpmLock, Math.Max(timeout, AbstractXBeeDevice.DEFAULT_RECEIVE_TIMETOUT));
+					lock (gpmLock)
+					{
+						Monitor.Wait(gpmLock, Math.Max(timeout, AbstractXBeeDevice.DEFAULT_RECEIVE_TIMETOUT));
+					}
 				}
 
 				if (!gpmPacketSent)
